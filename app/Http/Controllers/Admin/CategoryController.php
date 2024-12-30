@@ -45,7 +45,7 @@ class CategoryController extends Controller
     }
 
 
-    public function addCategory(Request $request)
+    public function addCategory(CategoryRequest $request)
     {
         $anh=null;
 
@@ -87,15 +87,15 @@ class CategoryController extends Controller
 
         return view('admin.pages.category.edit', compact('category', 'categories'));
     }
-    public function updateCategory(Request $request, $id)
+    public function updateCategory(CategoryRequest $request, $id)
     {
 
         $category = Category::findOrFail($id);
         $anh = $category->image;
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($category->image);
-            $image = $request->files('image');
-            $newImage = time() . "." . $image->getClientOrigenalExtension();
+            $image = $request->file('image');
+            $newImage = time() . "." . $image->getClientOriginalExtension();
             $anh = $image->storeAs('images', $newImage, 'public');
         }
         $category->name = $request->input('name');

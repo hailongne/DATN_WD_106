@@ -30,11 +30,41 @@ class ProductRequest extends FormRequest
             'sku' => 'required|string|max:255|unique:products,sku', // Mã sản phẩm là bắt buộc, không được trùng lặp
             'description' => 'required|string', // Mô tả sản phẩm là bắt buộc
             'subtitle' => 'nullable|string|max:255', // Phụ đề có thể rỗng nhưng không quá 255 ký tự
-            'attribute_id' => 'required|array', // ID thuộc tính là bắt buộc và phải là một mảng
-            'attribute_id.*' => 'integer|exists:attributes,attribute_id', // Kiểm tra từng thuộc tính trong mảng phải tồn tại
-            'discount' => 'nullable|numeric|min:0', // Giảm giá có thể rỗng, phải là số và không âm
-            'in_stock' => 'nullable|integer|min:0', // Số lượng có thể rỗng, phải là số nguyên và không âm
-            'price' => 'required|numeric|min:0', // Giá phải là bắt buộc, là số và không âm
         ];
     }
+    public function messages(): array
+{
+    return [
+        'brand_id.required' => 'Yêu cầu chọn thương hiệu sản phẩm.',
+        'brand_id.integer' => 'ID thương hiệu phải là một số nguyên.',
+        'brand_id.exists' => 'Thương hiệu không tồn tại trong cơ sở dữ liệu.',
+        
+        'product_category_id.required' => 'Yêu cầu chọn danh mục sản phẩm.',
+        'product_category_id.integer' => 'ID danh mục phải là một số nguyên.',
+        'product_category_id.exists' => 'Danh mục không tồn tại trong cơ sở dữ liệu.',
+        
+        'name.required' => 'Tên sản phẩm là bắt buộc.',
+        'name.string' => 'Tên sản phẩm phải là một chuỗi ký tự.',
+        'name.max' => 'Tên sản phẩm không được vượt quá 255 ký tự.',
+        
+        'main_image_url.required' => 'Yêu cầu chọn ảnh chính cho sản phẩm.',
+        'main_image_url.image' => 'Ảnh chính phải là một tệp hình ảnh.',
+        'main_image_url.mimes' => 'Ảnh chính phải có định dạng jpeg, png, jpg, hoặc gif.',
+        'main_image_url.max' => 'Ảnh chính không được vượt quá 2MB.',
+        
+        'sku.required' => 'Mã sản phẩm là bắt buộc.',
+        'sku.string' => 'Mã sản phẩm phải là một chuỗi ký tự.',
+        'sku.max' => 'Mã sản phẩm không được vượt quá 255 ký tự.',
+        'sku.unique' => 'Mã sản phẩm đã tồn tại.',
+        
+        'description.required' => 'Mô tả sản phẩm là bắt buộc.',
+        'description.string' => 'Mô tả sản phẩm phải là một chuỗi ký tự.',
+        
+        'subtitle.nullable' => 'Phụ đề có thể rỗng.',
+        'subtitle.string' => 'Phụ đề phải là một chuỗi ký tự.',
+        'subtitle.max' => 'Phụ đề không được vượt quá 255 ký tự.',
+        
+    ];
+}
+
 }

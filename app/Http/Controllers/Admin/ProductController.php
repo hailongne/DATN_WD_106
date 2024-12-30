@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+use App\Http\Requests\AttributeRequest;
 use App\Http\Requests\ProductRequest;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+
 use App\Models\Brand;
 use Illuminate\Support\Facades\File;
 use App\Models\Category;
@@ -39,14 +42,7 @@ class ProductController extends Controller
             ->latest()->paginate(5);
         return view('admin.pages.product.list')
             ->with(['products' => $products]);
-        // ->orWhereHas('brand', function ($query) use ($request) {
-        //     $query->where('name', 'like', '%' . $request->input('nhap', '') . '%');
-        // })
-        // ->orWhere('is_active', 'like', '%' . $request->nhap . '%')
-        // ->orWhere('sku', 'like', '%' . $request->nhap . '%')
-        // ->orWhere('subtitle', 'like', '%' . $request->nhap . '%')
-        // ->orWhere('slug', 'like', '%' . $request->nhap . '%')
-        // ->orWhere('description', 'like', '%' . $request->nhap . '%')
+      
     }
     public function toggle($id)
     {
@@ -72,9 +68,23 @@ class ProductController extends Controller
     }
     public function addProduct(ProductRequest $request)
     {
-        // Check if the request method is POST
-
-        // Handle file upload for the product image
+        //vcalidate
+$request->validate([
+    'color_id' => 'required|array', // color_id là mảng
+    'color_id.*' => 'integer|exists:colors,color_id', // Kiểm tra từng phần tử trong mảng
+    'size_id' => 'required|array', // size_id là mảng
+    'size_id.*' => 'integer|exists:sizes,size_id', // Kiểm tra từng phần tử trong mảng
+], [
+    'color_id.required' => 'Vui lòng chọn màu.',
+    'color_id.array' => 'ID màu sắc phải là một mảng.',
+    'color_id.*.integer' => 'Mỗi ID màu sắc phải là một số nguyên.',
+    'color_id.*.exists' => 'Màu sắc không tồn tại.',
+    
+    'size_id.required' => 'Vui lòng chọn ít nhất một kích thước.',
+    'size_id.array' => 'ID kích thước phải là một mảng.',
+    'size_id.*.integer' => 'Mỗi ID kích thước phải là một số nguyên.',
+    'size_id.*.exists' => 'Kích thước không tồn tại.',
+]);
         $image = null;
         if ($request->hasFile('main_image_url')) {
             $anh = $request->file('main_image_url');
@@ -99,6 +109,9 @@ class ProductController extends Controller
         ]);
 
         // Process color and size IDs (they could be comma-separated or an array)
+
+
+
         $colors = is_array($request->input('color_id')) ? $request->input('color_id') : explode(',', $request->input('color_id'));
         $sizes = is_array($request->input('size_id')) ? $request->input('size_id') : explode(',', $request->input('size_id'));
 
@@ -117,10 +130,7 @@ class ProductController extends Controller
 
         // Insert the attribute product data (color-size combinations)
         AttributeProduct::insert($productColorSizeData);
-        // Lấy sản phẩm cụ thể dựa trên id và thông tin liên quan
-
-        // $listAttributeProduct = AttributeProduct::where
-        // ('product_id', $product->product_id)->get();
+       
         return redirect()->route('admin.products.getDataAtrPro', ['id' => $product->product_id])->with('success', 'Thêm sản phẩm mới thành công!');
     }
 
@@ -134,11 +144,11 @@ class ProductController extends Controller
             'size:size_id,name'
         ])
             ->where('product_id', $id)
-
             ->get();
         $groupedByColor = $productsAttPro->groupBy(function ($item) {
             return $item->color->name . "-" . $item->color->color_id;  // Group by both color name and color_id
         });
+      
         return view('admin.pages.product.editAtrPro')
             ->with(['groupedByColor' => $groupedByColor, 'product_id' => $id]);
     }
@@ -147,12 +157,15 @@ class ProductController extends Controller
 
     public function updateAllAttributeProducts(Request $request)
     {
+  
 
         $attributeProducts = json_decode($request->input('attributeProducts', '[]'), true);
         $colorIds = $request->input('color_id', []);
         $product_id = $request->input('product_id', 0);
         $images = [];
-
+        //validate
+      
+        
         // Xử lý từng color_id và ảnh tương ứng
         foreach ($colorIds as $colorId) {
             // Lấy ảnh của color_id này
@@ -240,7 +253,7 @@ class ProductController extends Controller
             compact('product', 'categories', 'brands', 'sizes', 'colors')
         );
     }
-    public function updateProduct(ProductRequest $request, $id)
+    public function updateProduct(Request $request, $id)
     {
         // Tìm sản phẩm cần cập nhật
         $product = Product::findOrFail($id);
@@ -299,8 +312,7 @@ class ProductController extends Controller
 
         // Cập nhật dữ liệu màu sắc và kích thước cho sản phẩm
         AttributeProduct::insert($productColorSizeData);
-
-        return redirect()->route('admin.products.index', ['id' => $product->product_id])
+        return redirect()->route('admin.products.getDataAtrPro', ['id' => $product->product_id])
             ->with('success', 'Cập nhật sản phẩm thành công!');
     }
 
@@ -309,13 +321,13 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $product->delete();
-        return redirect()->back()->with('success', 'Product delete successfully!', );
+        return redirect()->back()->with('success', 'Xóa sản phẩm thành công!', );
     }
     public function restoreProduct($id)
     {
         $product = Product::withTrashed()->findOrFail($id);
         $product->restore();
 
-        return redirect()->back()->with('success', 'Product delete successfully!', );
+        return redirect()->back()->with('success', 'Khôi phục thành công!', );
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\ColorRequest;
 use App\Models\Color;
 use App\Models\AttributeProduct;
 class ColorController extends Controller
@@ -24,7 +25,7 @@ class ColorController extends Controller
         return view('admin.pages.color.create');
     }
 
-    public function addColor(Request $request)
+    public function addColor(ColorRequest $request)
     {
 
         $validated = $request->validate([
@@ -46,7 +47,7 @@ public function editColor($id)
     $color = Color::findOrFail($id);
     return view('admin.pages.color.edit',compact('color'));
 }
-public function updateColor(Request $request,$id)
+public function updateColor(ColorRequest $request,$id)
 {
     $color = Color::findOrFail($id);
     $validated = $request->validate([

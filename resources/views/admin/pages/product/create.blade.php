@@ -1,7 +1,24 @@
+@extends('admin.index')
+@section('content')
+@push('styles')
+<style>
+    /* CSS */
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px; /* Khoảng cách giữa các form */
+    margin-top: 30px; /* Khoảng cách trên */
+}
+
+</style>
 <link rel="stylesheet" href="{{asset('css/admin/formAddProduct.css')}}">
-<form id="productForm" method="POST" action="{{ route('admin.products.store') }}" class="custom-form-container"
-    enctype="multipart/form-data">
+@endpush
+
+<div class="container mt-5">
+<form  action="{{route('admin.products.store')}}" id="productForm" method="POST"  enctype="multipart/form-data">
     @csrf
+    @method("POST")
     <!-- Image -->
     <div class="row gx-2 mb-3">
         <div class="col-12">
@@ -21,49 +38,70 @@
             </div>
         </div>
     </div>
-
+    @error('main_image_url')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
     <!-- First Row -->
     <div class="row gx-2 mb-3">
         <div class="col-md-6">
             <label class="custom-label" for="productName">Tên sản phẩm</label>
             <input type="text" class="form-control" id="productName" name="name" placeholder="Nhập tên sản phẩm"
-                required maxlength="50" />
+                maxlength="50" />
+                @error('name')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
+      
         <div class="col-md-6">
             <label class="custom-label" for="productSKU">Mã sản phẩm</label>
-            <input type="text" class="form-control" id="productSKU" name="sku" placeholder="Nhập mã sản phẩm" required
+            <input type="text" class="form-control" id="productSKU" name="sku" placeholder="Nhập mã sản phẩm" 
                 maxlength="50" />
+                @error('sku')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
+      
     </div>
 
     <div class="row gx-2 mb-3">
         <div class="col-12">
             <label for="productSubtitle">Chú thích sản phẩm</label>
             <input type="text" class="form-control" id="productSubtitle" name="subtitle"
-                placeholder="Nhập Chú thích sản phẩm" required maxlength="50" />
+                placeholder="Nhập Chú thích sản phẩm"  maxlength="50" />
         </div>
+        @error('subtitle')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
     </div>
-
+  
     <!-- Second Row -->
     <div class="row gx-2 mb-3">
         <div class="col-md-6">
             <label class="custom-label" for="productCategory">Danh mục sản phẩm</label>
-            <select class="form-control" id="productCategory" name="product_category_id" required>
+            <select class="form-control" id="productCategory" name="product_category_id" >
                 <option value="0">Chọn danh mục sản phẩm</option>
                 @foreach($categories as $category)
                 <option value="{{ $category['category_id'] }}">{{ $category['name'] }}</option>
                 @endforeach
             </select>
+            @error('product_category_id')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
+       
         <div class="col-md-6">
             <label class="custom-label" for="productBrand">Thương hiệu sản phẩm</label>
-            <select class="form-control" id="productBrand" name="brand_id" required>
+            <select class="form-control" id="productBrand" name="brand_id" >
                 <option value="">Chọn thương hiệu sản phẩm</option>
                 @foreach($brands as $brand)
                 <option value="{{ $brand->brand_id }}">{{ $brand->name }}</option>
                 @endforeach
             </select>
+            @error('brand_id')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
+        
     </div>
     <!-- Third Row -->
     <div class="row gx-2 mb-3">
@@ -81,6 +119,9 @@
                 </div>
                 @endforeach
             </div>
+            @error('size_id')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
 
         <!-- Dropdown Màu sắc sản phẩm -->
@@ -98,6 +139,9 @@
                 </div>
                 @endforeach
             </div>
+            @error('color_id')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
     </div>
 
@@ -106,7 +150,10 @@
         <div class="col-12">
             <label class="custom-label" for="productDescription">Mô tả sản phẩm</label>
             <textarea class="form-control" id="productDescription" name="description" placeholder="Nhập mô tả sản phẩm"
-                rows="5" required maxlength="255" required></textarea>
+                rows="5"  maxlength="255" ></textarea>
+                @error('description')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
     </div>
 
@@ -115,7 +162,7 @@
         <button type="submit" class="btn btn-primary">Tiếp tục</button>
     </div>
 </form>
-
+</div>
 <script>
 function showImage(event) {
     const file = event.target.files[0];
@@ -168,3 +215,12 @@ function toggleAll(type) {
 
 }
 </script>
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    @endpush
+@endsection
