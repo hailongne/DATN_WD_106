@@ -90,7 +90,7 @@ class CouponController extends Controller
         return view('admin.pages.coupon.edit',
         compact('coupon','userCoupon','users'));
     }
-    public function updateCoupon(Request $request, $id)
+    public function updateCoupon(CouponRequest $request, $id)
     {
         $coupon = Coupon::findOrFail($id);
         // Update coupon details
@@ -132,8 +132,24 @@ class CouponController extends Controller
     public function destroyCoupon($id)
     {
         $coupon = Coupon::findOrFail($id);
+        if (!$coupon) {
+            // Nếu mã giảm giá không tồn tại
+            return redirect()->back()->with('error', 'Mã giảm giá không tồn tại.');
+        }
+        $hasUsers = CouponUser::where('coupon_id', $id)->exists();
+
+    if ($hasUsers) {
+        // Nếu mã giảm giá đã được sử dụng
+        return redirect()->back()->with('error', 'Không thể xóa mã giảm giá đã được sử dụng bởi người dùng.');
+    }
+    // Xóa mã giảm giá
+    try {
         $coupon->delete();
-        return redirect()->back()->with('success' ,'Coupon delEted successfully!',);
+        return redirect()->back()->with('success', 'Xóa mã giảm giá thành công.');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa mã giảm giá.');
+    }
+       
     }
 
 }

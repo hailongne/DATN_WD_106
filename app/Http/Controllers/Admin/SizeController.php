@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AttributeProduct;
+use App\Http\Requests\SizeRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Size;
@@ -22,7 +23,7 @@ class SizeController extends Controller
 
         return view('admin.pages.size.create');
     }
-    public function addSize(Request $request)
+    public function addSize(SizeRequest $request)
     {
 
         $validated = $request->validate([
@@ -43,7 +44,7 @@ class SizeController extends Controller
     $size = Size::findOrFail($id);
     return view('admin.pages.size.edit',compact('size'));
 }
-    public function updateSize(Request $request, $id)
+    public function updateSize(SizeRequest $request, $id)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:50',

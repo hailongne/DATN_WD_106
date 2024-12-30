@@ -36,10 +36,17 @@
                     <tr class="col-4 data-attribute" data-attribute_product_id="{{ $item->attribute_product_id }}">
                         <td>{{ $item->product->name }}</td>
                         <td>{{ $item->size->name }}</td>
-                        <td><input type="number" name="price[]" class="form-control"
-                                value="{{ number_format($item->price, 0, ',', '.') }}" required></td>
-                        <td><input type="number" name="in_stock[]" class="form-control" value="{{ $item->in_stock }}"
-                                required>
+                        <input type="hidden" name="attribute_product_id[]" value="{{ $item->attribute_product_id }}">
+                        
+                        
+                        <td><input type="number"  name="price[]" class="form-control price" value="{{ $item->price }}">
+                      
+                       <span style="color: red" class="price-error"></span>
+                    </td>
+               
+                        <td><input type="number" name="in_stock[]" class="form-control in-stock" value="{{ $item->in_stock }}"
+                               >
+                               <span style="color: red" class="in-stock-error"></span>
                         </td>
                     </tr>
                     @endforeach
@@ -51,10 +58,12 @@
                             <label for="url_{{ $parts[1] }}" class="btn custom-upload-btn-atriPro">
                                 <i class="fa fa-upload"></i> Tải lên
                             </label>
-                            <input type="file" name="url[]" id="url_{{ $parts[1] }}" class="d-none" multiple>
+                            <input type="file" name="url[]" accept="image/png, image/jpg, image/jpeg, image/gif"  id="url_{{ $parts[1] }}" class="d-none url" multiple>
+
                             <div id="imagePreviewContainer_{{ $parts[1] }}" class="mt-3 d-flex flex-wrap">
                                 <!-- Ảnh sẽ hiển thị ở đây -->
                             </div>
+                            <span style="color: red" class="url-error"></span>
                         </td>
                     </tr>
                 </tfoot>
@@ -126,7 +135,114 @@
             });
         });
 
-        $('#submitForm').click(function() {
+//check lối price
+
+    // Lấy tất cả các phần tử có class 'price' và 'in-stock'
+    const priceInputs = document.getElementsByClassName('price');
+    const priceErrors = document.getElementsByClassName('price-error');
+    const inStockInputs = document.getElementsByClassName('in-stock');
+    const inStockErrors = document.getElementsByClassName('in-stock-error');
+    const urlInputs = document.getElementsByClassName('url');
+    console.log(urlInputs);
+    const urlErrors = document.getElementsByClassName('url-error');
+    let isFormValid = true;  
+
+    // Lặp qua tất cả các input có class 'price'
+    Array.from(priceInputs).forEach((priceInput, index) => {
+        priceInput.addEventListener('input', function(event) {
+            const value = event.target.value;
+
+            // Kiểm tra giá trị input price
+            if (value.trim() === '') {
+                priceErrors[index].textContent = 'Giá không được để trống';
+                isFormValid = false;
+            } else if (isNaN(value) || value <= 0) {
+                priceErrors[index].textContent = 'Giá phải là số lớn hơn 0';
+                isFormValid = false;
+            } else {
+                priceErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ'
+                isFormValid = true;
+            }
+        });
+    });
+
+    // Lặp qua tất cả các input có class 'in-stock'
+    Array.from(inStockInputs).forEach((inStockInput, index) => {
+        inStockInput.addEventListener('input', function(event) {
+            const value = event.target.value;
+
+            // Kiểm tra giá trị input in_stock
+            if (value.trim() === '') {
+                inStockErrors[index].textContent = 'Số lượng không được để trống';
+                isFormValid = false;
+
+            } else if (isNaN(value) || value < 0) {
+                inStockErrors[index].textContent = 'Số lượng phải là số và lớn hơn hoặc bằng 0';
+                isFormValid = false;
+
+            } else if (!Number.isInteger(Number(value))) {
+                inStockErrors[index].textContent = 'Số lượng phải là số nguyên';
+                isFormValid = false;
+
+            } else {
+                inStockErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
+                isFormValid = true;
+            }
+        });
+    });
+    
+//lặp qua tất cả class url
+// Lặp qua tất cả các input có class 'url'
+Array.from(urlInputs).forEach((urlInput, index) => {
+    urlInput.addEventListener('change', function(event) {
+        const files = event.target.files; // Lấy danh sách các file được chọn
+console.log(files);
+        // Kiểm tra nếu không có file nào được chọn
+        if (files.length === 0) {
+            urlErrors[index].textContent = 'Vui lòng chọn ít nhất một ảnh'; // Hiển thị lỗi
+            isFormValid = false; // Đặt form không hợp lệ
+        } else {
+            let isValid = true;
+
+            // Kiểm tra từng file
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+
+                // Kiểm tra xem file có phải là ảnh hợp lệ không
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                const validExtensions = ['png', 'jpg', 'jpeg', 'gif'];
+
+                if (!validExtensions.includes(fileExtension)) {
+                    urlErrors[index].textContent = 'Chỉ chấp nhận file hình ảnh với định dạng PNG, JPG, JPEG, GIF';
+                    isValid = false;
+                    break;
+                }
+
+                // Kiểm tra kích thước file (ví dụ không vượt quá 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    urlErrors[index].textContent = 'Kích thước ảnh không được vượt quá 5MB';
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (isValid) {
+                urlErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
+                isFormValid = true;
+            } else {
+                isFormValid = false; // Đặt form không hợp lệ nếu có lỗi
+            }
+        }
+    });
+});
+    $('#submitForm').click(function(event) {  // Thêm event vào hàm callback
+      
+    if (!isFormValid) {
+        event.preventDefault();  // Ngừng submit nếu form không hợp lệ
+        alert('Vui lòng sửa các lỗi trước khi gửi form!');
+        return ;
+      
+    }
             imagesData = [];
 
             $('.send-img').each(function() {
@@ -182,6 +298,7 @@
                     alert('Sai');
                 });
         });
+  
     });
     </script>
     @endpush

@@ -18,6 +18,9 @@
                     <input type="text" id="tenMaGiamGia" name="code" value="{{$coupon->code}}"
                         placeholder="Nhập tên mã giảm giá" />
                 </div>
+                @error('code')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
                 <div class="form-group">
                     <label for="tenMaGiamGia">Gía trị giảm giá</label>
                     <select class="form-select" id="value" aria-label="Default select example">
@@ -34,6 +37,7 @@
                         @endif
                     </select>
                 </div>
+            
                 <div class="form-group" id="value1">
                     <label for="discount">Gía trị</label>
                     @if($coupon->discount_amount)
@@ -46,29 +50,53 @@
                     <input type="number" id="discount" placeholder="Nhập điều kiện áp dụng" />
                     @endif
                 </div>
+                @error('discount_amount')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
+                @error('discount_percentage')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
                 <div class="form-group">
                     <label for="condition">Gía trị tối thiểu</label>
                     <input type="number" id="condition" value="{{$coupon->min_order_value}}" name="min_order_value"
                         placeholder="Nhập điều kiện áp dụng" />
                 </div>
+                @error('min_order_value')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
+                @error('discount_percentage')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
                 <div class="form-group">
                     <label for="max_order_value">Giá trị tối đa:</label>
                     <input type="number" id="max_order_value" value="{{$coupon->min_order_value}}"
                         name="max_order_value" placeholder="Nhập giá trị tối đa" />
                 </div>
+                @error('max_order_value')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
                 <div class="form-group">
                     <label for="quantity">Số lượng:</label>
                     <input type="number" id="quantity" name="quantity" value="{{$coupon->quantity}}"
                         placeholder="Nhập số lượng" />
                 </div>
+                @error('quantity')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
                 <div class="form-group">
                     <label for="start_date">Thời gian từ ngày:</label>
                     <input type="datetime-local" name="start_date" value="{{$coupon->created_at}}" id="start_date" />
                 </div>
+                @error('start_date')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
                 <div class="form-group">
                     <label for="end_date">Thời gian đến ngày:</label>
                     <input type="datetime-local" name="end_date" value="{{$coupon->updated_at}}" id="end_date" />
                 </div>
+                @error('end_date')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
                 <div class="form-group">
                     <label>Chọn kiểu</label>
                     @if($coupon->is_public)
@@ -92,9 +120,12 @@
 
                     @endif
                 </div>
+                @error('is_public')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
             </div>
             <!-- table -->
-            <div class="customer-section">
+            <div class="customer-section" style="display:none" id="customer-section">
                 <h2>Danh sách khách hàng</h2>
                 <div class="search-group">
                     <i class="fas fa-search icon"></i>
@@ -133,10 +164,12 @@
                     </tbody>
                 </table>
             </div>
-
+            @error('user_id')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
         <div class="add-button">
-            <button type="submit">Thêm mới</button>
+            <button type="submit">Chỉnh sửa</button>
         </div>
         <!-- thêm -->
 
@@ -165,6 +198,15 @@ value.addEventListener('change', function() {
         discount.setAttribute('value', '')
     }
 });
+private = document.getElementById('private');
+        public = document.getElementById('public');
+        customer = document.getElementById('customer-section');
+        private.addEventListener('click', function () {
+            customer.style.display = "block";
+        });
+        public.addEventListener('click', function () {
+            customer.style.display = "none";
+        });
 </script>
 @endpush
 </body>

@@ -44,7 +44,8 @@ public function createBrand()
             'description' => $request->input('description'),
             'slug' => str::slug($request->input('name')),
         ]);
-        return redirect()->route('admin.brands.index')->with('success', 'Brand added successfully!');
+        return redirect()->route('admin.brands.index')
+        ->with('success', 'Thêm mới thương hiệu thành công!');
 
     }
     public function detailBrand($id)
@@ -80,7 +81,7 @@ public function createBrand()
             'is_active' => $request->input('is_active', 1),  // Set to 1 by default if not provided
         ]);
 
-        return redirect()->route('admin.brands.index')->with('success', 'Brand updated successfully!');
+        return redirect()->route('admin.brands.index')->with('success', 'Cập nhật thương hiẹu thành công!');
     }
 
 
@@ -92,7 +93,7 @@ public function createBrand()
             return redirect()->back()->with('success' ,'Brand không thể xóa vì có sản phẩm liên quan!');
         }
         $product->delete();
-        return redirect()->back()->with('success' ,'Brand deleted successfully!',);
+        return redirect()->back()->with('success' ,'Xóa thương hiệu thành công!',);
     }
 
 

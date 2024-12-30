@@ -8,12 +8,18 @@
 <body>
 
     <div class="container mt-4">
-
     @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
+
     <div class="container">
 
         <h1 class="text-center">Danh sách phiếu giảm giá</h1>
