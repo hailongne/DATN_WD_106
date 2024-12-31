@@ -63,7 +63,7 @@ class Product extends Model
 
     public function orders()
     {
-        return $this->belongsToMany(Order::class, 'product_id', 'order_id');
+        return $this->belongsToMany(Order::class, 'order_items', 'product_id', 'order_id');
     }
     public function attributeProducts()
     {
@@ -107,6 +107,10 @@ class Product extends Model
     {
         return $this->hasManyThrough(ReviewsReply::class, Reviews::class,
         'product_id', 'review_id');
+    }
+    public function loveByUsers()
+    {
+        return $this->belongsToMany(User::class, 'love_product', 'product_id', 'user_id');
     }
 
 }

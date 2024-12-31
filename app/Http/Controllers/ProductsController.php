@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 use App\Models\BannedWord;
+use App\Models\Like;
+use App\Models\LoveProduct;
+use App\Models\Report;
 use App\Models\Reviews;
 use App\Models\Product;
 use App\Models\Attribute;
 use App\Models\AttributeProduct;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductsController extends Controller
 {
@@ -51,23 +55,7 @@ class ProductsController extends Controller
     //     ]);
     // }
 
-    public function search(Request $request)
-    {
-        $searchTerm = $request->input('search'); // Lấy từ khóa tìm kiếm
 
-        // Kiểm tra nếu từ khóa tìm kiếm có tồn tại và không rỗng
-        if ($searchTerm) {
-            $products = Product::where('name', 'LIKE', '%' . $searchTerm . '%')
-                ->orWhere('sku', 'LIKE', '%' . $searchTerm . '%')
-                ->get();
-        } else {
-            // Nếu không có từ khóa tìm kiếm, trả về tất cả sản phẩm đang hoạt động
-            $products = Product::where('is_active', true)->get();
-        }
-
-        // Trả về view với danh sách sản phẩm tìm được
-        return view('user.product', compact('products'));
-    }
     // API để lấy danh sách sản phẩm
     public function productList($categoryId = null)
     {
@@ -93,7 +81,7 @@ class ProductsController extends Controller
 
 
     // API để lấy chi tiết một sản phẩm
-    public function showProduct($productId)
+    public function showProduct(Request $request, $productId)
     {
         // Tìm sản phẩm theo ID và kèm theo các thuộc tính của sản phẩm
         $product = Product::where('product_id', $productId)
@@ -107,46 +95,160 @@ class ProductsController extends Controller
             ->get();
 
         //   lấy comment
-        $reviews = Reviews::where('product_id',$productId) // Lấy bình luận của sản phẩm (static Type $var = null;)
-        ->where('user_id', auth()->id()) // Chỉ lấy đánh giá của người dùng hiện tại
-        ->with(['user', 'replies' => function ($query) {
-            $query->whereHas('user', function ($userQuery) {
-                $userQuery->where('role', 1); // Chỉ lấy phản hồi của admin
+        $reviews = Reviews::where('product_id', $productId) // Lấy bình luận của sản phẩm (static Type $var = null;)
+            ->where('user_id', auth()->id()) // Chỉ lấy đánh giá của người dùng hiện tại
+            ->with([
+                'user',
+                'replies' => function ($query) {
+                    $query->whereHas('user', function ($userQuery) {
+                        $userQuery->where('role', 1); // Chỉ lấy phản hồi của admin
+                    });
+                }
+            ])
+            ->get();
+        // Lấy số sao từ query string (nếu không có thì trả về null)
+        $rating = $request->query('rating');
+
+        // Truy vấn lấy đánh giá theo sản phẩm
+        $query = Reviews::where('product_id', $productId)
+            ->with('user', 'likes', 'reports') // Lấy thông tin người dùng đã đánh giá
+            ->when($rating, function ($q) use ($rating) {
+                // Lọc theo số sao nếu có
+                $q->where('rating', $rating);
             });
-        }])
-        ->get();
+
+        $reviewAll = $query->get();
+        //check người dùng đã mua san rphẩm chưa
+        $user = Auth::user();
+
+        // Kiểm tra xem người dùng đã mua sản phẩm hiện tại
+        $hasPurchased = $user->orders()->whereHas('products', function ($query) use ($productId) {
+            $query->where('order_items.product_id', $productId);
+        })->exists();
+
         session()->flash('alert', 'Bạn đang vào trang chi tiết sản phẩm');
-        return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews'));
+
+        return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased'));
+
+
     }
     public function addReview(Request $request)
     {
 
         $bannedWords = BannedWord::pluck('word')->toArray();
-        $comment=$request->input('comment');
+        $comment = $request->input('comment');
 
-foreach ($bannedWords as $bannedWord) {
-    if (stripos($comment, $bannedWord) !== false) {
-        $comment = str_ireplace($bannedWord, str_repeat('*', strlen($bannedWord)), $comment);
-    }
-}
+        foreach ($bannedWords as $bannedWord) {
+            if (stripos($comment, $bannedWord) !== false) {
+                $comment = str_ireplace($bannedWord, str_repeat('*', strlen($bannedWord)), $comment);
+            }
+        }
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $newImage = time() . "." . $image->getClientOriginalExtension();
             $anh = $image->storeAs('/storage/imagePro/images', $newImage, 'public');
-        }else {
+        } else {
 
-            $anh = 'default.jpg';
+            $anh = '';
         }
         // Thêm mới bình luận
+        $rating=$request->input(key: 'rating');
+        if (empty($rating)) {
+            return redirect()->back()->with('error', 'Vui lòng chọn sao :))');
+        }
         $review = Reviews::create([
             'product_id' => $request->input('product_id'), // Lưu product_id của review 'product_id'
             'user_id' => auth()->id(),
-            'image' => $anh??null,
-         'rating' => $request->input(key: 'rating') ?? null,
-            'comment' =>$comment,
+            'image' => $anh ?? null,
+            'rating' => $rating ?? null,
+            'comment' => $comment,
         ]);
 
         return redirect()->back();
 
     }
+    public function like($reviewId)
+    {
+        $userId = auth()->id(); // ID của người dùng hiện tại
+
+        // Kiểm tra nếu người dùng đã like đánh giá này rồi
+        $existingLike = Like::where('user_id', $userId)
+            ->where('review_id', $reviewId)
+            ->first();
+
+        if ($existingLike) {
+            // Nếu đã like, xóa like
+            $existingLike->delete();
+        } else {
+            // Nếu chưa like, thêm like
+            Like::create([
+                'user_id' => $userId,
+                'review_id' => $reviewId
+            ]);
+        }
+
+        return back(); // Quay lại trang hiện tại
+    }
+
+    public function report(Request $request, $reviewId)
+    {
+        $userId = auth()->id(); // ID của người dùng hiện tại
+
+        // Kiểm tra nếu người dùng đã like đánh giá này rồi
+        $existingReport = Report::where('user_id', $userId)
+            ->where('review_id', $reviewId)
+            ->first();
+
+        if ($existingReport) {
+            // Nếu đã like, xóa like
+            $existingReport->delete();
+        } else {
+            // Nếu chưa like, thêm like
+            Report::create([
+                'user_id' => $userId,
+                'review_id' => $reviewId
+            ]);
+        }
+
+        return back(); // Quay lại trang hiện tại
+    }
+    public function love(Request $request, $productId)
+    {
+        $userId = auth()->id(); // ID của người dùng hiện tại
+
+        // Kiểm tra nếu người dùng đã like đánh giá này rồi
+        $existingReport = LoveProduct::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->first();
+
+        if ($existingReport) {
+            // Nếu đã like, xóa like
+            $existingReport->delete();
+        } else {
+            // Nếu chưa like, thêm like
+            LoveProduct::create([
+                'user_id' => $userId,
+                'product_id' => $productId
+            ]);
+        }
+
+
+        return redirect()->back()->with('success', 'Đã thêm vào danh sách.'); // Quay lại trang hiện tại
+    }
+    public function listLove()
+    {
+        $userId = auth()->id(); // ID của người dùng hiện tại
+
+        $listProduct = Product::with('attributeProducts')
+            ->whereHas('loveByUsers', function ($query) use ($userId) {
+                $query->where('love_product.user_id', $userId); // Chỉ định bảng đúng cho cột 'user_id'
+            })
+            ->where('is_active', 1) // Lọc sản phẩm đang hoạt động
+            ->get();
+
+        return view('user.loveProduct', compact('listProduct'));
+    }
+
+
+
 }

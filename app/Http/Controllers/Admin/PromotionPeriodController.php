@@ -60,7 +60,7 @@ class PromotionPeriodController extends Controller
             }
         }
         return redirect()->route('admin.promotionPeriods.index')->with([
-          
+
             'promPerProducts' => $promPerProducts,
             'message' => 'Coupon added successfully!',
         ], 201);
@@ -73,7 +73,7 @@ class PromotionPeriodController extends Controller
     public function editPromotionPeriod(Request $request,$id){
         $promPer = PromPer::findOrFail($id);
         $products=Product::where('name', 'like', '%' . $request->nhap . '%')->get();
-     
+
         $proProm =PromPerProduct::where('prom_per_id', $id)->get();;
         return view('admin.pages.promPer.edit',
         compact('promPer','proProm','products'));
@@ -91,10 +91,10 @@ class PromotionPeriodController extends Controller
             'end_date' => $request->input('end_date'),
         ]);
 
-    
+
         $promPerProducts = [];
 
-     
+
         if ($request->has('product_id')) {
             // Remove old associations
             PromPerProduct::where('prom_per_id', $id)->delete();

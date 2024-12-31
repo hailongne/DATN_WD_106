@@ -40,7 +40,7 @@
                             style="display:inline;">
                             @csrf
                             <button type="submit" class="btn {{ $promPer->is_active ? 'btn-danger' : 'btn-success' }}">
-                                {{ $promPer->is_active ? 'Tắt hoạt động' : 'Kích hoạt' }}
+                            <p>{{ $promPer->is_active ? 'Đang hoạt động' : 'Đã tắt hoạt động' }}</p>
                             </button>
                         </form>
                     </td>

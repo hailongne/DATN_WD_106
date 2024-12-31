@@ -50,6 +50,11 @@
                         <a href="{{route('user.profiles.showUserInfo')}}" class="nav-link">
                             <i class="fas fa-home"></i> Trang chủ
                         </a>
+                        @if(Auth::check())
+                        <a href="{{route('user.product.listLove', ['id' => Auth::user()->user_id])}}" class="nav-link">
+                        <i class="fa-solid fa-heart"></i>
+                        </a>
+                        @endif
                         <div class="dropdown">
                             <a href="{{route('user.profiles.showUserInfo')}}" class="nav-link custom-Navlink">
                                 <i class="fas fa-user"></i>

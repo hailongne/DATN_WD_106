@@ -2,6 +2,8 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/detailProduct.css') }}">
+<link rel="stylesheet" href="{{ asset('css/huongListReview.css') }}">
+<link rel="stylesheet" href="{{ asset('css/huongReview.css') }}">
 @endpush
 
 @section("content")
@@ -198,58 +200,55 @@
             </div>
         </div>
 
+        @if($hasPurchased)
         <div class="container-review">
-            <div class="button-header">
-                <button>
-                    Đánh giá của khách hàng <i class="fa fa-star"></i>
-                </button>
-            </div>
+            <h2>Các bạn hãy đánh giá sản phẩm nha!</h2>
             @if($reviews->isEmpty())
-            <div class="text-center">
-                <h5>Chưa có bình luận nào cho sản phẩm này.</h5>
-                <p>Hãy là người bình luận đầu tiên</p>
-            </div>
+                <div class="text-center">
+                    <h5>Chưa có bình luận nào cho sản phẩm này.</h5>
+                    <p>Hãy là người bình luận đầu tiên</p>
+                </div>
             @else
-            <div id="reviewsContainer" class="reviewsContainer">
-                @foreach ($reviews as $review)
-                <div class="review">
-                    <span class="review-date">
-                        {{ optional($review->created_at)->format('d-m-Y') ?? 'N/A' }}
-                    </span>
-                    <span class="review-time">
-                        {{ optional($review->created_at)->format('H:i') ?? 'N/A' }}
-                    </span>
-                    <div class="rating text-right">
-                        @if ($review->rating == 1)
-                        ★
-                        @elseif ($review->rating == 2)
-                        ★★
-                        @elseif ($review->rating == 3)
-                        ★★★
-                        @elseif ($review->rating == 4)
-                        ★★★★
-                        @elseif ($review->rating == 5)
-                        ★★★★★
-                        @endif
-                    </div>
-                    <p class="review-text">{{ $review->comment }}</p>
-                </div>
-                <!-- Tin nhắn trả lời của admin -->
-                @if($review->replies->isNotEmpty())
-                @foreach($review->replies as $reply)
-                <div class="admin-response">
+                <div id="reviewsContainer" class="reviewsContainer">
+                    @foreach ($reviews as $review)
+                        <div class="review">
+                            <span class="review-date">
+                                {{ optional($review->created_at)->format('d-m-Y') ?? 'N/A' }}
+                            </span>
+                            <span class="review-time">
+                                {{ optional($review->created_at)->format('H:i') ?? 'N/A' }}
+                            </span>
+                            <div class="rating text-right">
+                                @if ($review->rating == 1)
+                                    ★
+                                @elseif ($review->rating == 2)
+                                    ★★
+                                @elseif ($review->rating == 3)
+                                    ★★★
+                                @elseif ($review->rating == 4)
+                                    ★★★★
+                                @elseif ($review->rating == 5)
+                                    ★★★★★
+                                @endif
+                            </div>
+                            <p class="review-text">{{ $review->comment }}</p>
+                        </div>
+                        <!-- Tin nhắn trả lời của admin -->
+                        @if($review->replies->isNotEmpty())
+                            @foreach($review->replies as $reply)
+                                <div class="admin-response">
 
-                    <div class="admin-info mr-2">
-                        <p>Quản trị viên: </p>
-                    </div>
-                    <p>
-                        {{ $reply->content }}
-                    </p>
+                                    <div class="admin-info mr-2">
+                                        <p>Quản trị viên: </p>
+                                    </div>
+                                    <p>
+                                        {{ $reply->content }}
+                                    </p>
+                                </div>
+                            @endforeach
+                        @endif
+                    @endforeach
                 </div>
-                @endforeach
-                @endif
-                @endforeach
-            </div>
             @endif
             <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -260,7 +259,7 @@
                         <label for="star1">★</label>
 
                         <input type="radio" id="star2" name="rating" value="2" onclick="selectStar(2)">
-                        <label for="star2">★★</label>
+<label for="star2">★★</label>
 
                         <input type="radio" id="star3" name="rating" value="3" onclick="selectStar(3)">
                         <label for="star3">★★★</label>
@@ -280,7 +279,107 @@
                         </button>
                     </div>
                 </div>
+                <label class="upload-button">
+                    <i class="fa-solid fa-plus"></i>
+                    <!-- Dấu cộng -->
+                    <input type="file" name="image" width="100px" height="100px" />
+                </label>
+                <button class="btn" type="submit">
+                    Submit Review
+                </button>
             </form>
+        </div>
+        @endif
+        <div class="container-review">
+            <h2>ĐÁNH GIÁ SẢN PHẨM</h2>
+            <div class="details">
+                <div class="rating-info">
+                    <h2>4.9</h2>
+                    <div class="stars">★★★★★</div>
+                </div>
+                <a href="{{route('user.product.detail', ['id' => $product->product_id])}}">
+                    <div class="total-reviews">
+                        <p> Tất cả đánh Giá</p>
+                    </div>
+                </a>
+                <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 5])}}">
+                    <div>
+                        <p>5 Sao (8)</p>
+                    </div>
+                </a>
+                <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 4])}}">
+                    <div>
+                        <p>4 Sao (2)</p>
+                    </div>
+                </a>
+                <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 3])}}">
+                    <div>
+                        <p>3 Sao (0)</p>
+                    </div>
+                </a>
+                <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 2])}}">
+                    <div>
+                        <p>2 Sao (0)</p>
+                    </div>
+                </a>
+                <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 1])}}">
+                    <div>
+<p>1 Sao (0)</p>
+                    </div>
+                </a>
+            </div>
+            <div id="reviewsContainer">
+                @foreach ($reviewAll as $value)
+                    <div class="review1">
+                        <div class="review-header">
+                            <div class="user-info">
+                                <img src="https://via.placeholder.com/40" alt="User Avatar" />
+                                <h3>{{$value->user->name}}</h3>
+                            </div>
+                        </div>
+                        <span class="review-date">{{ optional($value->created_at)->format('d-m-Y H:i') ?? 'N/A' }}</span>
+                        <div class="rating">
+                            @if ($value->rating == 1)
+                                ★
+                            @elseif ($value->rating == 2)
+                                ★★
+                            @elseif ($value->rating == 3)
+                                ★★★
+                            @elseif ($value->rating == 4)
+                                ★★★★
+                            @elseif ($value->rating == 5)
+                                ★★★★★
+                            @endif
+                        </div>
+                        <p class="review-text"> {{ $value->comment }}</p>
+                        <div class="review-images">
+                            <div class="image-container">
+                                <img src="{{Storage::url($value->image)}}" alt="Review Image" />
+                                <div class="action-buttons">
+                                    <form action="{{ route('user.product.like', $value->review_id) }}" method="POST"
+                                        style="display:inline;">
+                                        @csrf
+                                        <button type="submit" class="custom-btn-active-admin status-btn-active">
+                                            <i class="fas fa-thumbs-up ">{{$value->likes->count()}}</i>
+                                        </button>
+                                    </form>
+                                    <form action="{{ route('user.product.report', $value->review_id) }}" method="POST"
+                                        style="display:inline;">
+                                        @csrf
+                                        <button type="submit" class="custom-btn-active-admin status-btn-active">
+                                            <i class="fas fa-flag">{{$value->reports->count()}}</i>
+                                        </button>
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+
         </div>
     </div>
 

@@ -1,89 +1,59 @@
 @extends('admin.index')
 
+@push('styles')
+<link rel="stylesheet" href="{{asset('css/cssSearch.css')}}">
+@endpush
 @section('content')
 
 <div class="container mt-4">
     <!-- Tiêu đề -->
-    <div class="button-header">
-        <button>Danh Sách Thương Hiệu <i class="fa fa-star"></i></button>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
     </div>
+@endif
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    <div class="button-header">
+        <button>Danh sách thương hiệu <i class="fa fa-star"></i></button>
+    </div>
+    <div class="container mt-5 ">
+    <form action="" method="get" class="d-flex justify-content-center">
+        <div class="input-group w-50">
+            <!-- Nút tìm kiếm -->
+            <button class="btn btn-primary" type="submit" name="btn">
+                <i class="bi bi-search"></i> <!-- Icon tìm kiếm -->
+            </button>
+            <!-- Ô input tìm kiếm -->
+            <input
+                type="text"
+                class="form-control"
+                name="nhap"
+                placeholder="Tìm kiếm sản phẩm..."
+                aria-label="Search"
+            >
+        </div>
+    </form>
+</div>
+
 
     @if(Auth::user()->role !== 3)
     <a href="{{route('admin.brands.create')}}" class="btn add-button">Thêm mới</a>
-    @else
     @endif
-    <div class="modal fade" id="productCreateModal" tabindex="-1" aria-labelledby="productCreateModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="button-header">
-                        <button>
-                            Thêm mới Kích Thước <i class="fa fa-star"></i>
-                        </button>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">✖</button>
-                </div>
-                <div class="modal-body">
-                    <!-- AJAX nội dung sẽ được load tại đây -->
-                    <div id="modalContent">
-                        <p>Đang tải...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="productDetailModal" tabindex="-1" aria-labelledby="productDetailModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="button-header">
-                        <button>
-                            Chi tiết THương hiệu<i class="fa fa-star"></i>
-                        </button>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">✖</button>
-                </div>
-                <div class="modal-body p-5">
-                    <!-- Nội dung chi tiết sản phẩm sẽ được load tại đây -->
-                    <div id="detailContent">
-                        <p>Đang tải...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Edit -->
-    <div class="modal fade" id="productEditModal" tabindex="-1" aria-labelledby="productEditModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="button-header">
-                        <button>
-                            Chỉnh Sửa THương hiệu<i class="fa fa-star"></i>
-                        </button>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">✖</button>
-                </div>
-                <div class="modal-body">
-                    <!-- Nội dung chỉnh sửa sản phẩm sẽ được load tại đây -->
-                    <div id="editContent">
-                        <p>Đang tải...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <table class="product-table table table-bordered text-center align-middle mb-5">
         <thead class="thead-dark">
             <tr>
                 <th>STT</th>
                 <th>Tên Thương Hiệu</th>
                 <th>Mô Tả</th>
-                <!-- <th>Trạng thái</th> -->
+                <th>Trạng thái</th>
                 <th>Hành Động</th>
             </tr>
         </thead>
@@ -93,24 +63,24 @@
                 <td>{{ $brand->brand_id }}</td>
                 <td>{{ $brand->name }}</td>
                 <td>{{ $brand->description }}</td>
-                <!-- <td>
+                <td>
                     <form action="{{ route('admin.brands.toggle', $brand->brand_id) }}" method="POST"
                         style="display:inline;">
                         @csrf
                         <button type="submit"
-                            class="custom-btn-active-admin {{ $brand->is_active ? 'btn-danger' : 'btn-success' }} status-btn-active">
-                            <p>{{ $brand->is_active ? 'Tắt hoạt động' : 'Kích hoạt' }}</p>
+                            class="custom-btn-active-admin {{ $brand->is_active ? 'btn-success' : 'btn-danger' }} status-btn-active">
+                            <p>{{ $brand->is_active ? 'Đang hoạt động' : 'Đã tắt hoạt động' }}</p>
                         </button>
                     </form>
-                </td> -->
+                </td>
                 <td>
                     <div class="icon-product d-flex justify-content-center gap-2">
-                        <!-- <a href="" data-id="{{ $brand->brand_id }}" class="text-info">
+                        <a href="{{ route('admin.brands.detail', $brand->brand_id) }}" class="text-info">
                             <button class="action-btn eye" title="Xem chi tiết">
                                 <i class="fas fa-eye"></i>
                             </button>
-                        </a> -->
-                        <a href="" data-id=" {{ $brand->brand_id }}" class="text-warning">
+                        </a>
+                        <a href="{{ route('admin.brands.edit', $brand->brand_id) }}" class="text-warning">
                             <button class="action-btn edit" title="Chỉnh sửa">
                                 <i class="fas fa-edit"></i>
                             </button>
@@ -141,94 +111,7 @@
         </ul>
     </nav>
 </div>
-<script>
-$(document).ready(function() {
-    $('.btn-close').on('click', function() {
-        $('#productCreateModal').modal('hide');
-    });
 
-    $('.add-button').on('click', function(e) {
-        e.preventDefault();
-        $('#modalContent').html('<p>Đang tải...</p>');
-        $('#productCreateModal').modal('show');
-
-        $.ajax({
-            url: "{{route('admin.brands.create')}}",
-            type: 'GET',
-            success: function(response) {
-                $('#modalContent').html(response);
-            },
-            error: function() {
-                $('#modalContent').html('<p>Lỗi! Không thể tải nội dung.</p>');
-            }
-        });
-    });
-});
-
-$(document).ready(function() {
-    // Đóng modal thêm mới
-    $('#productCreateModal .btn-close').on('click', function() {
-        $('#productCreateModal').modal('hide');
-    });
-
-    // Đóng modal chi tiết
-    $('#productDetailModal .btn-close').on('click', function() {
-        $('#productDetailModal').modal('hide');
-    });
-
-    // Đóng modal sửa
-    $('#productEditModal .btn-close').on('click', function() {
-        $('#productEditModal').modal('hide');
-    });
-});
-
-$(document).ready(function() {
-
-    $('.eye').on('click', function(e) {
-        e.preventDefault();
-        let productId = $(this).closest('a').data('id');
-
-        // Hiển thị modal và tải nội dung chi tiết
-        $('#detailContent').html('<p>Đang tải...</p>');
-        $('#productDetailModal').modal('show');
-
-        $.ajax({
-            url: `/admin/brands/detail-brand/${productId}`,
-            type: 'GET',
-            success: function(response) {
-                $('#detailContent').html(response);
-            },
-            error: function() {
-                $('#detailContent').html('<p>Lỗi! Không thể tải nội dung.</p>');
-            }
-        });
-    });
-
-    $('.edit').on('click', function(e) {
-        e.preventDefault();
-        let productId = $(this).closest('a').data('id');
-        $('#editContent').html('<p>Đang tải...</p>');
-        $('#productEditModal').modal('show');
-
-        $.ajax({
-            url: `/admin/brands/edit-brand/${productId}`,
-            type: 'GET',
-            success: function(response) {
-                $('#editContent').html(response);
-            },
-            error: function() {
-                $('#editContent').html('<p>Lỗi! Không thể tải nội dung.</p>');
-            }
-        });
-    });
-});
-
-function confirmDelete() {
-    alert("Xóa danh mục thành công!");
-    $('#deleteModal').modal('hide');
-}
-</script>
-</script>
 
 <!-- Scripts -->
 @push('scripts')

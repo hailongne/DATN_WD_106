@@ -11,9 +11,9 @@
     <p>Code: {{ $coupon->code }}</p>
     @if($coupon->discount_amount)
 
-        <p>{{ number_format($coupon->discount_amount, 0, ',', '.') }}</p>
+        <p>Gía trị giảm giá:{{ number_format($coupon->discount_amount, 0, ',', '.') }} VNĐ</p>
     @else
-        <p>{{$coupon->discount_percentage	}}%</p>
+        <p>Gía trị giảm giá:{{$coupon->discount_percentage	}} % </p>
     @endif
     <p>Start Date: {{ $coupon->start_date }}</p>
     <p>End Date: {{ $coupon->end_date }}</p>

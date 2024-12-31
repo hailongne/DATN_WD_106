@@ -1,5 +1,21 @@
-<link rel="stylesheet" href="{{asset('css/admin/formAddProduct.css')}}">
+@extends('admin.index')
+@section('content')
+@push('styles')
+<style>
+    /* CSS */
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px; /* Khoảng cách giữa các form */
+    margin-top: 30px; /* Khoảng cách trên */
+}
 
+</style>
+<link rel="stylesheet" href="{{asset('css/admin/formAddProduct.css')}}">
+@endpush
+<link rel="stylesheet" href="{{asset('css/admin/formAddProduct.css')}}">
+<div class="container mt-5">
 <form id="productForm" method="POST" action="{{route('admin.products.update', $product->product_id)}}"
     class="custom-form-container" enctype="multipart/form-data">
     @csrf
@@ -113,27 +129,6 @@
             </div>
         </div>
     </div>
-
-    <div class="row gx-2 mb-3">
-        <div class="col-12 mb-3">
-            <label class="custom-label" for="discount">Mã giảm giá</label>
-            <input type="number" class="form-control" id="productDiscount" name="discount" placeholder="Nhập giảm giá"
-                min="0" value="{{$product->discount}}" />
-        </div>
-    </div>
-    <!-- Fourth Row -->
-    <div class="row gx-2 mb-3">
-
-        <div class="col-md-6">
-            <label class="custom-label" for="startDate">Ngày bắt đầu</label>
-            <input type="date" class="form-control" id="startDate" name="start_date" value="{{$product->start_date}}" />
-        </div>
-        <div class="col-md-6">
-            <label class="custom-label" for="endDate">Ngày kết thúc</label>
-            <input type="date" class="form-control" id="endDate" name="end_date" value="{{$product->start_date}}" />
-        </div>
-    </div>
-
     <!-- Select filter -->
     <div class="row gx-2 mb-3">
         <div class="col-md-12">
@@ -166,10 +161,10 @@
     </div>
 
     <div class="button-group">
-        <button type="submit" class="btn btn-primary">Lưu</button>
+        <button type="submit" class="btn btn-primary">Tiếp tục</button>
     </div>
 </form>
-
+</div>
 <script>
 function showImage(event) {
     const file = event.target.files[0];
@@ -219,3 +214,12 @@ function toggleAll(type) {
 
 }
 </script>
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    @endpush
+@endsection

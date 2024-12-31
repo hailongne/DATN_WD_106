@@ -274,6 +274,10 @@ Route::group(
                 Route::get('/size', [SizeController::class, 'index'])->name('size.index');
                 Route::get('/brand', [BrandController::class, 'index'])->name('brand.index');
                 Route::post('/comments', [ProductsController::class, 'addReview'])->name('addReview');
+                Route::post('/like/{id}/toggle', [ProductsController::class, 'like'])->name('like');
+                Route::post('/report/{id}/toggle', [ProductsController::class, 'report'])->name('report');
+                Route::post('/love/{id}/toggle', [ProductsController::class, 'love'])->name('love');
+                Route::get('/list-lovePro', [ProductsController::class, 'listLove'])->name('listLove');
             }
         );
         // Quản lý đơn hàng
@@ -331,11 +335,11 @@ Route::group(
             [
                 'prefix' => 'profiles',
                 'as' => 'profiles.',
-                
+
             ],
             function () {
-                Route::get('/profiles', [ProfileController::class, 'showUserInfo'])->name('showUserInfo'); 
-                Route::get('/profiles/{id}/edit', [ProfileController::class, 'edit'])->name('edit-profile'); 
+                Route::get('/profiles', [ProfileController::class, 'showUserInfo'])->name('showUserInfo');
+                Route::get('/profiles/{id}/edit', [ProfileController::class, 'edit'])->name('edit-profile');
                 Route::post('/profiles/{id}/update', [ProfileController::class, 'updateUser'])->name('update-profile');
             }
         );

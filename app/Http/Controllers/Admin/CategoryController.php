@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Components\CategoryRecusive;
+use App\Models\Product;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
@@ -12,7 +13,7 @@ class CategoryController extends Controller
 {
 
     //
-   
+
 
     public function listCategory(Request $request)
     {
@@ -27,14 +28,14 @@ class CategoryController extends Controller
     public function toggle($id)
     {
         $category = Category::findOrFail($id);
-    
+
         // Thay đổi trạng thái is_active
         $category->is_active = !$category->is_active;
         $category->save();
-    
+
         return redirect()->back()->with('success', 'Trạng thái thương hiệu đã được thay đổi!');
     }
-    
+
     public function createCategory()
     {
         // Gọi phương thức getCategory với tham số parentId
@@ -44,23 +45,23 @@ class CategoryController extends Controller
     }
 
 
-    public function addCategory(Request $request)
+    public function addCategory(CategoryRequest $request)
     {
         $anh=null;
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-            
+
             // Tạo tên mới cho ảnh để tránh trùng lặp
             $newImage = time() . "." . $image->getClientOriginalExtension();
-            
+
             // Lưu ảnh vào thư mục 'imagePro' trong thư mục 'public'
             $anh = $image->storeAs('/storage/imagePro/images', $newImage, 'public');
         }else {
             // Nếu không có ảnh, sử dụng ảnh mặc định
             $anh = 'default.jpg';
         }
-    
+
         $category = Category::create([
             'name' => $request->input('name'),
             'description' => $request->input('description'),
@@ -68,10 +69,10 @@ class CategoryController extends Controller
             'parent_id' => $request->input('parent_id'),
             'slug' => str::slug($request->input('name')),
         ]);
-    
+
         return redirect()->route('admin.categories.index')->with([
             'category' => $category,
-            'message' => 'Category add successfully!',
+            'success' => 'Category add successfully!',
         ], 201);
     }
     public function detailCategory($id)
@@ -83,20 +84,18 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
         $categories = Category::callTreeCategory(0,'',$id);  // Lấy danh mục con dưới dạng mảng
-        // dd($category);
-        // dd($categories);
 
         return view('admin.pages.category.edit', compact('category', 'categories'));
     }
-    public function updateCategory(Request $request, $id)
+    public function updateCategory(CategoryRequest $request, $id)
     {
 
         $category = Category::findOrFail($id);
         $anh = $category->image;
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($category->image);
-            $image = $request->files('image');
-            $newImage = time() . "." . $image->getClientOrigenalExtension();
+            $image = $request->file('image');
+            $newImage = time() . "." . $image->getClientOriginalExtension();
             $anh = $image->storeAs('images', $newImage, 'public');
         }
         $category->name = $request->input('name');
@@ -107,15 +106,23 @@ class CategoryController extends Controller
         $category->image = $anh;
         $category->parent_id = $request->input('parent_id');
         $category->save();
-        return redirect()->route('admin.categories.index')->with('message' ,'Category updated successfully!',);
-        
+        return redirect()->route('admin.categories.index')->with('success' ,'Category updated successfully!',);
+
 
     }
     public function destroyCategory($id)
     {
         $category = Category::findOrFail($id);
+
+
+        // Kiểm tra nếu có sản phẩm thuộc danh mục
+        $productCount = Product::where('product_category_id', $id)->count();
+
+        if ($productCount > 0) {
+            return redirect()->back()->with('success', 'Không thể xóa danh mục này vì còn sản phẩm liên quan.');
+        }
         $category->delete();
-        return redirect()->back()->with('message' ,'Category delEtedq successfully!',);
+        return redirect()->back()->with('success' ,'Category delEtedq successfully!',);
     }
 
 }

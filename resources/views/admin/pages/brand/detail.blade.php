@@ -4,7 +4,7 @@
 @endpush
 
 @section('content')
-<div class="container">
+<div class="container mt-5 ">
     <h1 class="text-center">Chi Tiết Thương Hiệu</h1>
     <div class="two">
         <div class="brand-info">
@@ -33,6 +33,7 @@
     <div class="text-center">
         <a href="{{ route('admin.brands.index') }}" class="btn btn-success">Quay lại danh sách thương hiệu</a>
     </div>
+</div>
 </div>
 
 @push('scripts')

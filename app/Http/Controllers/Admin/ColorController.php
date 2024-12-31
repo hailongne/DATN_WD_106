@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\ColorRequest;
 use App\Models\Color;
+use App\Models\AttributeProduct;
 class ColorController extends Controller
 {
     //
-   
-  
+
+
     public function listColor(Request $request)
     {
         $colors = Color::where('name','like','%'. $request->nhap.'%')
@@ -19,11 +21,11 @@ class ColorController extends Controller
     }
     public function createColor(Request $request)
     {
-        
+
         return view('admin.pages.color.create');
     }
-    
-    public function addColor(Request $request)
+
+    public function addColor(ColorRequest $request)
     {
 
         $validated = $request->validate([
@@ -45,7 +47,7 @@ public function editColor($id)
     $color = Color::findOrFail($id);
     return view('admin.pages.color.edit',compact('color'));
 }
-public function updateColor(Request $request,$id)
+public function updateColor(ColorRequest $request,$id)
 {
     $color = Color::findOrFail($id);
     $validated = $request->validate([
@@ -59,6 +61,11 @@ public function updateColor(Request $request,$id)
 }
 public function destroyColor($id){
     $color=Color::findOrFail($id);
+    $productCount = AttributeProduct::where('color_id', $id)->count();
+
+        if ($productCount > 0) {
+            return redirect()->back()->with('success', 'Không thể xóa màu sắc này vì còn sản phẩm liên quan.');
+        }
     $color->delete();
     return redirect()->route('admin.colors.index')->with(['message' => 'color deleted successfully!',],200);
 }
