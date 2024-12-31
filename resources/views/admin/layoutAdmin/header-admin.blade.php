@@ -1,7 +1,7 @@
 <div class="sidebar">
     <!-- Logo -->
     <div class="logo">
-        <a href="http://localhost:8000/admin/dashBoard">
+        <a href="{{ route('admin.dashboard') }}">
             <img src="{{ asset('imagePro/image/logo/logo-admin.png') }}" alt="Gentle Manor" style="width: 100%;">
         </a>
     </div>
