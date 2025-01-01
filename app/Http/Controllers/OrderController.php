@@ -20,7 +20,10 @@ class OrderController extends Controller
     
         // Lấy danh sách đơn hàng của người dùng
         $orders = Order::where('user_id', auth()->id())
-            ->with(['orderItems.product', 'statusHistories']) // Eager load thêm lịch sử trạng thái và người cập nhật
+            ->with(['orderItems.product'=> function($query){
+                $query->withTrashed();
+            }
+            , 'statusHistories']) // Eager load thêm lịch sử trạng thái và người cập nhật
             ->orderBy('order_id', 'desc') // Sắp xếp theo ngày đặt hàng mới nhất
             ->paginate(10);
     
@@ -75,7 +78,11 @@ class OrderController extends Controller
     public function show($orderId)
     {
         // Lấy thông tin đơn hàng của người dùng đang đăng nhập
-        $order = Order::with(['orderItems.color', 'orderItems.size'])->find($orderId);
+        $order = Order::with([
+            'orderItems.product'=> function($query){
+                $query->withTrashed();
+            },
+            'orderItems.color', 'orderItems.size'])->find($orderId);
         session()->flash('alert', 'Bạn đang vào trang chi tiết đơn hàng');
         return view('user.orders.detail', compact('order'));
     }

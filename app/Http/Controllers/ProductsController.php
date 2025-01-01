@@ -130,7 +130,6 @@ class ProductsController extends Controller
 
         return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased'));
 
-
     }
     public function addReview(Request $request)
     {
