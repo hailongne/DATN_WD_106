@@ -31,6 +31,7 @@
             </thead>
 
             <tbody>
+
                 @foreach ($orders as $order)
                 <tr>
                     <td>{{ $order->order_id }}</td>
@@ -38,12 +39,12 @@
                         <select class="form-control status-select" data-order-id="{{ $order->order_id }}"
                             data-initial-status="{{ $order->status }}"
                             data-received-delivery="{{ $order->received}}">
-                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Processing</option>
-                            <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Shipped</option>
-                            <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Delivered</option>
-                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Completed</option>
-                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Đang chờ xử lý</option>
+                            <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Đã xác nhận</option>
+                            <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Đang vận chuyển</option>
+                            <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Đã giao hàng</option>
+                            <option value="completed" {{ $order->status == 'completed' ? 'selected' : '' }}>Hoàn thành</option>
+                            <option value="cancelled" {{ $order->status == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
                         </select>
                     </td>
                     <td>{{ $order->user->name ?? 'N/A' }}</td>
