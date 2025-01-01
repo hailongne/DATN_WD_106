@@ -42,7 +42,7 @@ class ProductController extends Controller
             ->latest()->paginate(5);
         return view('admin.pages.product.list')
             ->with(['products' => $products]);
-      
+
     }
     public function toggle($id)
     {
@@ -69,22 +69,22 @@ class ProductController extends Controller
     public function addProduct(ProductRequest $request)
     {
         //vcalidate
-$request->validate([
-    'color_id' => 'required|array', // color_id là mảng
-    'color_id.*' => 'integer|exists:colors,color_id', // Kiểm tra từng phần tử trong mảng
-    'size_id' => 'required|array', // size_id là mảng
-    'size_id.*' => 'integer|exists:sizes,size_id', // Kiểm tra từng phần tử trong mảng
-], [
-    'color_id.required' => 'Vui lòng chọn màu.',
-    'color_id.array' => 'ID màu sắc phải là một mảng.',
-    'color_id.*.integer' => 'Mỗi ID màu sắc phải là một số nguyên.',
-    'color_id.*.exists' => 'Màu sắc không tồn tại.',
-    
-    'size_id.required' => 'Vui lòng chọn ít nhất một kích thước.',
-    'size_id.array' => 'ID kích thước phải là một mảng.',
-    'size_id.*.integer' => 'Mỗi ID kích thước phải là một số nguyên.',
-    'size_id.*.exists' => 'Kích thước không tồn tại.',
-]);
+        $request->validate([
+            'color_id' => 'required|array', // color_id là mảng
+            'color_id.*' => 'integer|exists:colors,color_id', // Kiểm tra từng phần tử trong mảng
+            'size_id' => 'required|array', // size_id là mảng
+            'size_id.*' => 'integer|exists:sizes,size_id', // Kiểm tra từng phần tử trong mảng
+        ], [
+            'color_id.required' => 'Vui lòng chọn màu.',
+            'color_id.array' => 'ID màu sắc phải là một mảng.',
+            'color_id.*.integer' => 'Mỗi ID màu sắc phải là một số nguyên.',
+            'color_id.*.exists' => 'Màu sắc không tồn tại.',
+
+            'size_id.required' => 'Vui lòng chọn ít nhất một kích thước.',
+            'size_id.array' => 'ID kích thước phải là một mảng.',
+            'size_id.*.integer' => 'Mỗi ID kích thước phải là một số nguyên.',
+            'size_id.*.exists' => 'Kích thước không tồn tại.',
+        ]);
         $image = null;
         if ($request->hasFile('main_image_url')) {
             $anh = $request->file('main_image_url');
@@ -130,7 +130,7 @@ $request->validate([
 
         // Insert the attribute product data (color-size combinations)
         AttributeProduct::insert($productColorSizeData);
-       
+
         return redirect()->route('admin.products.getDataAtrPro', ['id' => $product->product_id])->with('success', 'Thêm sản phẩm mới thành công!');
     }
 
@@ -148,7 +148,7 @@ $request->validate([
         $groupedByColor = $productsAttPro->groupBy(function ($item) {
             return $item->color->name . "-" . $item->color->color_id;  // Group by both color name and color_id
         });
-      
+
         return view('admin.pages.product.editAtrPro')
             ->with(['groupedByColor' => $groupedByColor, 'product_id' => $id]);
     }
@@ -157,15 +157,15 @@ $request->validate([
 
     public function updateAllAttributeProducts(Request $request)
     {
-  
+
 
         $attributeProducts = json_decode($request->input('attributeProducts', '[]'), true);
         $colorIds = $request->input('color_id', []);
         $product_id = $request->input('product_id', 0);
         $images = [];
         //validate
-      
-        
+
+
         // Xử lý từng color_id và ảnh tương ứng
         foreach ($colorIds as $colorId) {
             // Lấy ảnh của color_id này
