@@ -14,8 +14,12 @@
 <div class="cart-container">
     <div class="cart-items-section">
         <div class="cart-header">
+            <label class="select-all-label">
+                <input type="checkbox" id="select-all-checkbox"> Chọn tất cả
+            </label>
             <hr class="divider-line">
             <span class="cart-title">{{ count($cartItems) }} sản phẩm</span>
+            
         </div>
         <div class="cart-items-container">
             @foreach($cartItems as $item)
@@ -88,13 +92,13 @@
                     </div>
                 </div>
                 <div class="remove-btn">
-                    <form action="{{ route('user.cart.remove', $item->id) }}" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-remove" onclick="confirm('Bạn có muốn xóa sản phẩm này hay không ?')">
-                            <span class="icon-x">✖</span>
-                        </button>
-                    </form>
+                <form id="remove-item-form-{{ $item->id }}" action="{{ route('user.cart.remove', $item->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn btn-remove" onclick="confirmRemove({{ $item->id }})">
+                        <span class="icon-x">✖</span>
+                    </button>
+                </form>
                 </div>
             </div>
             @endforeach
@@ -139,21 +143,40 @@
     function closePopup(itemId) {
         document.getElementById('popupOverlay' + itemId).style.display = 'none';
     }
+    document.addEventListener('DOMContentLoaded', function () {
+    const selectAllCheckbox = document.getElementById('select-all-checkbox');
+    
+    selectAllCheckbox.addEventListener('change', function () {
+        // Lấy tất cả các checkbox sản phẩm
+        const productCheckboxes = document.querySelectorAll('.product-checkbox-item');
+
+        // Cập nhật trạng thái của tất cả checkbox theo trạng thái của "Chọn tất cả"
+        productCheckboxes.forEach(function (checkbox) {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+    });
+
     document.querySelector('.payment-form').addEventListener('submit', function (e) {
-    e.preventDefault(); // Ngừng form submit mặc định
+        e.preventDefault(); // Ngừng form submit mặc định
 
-    // Lấy tất cả các checkbox đã được chọn
-    let selectedProducts = [];
-    document.querySelectorAll('.product-checkbox-item:checked').forEach(function (checkbox) {
-        selectedProducts.push(checkbox.value);
+        // Lấy tất cả các checkbox đã được chọn
+        let selectedProducts = [];
+        document.querySelectorAll('.product-checkbox-item:checked').forEach(function (checkbox) {
+            selectedProducts.push(checkbox.value);
+        });
+        // Kiểm tra nếu không có sản phẩm nào được chọn
+        if (selectedProducts.length === 0) {
+            alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán.');
+            return; // Dừng việc gửi form
+        }
+        // Cập nhật giá trị vào input hidden
+        document.getElementById('selected_products').value = selectedProducts.join(',');
+
+        // Gửi form sau khi cập nhật giá trị
+        this.submit();
     });
+});
 
-    // Cập nhật giá trị vào input hidden
-    document.getElementById('selected_products').value = selectedProducts.join(',');
-
-    // Gửi form sau khi cập nhật giá trị
-    this.submit();
-    });
     function confirmSelection(itemId) {
         const colorId = selectedColor[itemId];
         const sizeId = selectedSize[itemId];
@@ -236,11 +259,12 @@
         quantityInput.value = newQuantity;
         updateQuantity(itemId, newQuantity);
     }
+    function confirmRemove(itemId) {
+        if (confirm('Bạn có muốn xóa sản phẩm này hay không ?')) {
+            // Nếu người dùng xác nhận, gửi form để xóa sản phẩm
+            document.getElementById('remove-item-form-' + itemId).submit();
+        }
+    }
 </script>
-
-
-
-
-
 
 @endsection
