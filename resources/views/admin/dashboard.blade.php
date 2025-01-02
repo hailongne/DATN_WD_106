@@ -11,41 +11,23 @@
         </button>
     </div>
 
-    <!-- Row chứa form lọc song song -->
     <div class="row g-2 mb-4">
-        <!-- Form lọc doanh thu -->
-        <div class="col-md-6">
+        <div class="col-md-12">
             <form method="GET" action="{{ route('admin.dashboard') }}">
                 <div class="row align-items-end">
-                    <div class="col-md-6">
-                        <label for="start_date_revenue" class="form-label">Từ ngày (Doanh thu):</label>
-                        <input type="date" id="start_date_revenue" name="start_date_revenue" class="form-control" value="{{ request('start_date_revenue', $startDateRevenue) }}">
+                    <!-- Lọc theo ngày cho Doanh thu -->
+                    <div class="col-md-4">
+                        <label for="start_date" class="form-label">Từ ngày:</label>
+                        <input type="date" id="start_date" name="start_date" class="form-control" 
+                            value="{{ request('start_date', $startDate) }}">
                     </div>
-                    <div class="col-md-6">
-                        <label for="end_date_revenue" class="form-label">Đến ngày (Doanh thu):</label>
-                        <input type="date" id="end_date_revenue" name="end_date_revenue" class="form-control" value="{{ request('end_date_revenue', $endDateRevenue) }}">
+                    <div class="col-md-4">
+                        <label for="end_date" class="form-label">Đến ngày:</label>
+                        <input type="date" id="end_date" name="end_date" class="form-control" 
+                            value="{{ request('end_date', $endDate) }}">
                     </div>
-                    <div class="col-md-12 mt-3">
-                        <button type="submit" class="custom-btn-filte-dashboard w-100">Lọc (Doanh thu)</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <!-- Form lọc đơn hàng -->
-        <div class="col-md-6">
-            <form method="GET" action="{{ route('admin.dashboard') }}">
-                <div class="row align-items-end">
-                    <div class="col-md-6">
-                        <label for="start_date_orders" class="form-label">Từ ngày (Đơn hàng):</label>
-                        <input type="date" id="start_date_orders" name="start_date_orders" class="form-control" value="{{ request('start_date_orders', $startDateOrders) }}">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="end_date_orders" class="form-label">Đến ngày (Đơn hàng):</label>
-                        <input type="date" id="end_date_orders" name="end_date_orders" class="form-control" value="{{ request('end_date_orders', $endDateOrders) }}">
-                    </div>
-                    <div class="col-md-12 mt-3">
-                        <button type="submit" class="custom-btn-filte-dashboard w-100">Lọc (Đơn hàng)</button>
+                    <div class="col-md-4 mt-3 mt-md-0">
+                        <button type="submit" class="custom-btn-filte-dashboard w-100">Lọc</button>
                     </div>
                 </div>
             </form>
