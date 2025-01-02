@@ -7,20 +7,19 @@
 
 <body>
 
-    <div class="container mt-4">
-    @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+  
 
-@if (session('error'))
+    <div class="container mt-5">
+    @if (session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
     </div>
 @endif
-
-    <div class="container">
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
         <h1 class="text-center">Danh sách phiếu giảm giá</h1>
         <a href="{{route('admin.coupons.create')}}"><button class="btn add-button">Thêm mới</button></a>

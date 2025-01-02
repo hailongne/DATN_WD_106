@@ -90,7 +90,7 @@ public function createBrand()
         $product = Brand::findOrFail($id);
         $count = Product::where('brand_id', $id)->count();
         if($count > 0){
-            return redirect()->back()->with('success' ,'Brand không thể xóa vì có sản phẩm liên quan!');
+            return redirect()->back()->with('error' ,'Brand không thể xóa vì có sản phẩm liên quan!');
         }
         $product->delete();
         return redirect()->back()->with('success' ,'Xóa thương hiệu thành công!',);

@@ -33,7 +33,7 @@ class CategoryController extends Controller
         $category->is_active = !$category->is_active;
         $category->save();
 
-        return redirect()->back()->with('success', 'Trạng thái thương hiệu đã được thay đổi!');
+        return redirect()->back()->with('success', 'Trạng thái danh mục đã được thay đổi!');
     }
 
     public function createCategory()
@@ -72,7 +72,7 @@ class CategoryController extends Controller
 
         return redirect()->route('admin.categories.index')->with([
             'category' => $category,
-            'success' => 'Category add successfully!',
+            'success' => 'Thêm danh mục thành công!',
         ], 201);
     }
     public function detailCategory($id)
@@ -106,7 +106,8 @@ class CategoryController extends Controller
         $category->image = $anh;
         $category->parent_id = $request->input('parent_id');
         $category->save();
-        return redirect()->route('admin.categories.index')->with('success' ,'Category updated successfully!',);
+        return redirect()->route('admin.categories.index')
+        ->with('success' ,'Cập nhật danh mục thành công!',);
 
 
     }
@@ -119,10 +120,10 @@ class CategoryController extends Controller
         $productCount = Product::where('product_category_id', $id)->count();
 
         if ($productCount > 0) {
-            return redirect()->back()->with('success', 'Không thể xóa danh mục này vì còn sản phẩm liên quan.');
+            return redirect()->back()->with('error', 'Không thể xóa danh mục này vì còn sản phẩm liên quan.');
         }
         $category->delete();
-        return redirect()->back()->with('success' ,'Category delEtedq successfully!',);
+        return redirect()->back()->with('success' ,'Xóa danh mục thành công!',);
     }
 
 }

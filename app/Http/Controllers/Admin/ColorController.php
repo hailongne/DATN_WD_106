@@ -34,7 +34,8 @@ class ColorController extends Controller
         ]);
 
         $color = Color::create($validated);
-        return redirect()->route('admin.colors.index')->with(['color'=>$color,'message' => 'Color add successfully!',],201);
+        return redirect()->route('admin.colors.index')
+        ->with(['color'=>$color,'message' => 'Thêm mới màu sắc thành công!',],201);
 
 }
 public function detailColor($id)
@@ -56,7 +57,8 @@ public function updateColor(ColorRequest $request,$id)
     ]);
 
     $color->update($validated);
-    return redirect()->route('admin.colors.index')->with(['color'=>$color,'message' => 'Color add successfully!',],200);
+    return redirect()->route('admin.colors.index')
+    ->with(['color'=>$color,'message' => 'Cập nhật màu sắc thaành công!',],200);
 
 }
 public function destroyColor($id){
@@ -67,6 +69,7 @@ public function destroyColor($id){
             return redirect()->back()->with('success', 'Không thể xóa màu sắc này vì còn sản phẩm liên quan.');
         }
     $color->delete();
-    return redirect()->route('admin.colors.index')->with(['message' => 'color deleted successfully!',],200);
+    return redirect()->route('admin.colors.index')
+    ->with(['message' => 'Màu sắc đã xóa thành công!',],200);
 }
 }

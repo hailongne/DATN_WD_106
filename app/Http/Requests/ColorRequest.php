@@ -24,7 +24,8 @@ class ColorRequest extends FormRequest
         $ccolorId = $this->route('id');
         return [
             'name' => 'required|string|max:50|unique:colors,name,'.$ccolorId.',color_id' , // Kiểm tra duy nhất cho name trong bảng colors
-            'color_code' => 'required|string|size:7|regex:/^#[0-9A-Fa-f]{6}$/',  // Kiểm tra mã màu hex
+           'color_code' => 'required|string|size:7|regex:/^#[0-9A-Fa-f]{6}$/|unique:colors,color_code',
+
         ];
     }
     

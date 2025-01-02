@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 use App\Http\Requests\AttributeRequest;
 use App\Http\Requests\ProductRequest;
+use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -52,7 +53,7 @@ class ProductController extends Controller
         $product->is_active = !$product->is_active;
         $product->save();
 
-        return redirect()->back()->with('success', 'Trạng thái thương hiệu đã được thay đổi!');
+        return redirect()->back()->with('success', 'Trạng thái sản phẩm đã được thay đổi!');
     }
 
     public function getData()
@@ -223,7 +224,8 @@ class ProductController extends Controller
             DB::rollBack();
             Log::error('Lỗi khi cập nhật Attribute Products:', ['message' => $e->getMessage()]);
         }
-        return redirect()->route('admin.products.index')->with('success', 'Dữ liệu đã được cập nhật thành công.');
+        return redirect()->route('admin.products.index')
+        ->with('success', 'Dữ liệu đã được cập nhật thành công.');
 
 
     }
@@ -320,6 +322,10 @@ class ProductController extends Controller
     public function destroyProduct($id)
     {
         $product = Product::findOrFail($id);
+        $productCount = OrderItem::where('product_id', $id)->count();
+        if($productCount >0){
+            return redirect()->back()->with('success', 'Không thể xóa sản phẩm  này vì đang có trong đơn hàng.');
+        }
         $product->delete();
         return redirect()->back()->with('success', 'Xóa sản phẩm thành công!', );
     }

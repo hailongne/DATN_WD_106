@@ -31,7 +31,8 @@ class SizeController extends Controller
         ]);
 
         $size = Size::create($validated);
-        return redirect()->route('admin.sizes.index')->with(['size'=>$size,'success' => 'Color add successfully!',],201);
+        return redirect()->route('admin.sizes.index')
+        ->with(['size'=>$size,'success' => 'Thêm mới kích cỡ thành công!',],201);
 
     }
     public function detailSize($id)
@@ -53,7 +54,7 @@ class SizeController extends Controller
         $size = Size::findOrFail($id);
         $size->name = $validated['name'];
         $size->save();
-        return redirect()->route('admin.sizes.index')->with(['size'=>$size,'success' => 'Size add successfully!',],200);
+        return redirect()->route('admin.sizes.index')->with(['size'=>$size,'success' => 'Cập nhật kích cỡ thành công!',],200);
 
     }
     public function destroySize($id)
@@ -62,9 +63,9 @@ class SizeController extends Controller
         $productCount = AttributeProduct::where('size_id', $id)->count();
 
         if ($productCount > 0) {
-            return redirect()->back()->with('success', 'Không thể xóa kích cỡ này vì còn sản phẩm liên quan.');
+            return redirect()->back()->with('error', 'Không thể xóa kích cỡ này vì còn sản phẩm liên quan.');
         }
         $size->delete();
-        return redirect()->route('admin.sizes.index')->with(['success' => 'Size deleted successfully!',],200);
+        return redirect()->route('admin.sizes.index')->with(['success' => 'Kích cỡ xóa thành công!',],200);
     }
 }

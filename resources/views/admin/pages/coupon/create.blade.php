@@ -32,7 +32,7 @@
                 <div class="form-group" id="value1" style="display: none;">
                     <label for="discount">Gía trị</label>
                     <input type="number"
-                    value="{{ ($name == 'discount_amount') ? old('discount_amount') : old('discount_percentage') }}" 
+                
                      id="discount" placeholder="Nhập điều kiện áp dụng" />
                 </div>
                 @error('discount_amount')
@@ -151,7 +151,6 @@
             if (value.value == 1) {
                 document.getElementById('value1').style.display = "block";
                 discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
-                discount.setAttribute('value', 'discount_amount')
                 discount.setAttribute('name', 'discount_amount')
             }
             else {

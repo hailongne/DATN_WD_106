@@ -144,6 +144,7 @@
                     </thead>
                     <tbody>
                         @foreach ($users as $user)
+                        @if($user->user_id != Auth::user()->user_id || $user->role !=1)
                         <tr>
                             @if($userCoupon->contains('user_id', $user->user_id))
                             <td class="checkbox">
@@ -159,6 +160,7 @@
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->address }}</td>
                         </tr>
+                        @endif
                         @endforeach
 
                     </tbody>

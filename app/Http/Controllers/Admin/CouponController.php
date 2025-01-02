@@ -74,7 +74,7 @@ class CouponController extends Controller
         return redirect()->route('admin.coupons.index')->with([
             'coupon' => $coupon,
             'couponUsers' => $couponUsers,
-            'success' => 'Coupon added successfully!',
+            'success' => 'Thêm mới phiếu giảm giá thành công!',
         ], 201);
 
     }
@@ -126,7 +126,7 @@ class CouponController extends Controller
         return redirect()->route('admin.coupons.index')->with([
             'coupon' => $coupon,
             'couponUsers' => $couponUsers,
-            'message' => 'Coupon updated successfully!',
+            'message' => 'Cập nhật phiếu giảm giá thành công!',
         ], 200);
     }
     public function destroyCoupon($id)

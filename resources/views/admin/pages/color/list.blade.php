@@ -8,16 +8,14 @@
 </style>
 
 <body>
-@if ($errors->any())
+
+    <div class="container mt-5">
+
+    @if (session('error'))
     <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+        {{ session('error') }}
     </div>
 @endif
-    <div class="container mt-5">
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}

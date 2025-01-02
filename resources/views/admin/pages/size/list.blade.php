@@ -1,22 +1,19 @@
 @extends('admin.index')
 
 @section('content')
-@if ($errors->any())
+
+   
+    <div class="container mt-5">
+    @if (session('error'))
     <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+        {{ session('error') }}
     </div>
 @endif
-    <div class="container mt-4">
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
-    <div class="container mt-5">
     <!-- Tiêu đề -->
     <div class="button-header">
         <button>Danh Sách Kích Thước <i class="fa fa-star"></i></button>
