@@ -39,12 +39,12 @@
                         <input type="hidden" name="attribute_product_id[]" value="{{ $item->attribute_product_id }}">
                         
                         
-                        <td><input type="number"  name="price[]" class="form-control price" value="{{ $item->price }}">
+                        <td><input type="number" @if(old('price')==$item->price )selected @endif  name="price[]" class="form-control price" value="{{ $item->price }}">
                       
                        <span style="color: red" class="price-error"></span>
                     </td>
                
-                        <td><input type="number" name="in_stock[]" class="form-control in-stock" value="{{ $item->in_stock }}"
+                        <td><input type="number" name="in_stock[]"  @if(old('in_stock')==$item->in_stock )selected @endif class="form-control in-stock" value="{{ $item->in_stock }}"
                                >
                                <span style="color: red" class="in-stock-error"></span>
                         </td>
@@ -63,8 +63,9 @@
                             <div id="imagePreviewContainer_{{ $parts[1] }}" class="mt-3 d-flex flex-wrap">
                                 <!-- Ảnh sẽ hiển thị ở đây -->
                             </div>
-                            <span style="color: red" class="url-error"></span>
+                             <span class="text-danger url-error" id="url-error-{{ $parts[1] }}"></span>
                         </td>
+                      
                     </tr>
                 </tfoot>
             </table>
@@ -176,8 +177,8 @@
                 inStockErrors[index].textContent = 'Số lượng không được để trống';
                 isFormValid = false;
 
-            } else if (isNaN(value) || value < 0) {
-                inStockErrors[index].textContent = 'Số lượng phải là số và lớn hơn hoặc bằng 0';
+            } else if (isNaN(value) || value <= 1) {
+                inStockErrors[index].textContent = 'Số lượng phải là số và lớn hơn hoặc bằng 1';
                 isFormValid = false;
 
             } else if (!Number.isInteger(Number(value))) {
@@ -193,50 +194,60 @@
     
 //lặp qua tất cả class url
 // Lặp qua tất cả các input có class 'url'
-Array.from(urlInputs).forEach((urlInput, index) => {
-    urlInput.addEventListener('change', function(event) {
-        const files = event.target.files; // Lấy danh sách các file được chọn
-console.log(files);
+// Thêm sự kiện khi click vào nút submit
+$('#submitForm').click(function(event) {
+
+    // Lặp qua tất cả các input file
+    Array.from(urlInputs).forEach((urlInput, index) => {
+        const files = urlInput.files;  // Lấy danh sách các file được chọn
+        const errorElement = urlErrors[index];  // Lấy phần tử hiển thị lỗi
+
         // Kiểm tra nếu không có file nào được chọn
         if (files.length === 0) {
-            urlErrors[index].textContent = 'Vui lòng chọn ít nhất một ảnh'; // Hiển thị lỗi
-            isFormValid = false; // Đặt form không hợp lệ
+            errorElement.textContent = 'Vui lòng chọn ít nhất một ảnh';  // Hiển thị lỗi
+            isFormValid = false;  // Đặt form không hợp lệ
         } else {
             let isValid = true;
 
             // Kiểm tra từng file
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-
-                // Kiểm tra xem file có phải là ảnh hợp lệ không
                 const fileExtension = file.name.split('.').pop().toLowerCase();
                 const validExtensions = ['png', 'jpg', 'jpeg', 'gif'];
 
+                // Kiểm tra xem file có phải là ảnh hợp lệ không
                 if (!validExtensions.includes(fileExtension)) {
-                    urlErrors[index].textContent = 'Chỉ chấp nhận file hình ảnh với định dạng PNG, JPG, JPEG, GIF';
+                    errorElement.textContent = 'Chỉ chấp nhận file hình ảnh với định dạng PNG, JPG, JPEG, GIF';
                     isValid = false;
                     break;
                 }
 
-                // Kiểm tra kích thước file (ví dụ không vượt quá 5MB)
-                if (file.size > 5 * 1024 * 1024) {
-                    urlErrors[index].textContent = 'Kích thước ảnh không được vượt quá 5MB';
+                // Kiểm tra kích thước file
+                if (file.size > 5 * 1024 * 1024) {  // Kiểm tra kích thước không vượt quá 5MB
+                    errorElement.textContent = 'Kích thước ảnh không được vượt quá 5MB';
                     isValid = false;
                     break;
                 }
             }
 
+            // Nếu tất cả các file hợp lệ, xóa lỗi
             if (isValid) {
-                urlErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
-                isFormValid = true;
+                errorElement.textContent = '';
             } else {
-                isFormValid = false; // Đặt form không hợp lệ nếu có lỗi
+                isFormValid = false;  // Đặt form không hợp lệ nếu có lỗi
             }
         }
     });
+
+    // Nếu form không hợp lệ, ngừng submit
+    if (!isFormValid) {
+        event.preventDefault();  // Ngừng submit
+        alert('Vui lòng sửa các lỗi trước khi gửi form!');
+    }
 });
+
     $('#submitForm').click(function(event) {  // Thêm event vào hàm callback
-      
+    
     if (!isFormValid) {
         event.preventDefault();  // Ngừng submit nếu form không hợp lệ
         alert('Vui lòng sửa các lỗi trước khi gửi form!');
@@ -300,6 +311,7 @@ console.log(files);
         });
   
     });
+    
     </script>
     @endpush
 </body>

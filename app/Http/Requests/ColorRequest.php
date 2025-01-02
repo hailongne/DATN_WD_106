@@ -21,14 +21,16 @@ class ColorRequest extends FormRequest
      */
     public function rules(): array
     {
+        $ccolorId = $this->route('id');
         return [
-            'name' => 'required|string|max:50|unique:colors,name',  // Kiểm tra duy nhất cho name trong bảng colors
+            'name' => 'required|string|max:50|unique:colors,name,'.$ccolorId.',color_id' , // Kiểm tra duy nhất cho name trong bảng colors
             'color_code' => 'required|string|size:7|regex:/^#[0-9A-Fa-f]{6}$/',  // Kiểm tra mã màu hex
         ];
     }
     
     public function messages(): array
     {
+     
         return [
             'name.required' => 'Yêu cầu không để trống',
             'name.unique' => 'Tên màu đã tồn tại.',  // Thông báo lỗi khi tên màu bị trùng

@@ -37,7 +37,7 @@
     @csrf
     <div class="form-group">
         <label for="name" class="custom-label">Tên màu sắc <span class="custom-required-star">*</span></label>
-        <input type=" text" class="form-control" id="name" name="name" placeholder="Nhập tên thương hiệu"  />
+        <input type=" text" class="form-control" value="{{old('name')}}" id="name" name="name" placeholder="Nhập tên thương hiệu"  />
     </div>
     @error('name')
 <span class="text-danger">{{$message}}</span>
@@ -45,7 +45,7 @@
     <div class="form-group">
         <label for="color_code" class="custom-label">Mã màu <span class="custom-required-star">*</span></label>
         <div class="d-flex align-items-center">
-            <input type="color" class="round-color-picker mr-2" id="color_code" name="color_code"
+            <input type="color" class="round-color-picker mr-2" id="color_code" value="{{old('color_code')}}" name="color_code"
                 onchange="updateColorDisplay()" />
             <span id="color-display">#000000</span>
         </div>

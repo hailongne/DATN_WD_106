@@ -21,8 +21,9 @@ class CouponRequest extends FormRequest
      */
     public function rules(): array
     {
+        $couponId = $this->route('id');
         return [
-            'code' => 'required|string|unique:coupons,code',
+            'code' => 'required|string|unique:coupons,code,'.$couponId.',coupon_id',
             'discount_amount' => 'nullable|numeric|min:1',
             'discount_percentage' => 'nullable|numeric|min:1|max:100',
             'quantity' => 'required|integer|min:1',

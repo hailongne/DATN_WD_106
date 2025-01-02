@@ -21,8 +21,9 @@ class CategoryRequest extends FormRequest
      */
     public function rules(): array
     {
+        $categoryId = $this->route('id');
         return [
-            'name' => 'required|string|max:255|unique:categories,name',  // Kiểm tra duy nhất cho name
+            'name' => 'required|string|max:255|unique:categories,name,'.$categoryId.',category_id',  // Kiểm tra duy nhất cho name
             'description' => 'required|string|max:255',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',  // Kiểm tra hình ảnh đúng định dạng và kích thước
             'is_active' => 'boolean',

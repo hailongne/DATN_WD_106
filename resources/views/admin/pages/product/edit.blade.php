@@ -45,11 +45,17 @@
             <label class="custom-label" for="productName">Tên sản phẩm</label>
             <input type="text" class="form-control" id="productName" name="name" placeholder="Nhập tên sản phẩm"
                 required maxlength="50" value="{{$product->name}}" />
+                @error('name')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
         <div class="col-md-6">
             <label class="custom-label" for="productSKU">Mã sản phẩm</label>
             <input type="text" class="form-control" id="productSKU" name="sku" placeholder="Nhập mã sản phẩm" required
                 maxlength="50" value="{{$product->sku}}" />
+                @error('sku')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
     </div>
 
@@ -57,8 +63,12 @@
         <div class="col-12">
             <label for="productSubtitle">Chú thích sản phẩm</label>
             <input type="text" class="form-control" id="productSubtitle" name="subtitle"
-                placeholder="Nhập Chú thích sản phẩm" required maxlength="50" value="{{$product->subtitle}}" />
+               
+            placeholder="Nhập Chú thích sản phẩm" required maxlength="50" value="{{$product->subtitle}}" />
         </div>
+        @error('subtitle')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
     </div>
 
     <!-- Second Row -->
@@ -74,6 +84,9 @@
                 </option>
                 @endforeach
             </select>
+            @error('product_category_id')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
         <div class="col-md-6">
             <label class="custom-label" for="productBrand">Thương hiệu sản phẩm</label>
@@ -87,6 +100,9 @@
                 @endif
                 @endforeach
             </select>
+            @error('brand_id')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
     </div>
 
@@ -109,6 +125,9 @@
                 </div>
                 @endforeach
             </div>
+            @error('size_id')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
 
         <!-- Dropdown Màu sắc sản phẩm -->
@@ -127,6 +146,9 @@
                 </div>
                 @endforeach
             </div>
+            @error('color_id')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
         </div>
     </div>
     <!-- Select filter -->
@@ -158,6 +180,9 @@
             <textarea class="form-control" id="productDescription" name="description" placeholder="Nhập mô tả sản phẩm"
                 rows="5" required maxlength="255">{{ $product->description }}</textarea>
         </div>
+        @error('description')
+                    <span class="text-danger">{{$message}}</span>
+                @enderror
     </div>
 
     <div class="button-group">

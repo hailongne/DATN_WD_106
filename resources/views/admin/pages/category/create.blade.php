@@ -31,7 +31,7 @@
             <button type="button" class="custom-btn-upload-admin" onclick="document.getElementById('image').click();">
                 <i class="bi bi-upload"></i> <span class="ml-2"> Tải lên</span>
             </button>
-            <input type="file" class="form-control-file d-none" id="image" name="image" accept="image/*"
+            <input type="file" class="form-control-file d-none" value="{{old('image')}}" id="image" name="image" accept="image/*"
                 onchange="showImage(event)" />
         </div>
         @error('image')
@@ -40,21 +40,21 @@
     </div>
     <div class="form-group">
         <label class="custom-label" for="name">Tên danh mục <span class="custom-required-star">*</span></label>
-        <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên danh mục"  />
+        <input type="text" class="form-control" value="{{old('name')}}" id="name" name="name" placeholder="Nhập tên danh mục"  />
     </div>
     @error('name')
 <span class="text-danger">{{$message}}</span>
 @enderror
     <div class="form-group">
         <label class="custom-label" for="slug">Tên đường dẫn <span class="custom-required-star">*</span></label>
-        <input type="text" class="form-control" id="slug" name="slug" placeholder="Nhập tên đường dẫn"  />
+        <input type="text" class="form-control" value="{{old('slug')}}" id="slug" name="slug" placeholder="Nhập tên đường dẫn"  />
     </div>
     @error('slug')
 <span class="text-danger">{{$message}}</span>
 @enderror
     <div class="form-group">
         <label class="custom-label" for="productCategory">Danh mục chính</label>
-        <select class="form-control" id="productCategory" name="parent_id" >
+        <select class="form-control" id="productCategory"  value="{{old('parent_id')}}" name="parent_id" >
             <option value="0">Chọn danh mục chính </option>
             @foreach($categories as $category)
             <option value="{{ $category['category_id'] }}">{{ $category['name'] }}</option>
@@ -66,7 +66,7 @@
 @enderror
     <div class="form-group">
         <label class="custom-label" for="description">Mô tả<span class="custom-required-star">*</span></label>
-        <textarea class="form-control" id="description" rows="3" name="description" placeholder="Nhập mô tả"
+        <textarea class="form-control" id="description" value="{{old('description')}}" rows="3" name="description" placeholder="Nhập mô tả"
             ></textarea>
     </div>
     @error('description')

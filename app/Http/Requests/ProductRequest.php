@@ -21,13 +21,16 @@ class ProductRequest extends FormRequest
      */
     public function rules(): array
     {
+        $productId = $this->route('id'); // Lấy ID sản phẩm từ URL
         return [
             //   
             'brand_id' => 'required|integer|exists:brands,brand_id', // Kiểm tra brand_id phải tồn tại trong bảng brands
             'product_category_id' => 'required|integer|exists:categories,category_id', // Kiểm tra category_id phải tồn tại trong bảng categories
-            'name' => 'required|string|max:255', // Tên sản phẩm là bắt buộc và không quá 255 ký tự
-            'main_image_url' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Kiểm tra ảnh chính
-            'sku' => 'required|string|max:255|unique:products,sku', // Mã sản phẩm là bắt buộc, không được trùng lặp
+       'name' => 'required|string|max:255|unique:products,name,' . $productId . ',product_id', // Kiểm tra trùng lặp ngoại trừ sản phẩm hiện tại
+
+
+       'main_image_url' => $this->isMethod('put') ? 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' : 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Chỉ bắt buộc khi tạo mới sản phẩm
+            'sku' => 'required|string|max:255|unique:products,sku,' . $productId . ',product_id', // Mã sản phẩm là bắt buộc, không được trùng lặp
             'description' => 'required|string', // Mô tả sản phẩm là bắt buộc
             'subtitle' => 'nullable|string|max:255', // Phụ đề có thể rỗng nhưng không quá 255 ký tự
         ];
@@ -46,6 +49,7 @@ class ProductRequest extends FormRequest
         'name.required' => 'Tên sản phẩm là bắt buộc.',
         'name.string' => 'Tên sản phẩm phải là một chuỗi ký tự.',
         'name.max' => 'Tên sản phẩm không được vượt quá 255 ký tự.',
+        'name.unique' => 'Tên sản phẩm đã tồn tại.',  // Thông báo lỗi khi tên màu bị trùng
         
         'main_image_url.required' => 'Yêu cầu chọn ảnh chính cho sản phẩm.',
         'main_image_url.image' => 'Ảnh chính phải là một tệp hình ảnh.',

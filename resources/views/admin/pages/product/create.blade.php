@@ -33,7 +33,7 @@
                     onclick="document.getElementById('productImage').click();">
                     <i class="bi bi-upload"></i> <span class="ms-2">Tải lên</span>
                 </button>
-                <input type="file" class="form-control-file d-none" id="productImage" name="main_image_url"
+                <input type="file" class="form-control-file d-none" value="{{old('main_image_url')}}" id="productImage" name="main_image_url"
                     accept="image/*" onchange="showImage(event)" />
             </div>
         </div>
@@ -45,7 +45,7 @@
     <div class="row gx-2 mb-3">
         <div class="col-md-6">
             <label class="custom-label" for="productName">Tên sản phẩm</label>
-            <input type="text" class="form-control" id="productName" name="name" placeholder="Nhập tên sản phẩm"
+            <input type="text" class="form-control" id="productName" value="{{old('name')}}" name="name" placeholder="Nhập tên sản phẩm"
                 maxlength="50" />
                 @error('name')
                     <span class="text-danger">{{$message}}</span>
@@ -54,7 +54,7 @@
       
         <div class="col-md-6">
             <label class="custom-label" for="productSKU">Mã sản phẩm</label>
-            <input type="text" class="form-control" id="productSKU" name="sku" placeholder="Nhập mã sản phẩm" 
+            <input type="text" class="form-control" id="productSKU" name="sku" value="{{old('sku')}}" placeholder="Nhập mã sản phẩm" 
                 maxlength="50" />
                 @error('sku')
                     <span class="text-danger">{{$message}}</span>
@@ -66,7 +66,7 @@
     <div class="row gx-2 mb-3">
         <div class="col-12">
             <label for="productSubtitle">Chú thích sản phẩm</label>
-            <input type="text" class="form-control" id="productSubtitle" name="subtitle"
+            <input type="text" value="{{old('subtitle')}}" class="form-control" id="productSubtitle" name="subtitle"
                 placeholder="Nhập Chú thích sản phẩm"  maxlength="50" />
         </div>
         @error('subtitle')
@@ -76,33 +76,39 @@
   
     <!-- Second Row -->
     <div class="row gx-2 mb-3">
-        <div class="col-md-6">
-            <label class="custom-label" for="productCategory">Danh mục sản phẩm</label>
-            <select class="form-control" id="productCategory" name="product_category_id" >
-                <option value="0">Chọn danh mục sản phẩm</option>
-                @foreach($categories as $category)
-                <option value="{{ $category['category_id'] }}">{{ $category['name'] }}</option>
-                @endforeach
-            </select>
-            @error('product_category_id')
-                    <span class="text-danger">{{$message}}</span>
-                @enderror
-        </div>
-       
-        <div class="col-md-6">
-            <label class="custom-label" for="productBrand">Thương hiệu sản phẩm</label>
-            <select class="form-control" id="productBrand" name="brand_id" >
-                <option value="">Chọn thương hiệu sản phẩm</option>
-                @foreach($brands as $brand)
-                <option value="{{ $brand->brand_id }}">{{ $brand->name }}</option>
-                @endforeach
-            </select>
-            @error('brand_id')
-                    <span class="text-danger">{{$message}}</span>
-                @enderror
-        </div>
-        
+    <div class="col-md-6">
+        <label class="custom-label" for="productCategory">Danh mục sản phẩm</label>
+        <select class="form-control" id="productCategory" name="product_category_id">
+            <option value="0">Chọn danh mục sản phẩm</option>
+            @foreach($categories as $category)
+                <option value="{{ $category['category_id'] }}" 
+                    @if(old('product_category_id') == $category['category_id']) selected @endif>
+                    {{ $category['name'] }}
+                </option>
+            @endforeach
+        </select>
+        @error('product_category_id')
+            <span class="text-danger">{{ $message }}</span>
+        @enderror
     </div>
+
+    <div class="col-md-6">
+        <label class="custom-label" for="productBrand">Thương hiệu sản phẩm</label>
+        <select class="form-control" id="productBrand" name="brand_id">
+            <option value="">Chọn thương hiệu sản phẩm</option>
+            @foreach($brands as $brand)
+                <option value="{{ $brand->brand_id }}" 
+                    @if(old('brand_id') == $brand->brand_id) selected @endif>
+                    {{ $brand->name }}
+                </option>
+            @endforeach
+        </select>
+        @error('brand_id')
+            <span class="text-danger">{{ $message }}</span>
+        @enderror
+    </div>
+</div>
+
     <!-- Third Row -->
     <div class="row gx-2 mb-3">
         <!-- Dropdown Kích thước sản phẩm -->
@@ -114,7 +120,7 @@
                 <hr />
                 @foreach($sizes as $size)
                 <div>
-                    <input type="checkbox" id="size{{ $size->id }}" name="size_id[]" value="{{ $size->size_id }}">
+                    <input type="checkbox" id="size{{ $size->id }}" name="size_id[]"   @if(in_array($size->size_id, old('size_id', []))) checked @endif value="{{ $size->size_id }}">
                     <label for="size{{ $size->id }}">{{ $size->name }}</label>
                 </div>
                 @endforeach
@@ -134,7 +140,7 @@
                 @foreach($colors as $color)
                 <div>
                     <input type="checkbox" id="color{{ $color->color_id }}" name="color_id[]"
-                        value="{{ $color->color_id }}">
+                        value="{{ $color->color_id }}"   @if(in_array($color->color_id, old('color_id', []))) checked @endif>
                     <label for="color{{ $color->color_id }}">{{ $color->name }}</label>
                 </div>
                 @endforeach
@@ -150,7 +156,7 @@
         <div class="col-12">
             <label class="custom-label" for="productDescription">Mô tả sản phẩm</label>
             <textarea class="form-control" id="productDescription" name="description" placeholder="Nhập mô tả sản phẩm"
-                rows="5"  maxlength="255" ></textarea>
+                rows="5"  maxlength="255" >{{old('description')}}</textarea>
                 @error('description')
                     <span class="text-danger">{{$message}}</span>
                 @enderror

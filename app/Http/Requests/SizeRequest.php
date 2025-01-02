@@ -21,8 +21,9 @@ class SizeRequest extends FormRequest
      */
     public function rules(): array
     {
+        $sizeId = $this->route('id');
         return [
-            'name' => 'required|string|max:50|unique:sizes,name',  // Kiểm tra duy nhất cho name trong bảng sizes
+            'name' => 'required|string|max:50|unique:sizes,name,'.$sizeId.',size_id',  // Kiểm tra duy nhất cho name trong bảng sizes
         ];
     }
     

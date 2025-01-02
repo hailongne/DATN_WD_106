@@ -21,8 +21,9 @@ class BrandsRequest extends FormRequest
      */
     public function rules(): array
     {
+        $brandId = $this->route('id'); // Lấy ID sản phẩm từ URL
         return [
-            'name' => 'required|string|max:255|unique:brands,name',  // Kiểm tra duy nhất cho name
+            'name' => 'required|string|max:255|unique:brands,name,'. $brandId . ',brand_id',  // Kiểm tra duy nhất cho name
             'description' => 'required|string|max:255|nullable',
             'is_active' => 'boolean',
             'slug' => [

@@ -15,7 +15,7 @@
                 <h1>Phiếu Giảm Giá</h1>
                 <div class="form-group">
                     <label for="tenMaGiamGia">Tên mã giảm giá:</label>
-                    <input type="text" id="tenMaGiamGia" name="code" placeholder="Nhập tên mã giảm giá" />
+                    <input type="text" id="tenMaGiamGia" value="{{old('code')}}" name="code" placeholder="Nhập tên mã giảm giá" />
                 </div>
                 @error('code')
                     <span class="text-danger">{{$message}}</span>
@@ -31,7 +31,9 @@
                 </div>
                 <div class="form-group" id="value1" style="display: none;">
                     <label for="discount">Gía trị</label>
-                    <input type="number" id="discount" placeholder="Nhập điều kiện áp dụng" />
+                    <input type="number"
+                    value="{{ ($name == 'discount_amount') ? old('discount_amount') : old('discount_percentage') }}" 
+                     id="discount" placeholder="Nhập điều kiện áp dụng" />
                 </div>
                 @error('discount_amount')
                     <span class="text-danger">{{$message}}</span>
@@ -41,14 +43,14 @@
                 @enderror
                 <div class="form-group">
                     <label for="condition">Gía trị tối thiểu</label>
-                    <input type="number" id="condition" name="min_order_value" placeholder="Nhập điều kiện áp dụng" />
+                    <input type="number" id="condition" value="{{old('min_order_value')}}" name="min_order_value" placeholder="Nhập điều kiện áp dụng" />
                 </div>
                 @error('min_order_value')
                     <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="form-group">
                     <label for="max_order_value">Giá trị tối đa:</label>
-                    <input type="number" id="max_order_value" name="max_order_value"
+                    <input type="number" id="max_order_value" value="{{old('max_order_value')}}" name="max_order_value"
                         placeholder="Nhập giá trị tối đa" />
                 </div>
                 @error('max_order_value')
@@ -56,21 +58,21 @@
                 @enderror
                 <div class="form-group">
                     <label for="quantity">Số lượng:</label>
-                    <input type="number" id="quantity" name="quantity" placeholder="Nhập số lượng" />
+                    <input type="number" id="quantity" name="quantity"  value="{{old('quantity')}}" placeholder="Nhập số lượng" />
                 </div>
                 @error('quantity')
                     <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="form-group">
                     <label for="start_date">Thời gian từ ngày:</label>
-                    <input type="datetime-local" name="start_date" id="start_date" />
+                    <input type="datetime-local" value="{{old('start_date')}}" name="start_date" id="start_date" />
                 </div>
                 @error('start_date')
                     <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="form-group">
                     <label for="end_date">Thời gian đến ngày:</label>
-                    <input type="datetime-local" name="end_date" id="end_date" />
+                    <input type="datetime-local" value="{{old('end_date')}}" name="end_date" id="end_date" />
                 </div>
                 @error('end_date')
                     <span class="text-danger">{{$message}}</span>
@@ -149,6 +151,7 @@
             if (value.value == 1) {
                 document.getElementById('value1').style.display = "block";
                 discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
+                discount.setAttribute('value', 'discount_amount')
                 discount.setAttribute('name', 'discount_amount')
             }
             else {

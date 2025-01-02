@@ -253,7 +253,7 @@ class ProductController extends Controller
             compact('product', 'categories', 'brands', 'sizes', 'colors')
         );
     }
-    public function updateProduct(Request $request, $id)
+    public function updateProduct(ProductRequest $request, $id)
     {
         // Tìm sản phẩm cần cập nhật
         $product = Product::findOrFail($id);
