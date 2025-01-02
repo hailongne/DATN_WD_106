@@ -1,0 +1,136 @@
+
+/* Reset cơ bản */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+/* Nút lọc */
+.custom-btn-filte-dashboard {
+  background-color: #28a745;
+  color: #fff;
+  border: 1px solid #28a745;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.custom-btn-filte-dashboard:hover {
+  background-color: #218838;
+  border: 1px solid #218838;
+}
+
+/* Card Header */
+.card-header {
+  background-color: #333;
+  color: #fff;
+  font-weight: bold;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
+  font-size: 18px;
+  text-align: center;
+}
+
+/* Card Body */
+.card-body {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Input fields */
+.form-label {
+  font-weight: bold;
+}
+
+.form-control {
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  padding: 8px;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.form-control:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+}
+
+/* Button in the form */
+button[type="submit"] {
+  background-color: #28a745;
+  color: #fff;
+  border: 1px solid #28a745;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
+}
+
+button[type="submit"]:hover {
+  background-color: #218838;
+  border: 1px solid #218838;
+}
+
+/* Tables */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.table th,
+.table td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #28a745;
+  color: #fff;
+  font-weight: bold;
+}
+
+.table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.table tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Cards */
+.card {
+  margin-bottom: 20px;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Định dạng biểu đồ */
+canvas {
+  max-width: 100%;
+  height: auto;
+}
+

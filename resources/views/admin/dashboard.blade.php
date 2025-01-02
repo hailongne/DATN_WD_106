@@ -1,143 +1,9 @@
 @extends('admin.index')
 
 @section('content')
-<style>
-/* Reset cơ bản */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
-}
-
-/* Nút lọc */
-.custom-btn-filte-dashboard {
-  background-color: #28a745;
-  color: #fff;
-  border: 1px solid #28a745;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: block;
-  width: 100%;
-  text-align: center;
-}
-
-.custom-btn-filte-dashboard:hover {
-  background-color: #218838;
-  border: 1px solid #218838;
-}
-
-/* Card Header */
-.card-header {
-  background-color: #333;
-  color: #fff;
-  font-weight: bold;
-  padding: 15px;
-  border-bottom: 1px solid #ddd;
-  border-radius: 8px 8px 0 0;
-  font-size: 18px;
-  text-align: center;
-}
-
-/* Card Body */
-.card-body {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 4px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Input fields */
-.form-label {
-  font-weight: bold;
-}
-
-.form-control {
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  padding: 8px;
-  font-size: 14px;
-  margin-bottom: 15px;
-}
-
-.form-control:focus {
-  border-color: #28a745;
-  box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
-}
-
-/* Button in the form */
-button[type="submit"] {
-  background-color: #28a745;
-  color: #fff;
-  border: 1px solid #28a745;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-  text-align: center;
-}
-
-button[type="submit"]:hover {
-  background-color: #218838;
-  border: 1px solid #218838;
-}
-
-/* Tables */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.table th,
-.table td {
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-
-.table th {
-  background-color: #28a745;
-  color: #fff;
-  font-weight: bold;
-}
-
-.table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.table tr:hover {
-  background-color: #f1f1f1;
-}
-
-/* Cards */
-.card {
-  margin-bottom: 20px;
-}
-
-.card-body {
-  padding: 20px;
-}
-
-/* Định dạng biểu đồ */
-canvas {
-  max-width: 100%;
-  height: auto;
-}
-
-</style>
+@push('styles')
+<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+@endpush
 <div class="container">
     <div class="button-header">
         <button>
@@ -211,26 +77,41 @@ canvas {
     <div class="card mb-4">
         <div class="card-header">Thống kê số lượng sản phẩm đã bán</div>
         <div class="card-body">
+            <canvas id="soldProductsChart"></canvas>
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">Thống kê sản phẩm trong kho</div>
+        <div class="card-body">
             <table class="table">
                 <thead>
                     <tr>
+                        <th scope="col">Mã sản phẩm</th>
                         <th scope="col">Tên sản phẩm</th>
-                        <th scope="col">Số lượng bán</th>
+                        <th scope="col">Kích thước</th>
+                        <th scope="col">Màu sắc</th>
+                        <th scope="col">Số lượng tồn kho</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($soldProductsStats as $product)
+                    @foreach ($inventoryStats as $product)
+                    @foreach ($product->attributeProducts as $attribute)
                     <tr>
+                        <td>{{ $product->product_id }}</td>
                         <td>{{ $product->name }}</td>
-                        <td>{{ $product->sold_quantity }}</td>
+                        <td>{{ $attribute->size->name ?? 'Không xác định' }}</td>
+                        <td>{{ $attribute->color->name ?? 'Không xác định' }}</td>
+                        <td>{{ $attribute->in_stock }}</td>
                     </tr>
+                    @endforeach
                     @endforeach
                 </tbody>
             </table>
         </div>
-    </div>
-    <!-- Thống kê tổng sản phẩm theo danh mục -->
-    <!-- Biểu đồ sản phẩm theo danh mục -->
+    </div
+
+
+        <!-- Biểu đồ sản phẩm theo danh mục -->
     <div class="card mb-4">
         <div class="card-header">Tổng sản phẩm theo danh mục</div>
         <div class="card-body">
@@ -309,6 +190,86 @@ canvas {
                 }
             }
         }
+    });
+      // Lấy dữ liệu từ server
+      const soldProductsLabels = @json($soldProductsStats->pluck('name'));
+    const soldProductsData = @json($soldProductsStats->pluck('sold_quantity'));
+
+    // Tạo biểu đồ cột
+    const soldProductsCtx = document.getElementById('soldProductsChart').getContext('2d');
+    const soldProductsChart = new Chart(soldProductsCtx, {
+        type: 'bar',
+        data: {
+            labels: soldProductsLabels, // Tên sản phẩm
+            datasets: [{
+                label: 'Số lượng bán',
+                data: soldProductsData, // Số lượng sản phẩm đã bán
+                backgroundColor: 'rgba(54, 162, 235, 0.5)', // Màu nền các cột
+                borderColor: 'rgba(54, 162, 235, 1)', // Màu viền các cột
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Số lượng bán'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tên sản phẩm'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            }
+        }
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Doanh thu
+        const startDateRevenue = document.getElementById('start_date_revenue');
+        const endDateRevenue = document.getElementById('end_date_revenue');
+
+        startDateRevenue.addEventListener('change', function() {
+            if (endDateRevenue.value && new Date(startDateRevenue.value) > new Date(endDateRevenue.value)) {
+                alert('Ngày bắt đầu không được lớn hơn ngày kết thúc (Doanh thu).');
+                startDateRevenue.value = ''; // Reset giá trị
+            }
+        });
+
+        endDateRevenue.addEventListener('change', function() {
+            if (startDateRevenue.value && new Date(startDateRevenue.value) > new Date(endDateRevenue.value)) {
+                alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu (Doanh thu).');
+                endDateRevenue.value = ''; // Reset giá trị
+            }
+        });
+
+        // Đơn hàng
+        const startDateOrders = document.getElementById('start_date_orders');
+        const endDateOrders = document.getElementById('end_date_orders');
+
+        startDateOrders.addEventListener('change', function() {
+            if (endDateOrders.value && new Date(startDateOrders.value) > new Date(endDateOrders.value)) {
+                alert('Ngày bắt đầu không được lớn hơn ngày kết thúc (Đơn hàng).');
+                startDateOrders.value = ''; // Reset giá trị
+            }
+        });
+
+        endDateOrders.addEventListener('change', function() {
+            if (startDateOrders.value && new Date(startDateOrders.value) > new Date(endDateOrders.value)) {
+                alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu (Đơn hàng).');
+                endDateOrders.value = ''; // Reset giá trị
+            }
+        });
     });
 </script>
 @endsection
