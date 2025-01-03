@@ -23,7 +23,7 @@ class OrderConfirm extends Mailable
     public function build()
     {
         return $this->subject('Xác nhận đơn hàng từ cửa hàng')
-            ->markdown('user.orders.mailOrder')  // Tạo email dưới dạng Markdown
+            ->markdown('emails.mailOrder')  // Tạo email dưới dạng Markdown
             ->with('data', $this->emailData);    // Truyền dữ liệu vào view
     }
 }
