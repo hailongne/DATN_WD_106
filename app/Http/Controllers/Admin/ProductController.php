@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Requests\AttributeRequest;
 use App\Http\Requests\ProductRequest;
 use App\Models\OrderItem;
@@ -21,6 +22,7 @@ use App\Models\AttributeProduct;
 use App\Models\Attribute;
 use App\Models\ProductImage;
 use Illuminate\Support\Facades\Storage;
+
 class ProductController extends Controller
 {
     public function listProduct(Request $request)
@@ -43,7 +45,6 @@ class ProductController extends Controller
             ->latest()->paginate(5);
         return view('admin.pages.product.list')
             ->with(['products' => $products]);
-
     }
     public function toggle($id)
     {
@@ -214,10 +215,7 @@ class ProductController extends Controller
                         'url' => (string) $item,
                         'product_id' => $product_id
                     ]);
-
                 }
-
-
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -225,19 +223,16 @@ class ProductController extends Controller
             Log::error('Lỗi khi cập nhật Attribute Products:', ['message' => $e->getMessage()]);
         }
         return redirect()->route('admin.products.index')
-        ->with('success', 'Dữ liệu đã được cập nhật thành công.');
-
-
+            ->with('success', 'Dữ liệu đã được cập nhật thành công.');
     }
     public function detailProduct($id)
     {
         $attPros = AttributeProduct::with([
-            'product:product_id,name,sku,is_best_seller,is_hot,is_active',
+            'product:product_id,name,sku,is_best_seller,is_hot,is_active,main_image_url',
             'color:color_id,name',
             'size:size_id,name'
         ])
             ->where('product_id', $id)
-
             ->get();
 
         return view('admin.pages.product.detail', compact('attPros'));
@@ -323,17 +318,17 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         $productCount = OrderItem::where('product_id', $id)->count();
-        if($productCount >0){
+        if ($productCount > 0) {
             return redirect()->back()->with('success', 'Không thể xóa sản phẩm  này vì đang có trong đơn hàng.');
         }
         $product->delete();
-        return redirect()->back()->with('success', 'Xóa sản phẩm thành công!', );
+        return redirect()->back()->with('success', 'Xóa sản phẩm thành công!',);
     }
     public function restoreProduct($id)
     {
         $product = Product::withTrashed()->findOrFail($id);
         $product->restore();
 
-        return redirect()->back()->with('success', 'Khôi phục thành công!', );
+        return redirect()->back()->with('success', 'Khôi phục thành công!',);
     }
 }
