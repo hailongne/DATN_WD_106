@@ -111,13 +111,17 @@
         </div>
         <!-- table -->
         <div class="customer-section-list" style="display:none" id="customer-section">
-            <h2>Danh sách khách hàng</h2>
+            <div class="button-header mb-3">
+                <button>
+                    Danh sách khách hàng <i class="fa fa-star"></i>
+                </button>
+            </div>
             <div class="search-group mb-3">
                 <input type="text" placeholder="Tìm kiếm khách hàng" class="form-control" />
-                <button class="btn btn-primary">Tìm kiếm</button>
+                <button class="btn btn-primary">Tìm</button>
             </div>
-            <table class="table table-bordered table-striped">
-                <thead>
+            <table class="product-table table table-bordered text-center align-middle">
+                <thead class="thead-dark">
                     <tr>
                         <th></th>
                         <th>Tên</th>
@@ -126,7 +130,7 @@
                         <th>Địa chỉ</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-scrollable">
                     @foreach ($users as $user)
                     @if($user->user_id != Auth::user()->user_id || $user->role !=1)
                     <tr>
@@ -141,7 +145,6 @@
                 </tbody>
             </table>
         </div>
-
     </form>
 </body>
 
