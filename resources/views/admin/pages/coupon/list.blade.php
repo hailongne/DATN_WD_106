@@ -7,36 +7,40 @@
 
 <body>
 
-  
+
 
     <div class="container mt-5">
-    @if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-    @if (session('success'))
+        @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+        @endif
+        @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
-    @endif
+        @endif
 
-        <h1 class="text-center">Danh sách phiếu giảm giá</h1>
-        <a href="{{route('admin.coupons.create')}}"><button class="btn add-button">Thêm mới</button></a>
+        <div class="button-header mb-3">
+            <button>Danh sách phiếu giảm giá <i class="fa fa-star"></i></button>
+            @if(Auth::user()->role !== 3)
+            <a href="{{route('admin.coupons.create')}}" class="btn add-button">Thêm mới</a>
+            @endif
+        </div>
 
         <table class="product-table table table-bordered text-center align-middle mb-5">
             <thead class="thead-dark">
                 <tr>
-                    <th>STT</th>
-                    <th>Tên mã phiếu giảm giá</th>
+                    <th></th>
+                    <th>Tên</th>
                     <th>Loại</th>
                     <th>Số lượng</th>
-                    <th>Gía trị tối thiểu</th>
-                    <th>Gía trị tối đa</th>
+                    <th>Giá trị tối thiểu</th>
+                    <th>Giá trị tối đa</th>
                     <th>Ngày bắt đầu </th>
                     <th>Ngày kết thúc</th>
                     <th>Trạng thái</th>
-                    <th>Hành Động</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -59,25 +63,32 @@
                         <form action="{{ route('admin.coupons.toggle', $coupon->coupon_id) }}" method="POST"
                             style="display:inline;">
                             @csrf
-                            <button type="submit" class="btn {{ $coupon->is_active ? 'btn-success' : 'btn-danger' }}">
-                            <p>{{ $coupon->is_active ? 'Đang hoạt động' : 'Đã tắt hoạt động' }}</p>
+                            <button type="submit"
+                                class="custom-btn-active-admin {{ $coupon->is_active ? 'btn-success' : 'btn-danger' }} status-btn-active">
+                                <p>{{ $coupon->is_active ? 'Kích hoạt' : 'Hủy' }}</p>
                             </button>
                         </form>
                     </td>
                     <td class="action-icons">
-                        <a href="{{route('admin.coupons.detail',$coupon->coupon_id)}}"> <i class="fas fa-eye text-info"
-                                title="Chi tiết"></i></a>
-                        <a href="{{route('admin.coupons.edit',$coupon->coupon_id)}}"><i class="fas fa-edit text-warning"
-                                title="Sửa"></i></a>
-                        <!-- Form xóa -->
-                        <form action="{{ route('admin.coupons.delete', $coupon->coupon_id) }}" method="POST"
-                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa màu sắc này?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-link text-danger" title="Xóa">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
+                        <div class="icon-product d-flex justify-content-center gap-2">
+                            <a href="{{route('admin.coupons.detail',$coupon->coupon_id)}}"><button
+                                    class="action-btn eye" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </button></a>
+                            <a href="{{route('admin.coupons.edit',$coupon->coupon_id)}}">
+                                <button class="action-btn edit" title="Chỉnh sửa">
+                                    <i class="fas fa-edit"></i>
+                                </button></a>
+                            <!-- Form xóa -->
+                            <form action="{{ route('admin.coupons.delete', $coupon->coupon_id) }}" method="POST"
+                                onsubmit="return confirm('Bạn có chắc chắn muốn xóa màu sắc này?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="action-btn delete">
+                                    <i class="fas fa-trash-alt" title="Xóa"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
 

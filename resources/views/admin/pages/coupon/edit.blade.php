@@ -5,6 +5,7 @@
 @section('content')
 
 <body></body>
+
 <body>
     <form action="{{ route('admin.coupons.update', $coupon->coupon_id) }}" method="POST">
         @csrf
@@ -19,10 +20,10 @@
                         placeholder="Nhập tên mã giảm giá" />
                 </div>
                 @error('code')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="form-group">
-                    <label for="tenMaGiamGia">Gía trị giảm giá</label>
+                    <label for="tenMaGiamGia">Giá trị giảm giá</label>
                     <select class="form-select" id="value" aria-label="Default select example">
                         @if($coupon->discount_amount)
                         <option value="1" selected>Số tiền giảm giá</option>
@@ -37,9 +38,9 @@
                         @endif
                     </select>
                 </div>
-            
+
                 <div class="form-group" id="value1">
-                    <label for="discount">Gía trị</label>
+                    <label for="discount">Giá trị</label>
                     @if($coupon->discount_amount)
                     <input type="number" value="{{$coupon->discount_amount}}" name="discount_amount" id="discount"
                         placeholder="Nhập điều kiện áp dụng" />
@@ -51,21 +52,21 @@
                     @endif
                 </div>
                 @error('discount_amount')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
                 @error('discount_percentage')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="form-group">
-                    <label for="condition">Gía trị tối thiểu</label>
+                    <label for="condition">Giá trị tối thiểu</label>
                     <input type="number" id="condition" value="{{$coupon->min_order_value}}" name="min_order_value"
                         placeholder="Nhập điều kiện áp dụng" />
                 </div>
                 @error('min_order_value')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
                 @error('discount_percentage')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="form-group">
                     <label for="max_order_value">Giá trị tối đa:</label>
@@ -73,7 +74,7 @@
                         name="max_order_value" placeholder="Nhập giá trị tối đa" />
                 </div>
                 @error('max_order_value')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="form-group">
                     <label for="quantity">Số lượng:</label>
@@ -81,21 +82,21 @@
                         placeholder="Nhập số lượng" />
                 </div>
                 @error('quantity')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="form-group">
                     <label for="start_date">Thời gian từ ngày:</label>
                     <input type="datetime-local" name="start_date" value="{{$coupon->created_at}}" id="start_date" />
                 </div>
                 @error('start_date')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="form-group">
                     <label for="end_date">Thời gian đến ngày:</label>
                     <input type="datetime-local" name="end_date" value="{{$coupon->updated_at}}" id="end_date" />
                 </div>
                 @error('end_date')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="form-group">
                     <label>Chọn kiểu</label>
@@ -121,7 +122,7 @@
                     @endif
                 </div>
                 @error('is_public')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
             </div>
             <!-- table -->
@@ -167,8 +168,8 @@
                 </table>
             </div>
             @error('user_id')
-                    <span class="text-danger">{{$message}}</span>
-                @enderror
+            <span class="text-danger">{{$message}}</span>
+            @enderror
         </div>
         <div class="add-button">
             <button type="submit">Chỉnh sửa</button>
@@ -201,14 +202,14 @@ value.addEventListener('change', function() {
     }
 });
 private = document.getElementById('private');
-        public = document.getElementById('public');
-        customer = document.getElementById('customer-section');
-        private.addEventListener('click', function () {
-            customer.style.display = "block";
-        });
-        public.addEventListener('click', function () {
-            customer.style.display = "none";
-        });
+public = document.getElementById('public');
+customer = document.getElementById('customer-section');
+private.addEventListener('click', function() {
+    customer.style.display = "block";
+});
+public.addEventListener('click', function() {
+    customer.style.display = "none";
+});
 </script>
 @endpush
 </body>
