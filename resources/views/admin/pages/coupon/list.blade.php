@@ -71,14 +71,16 @@
                     </td>
                     <td class="action-icons">
                         <div class="icon-product d-flex justify-content-center gap-2">
-                            <a href="{{route('admin.coupons.detail',$coupon->coupon_id)}}"><button
-                                    class="action-btn eye" title="Xem chi tiết">
+                            <!-- <a href="{{route('admin.coupons.detail',$coupon->coupon_id)}}">
+                                <button class="action-btn eye" title="Xem chi tiết">
                                     <i class="fas fa-eye"></i>
-                                </button></a>
+                                </button>
+                            </a> -->
                             <a href="{{route('admin.coupons.edit',$coupon->coupon_id)}}">
                                 <button class="action-btn edit" title="Chỉnh sửa">
                                     <i class="fas fa-edit"></i>
-                                </button></a>
+                                </button>
+                            </a>
                             <!-- Form xóa -->
                             <form action="{{ route('admin.coupons.delete', $coupon->coupon_id) }}" method="POST"
                                 onsubmit="return confirm('Bạn có chắc chắn muốn xóa màu sắc này?');">
