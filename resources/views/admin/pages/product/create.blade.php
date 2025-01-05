@@ -1,6 +1,5 @@
 @extends('admin.index')
 @section('content')
-@push('styles')
 <style>
 /* CSS */
 .form-container {
@@ -14,7 +13,6 @@
 }
 </style>
 <link rel="stylesheet" href="{{asset('css/admin/formAddProduct.css')}}">
-@endpush
 
 <div class="container">
 

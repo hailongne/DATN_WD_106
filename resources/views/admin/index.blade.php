@@ -26,9 +26,11 @@
     <link rel="stylesheet" href="{{asset('css/admin/admin.css')}}">
     <link rel="stylesheet" href="{{asset('css/admin/table.css')}}">
     <link rel="stylesheet" href="{{asset('css/admin/form.css')}}">
+    <link rel="stylesheet" href="{{asset('css/admin/coupon.css')}}">
     @stack('styles')
     <style>
     *:focus {
+        border: 1px solid #000 !important;
         outline: none !important;
         box-shadow: none !important;
     }
@@ -94,13 +96,13 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  // Kích hoạt tất cả tooltips
-  document.addEventListener('DOMContentLoaded', function () {
+// Kích hoạt tất cả tooltips
+document.addEventListener('DOMContentLoaded', function() {
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-      new bootstrap.Tooltip(tooltipTriggerEl)
+    tooltipTriggerList.forEach(function(tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl)
     });
-  });
+});
 </script>
 
 </html>
