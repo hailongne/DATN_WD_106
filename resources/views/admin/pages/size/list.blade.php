@@ -2,43 +2,39 @@
 
 @section('content')
 
-   
-    <div class="container mt-5">
+
+<div class="container mt-5">
     @if (session('error'))
     <div class="alert alert-danger">
         {{ session('error') }}
     </div>
-@endif
+    @endif
     @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
     @endif
     <!-- Tiêu đề -->
-    <div class="button-header">
+    <div class="button-header mb-3">
         <button>Danh Sách Kích Thước <i class="fa fa-star"></i></button>
+        @if(Auth::user()->role !== 3)
+        <a href="{{ route('admin.sizes.create') }}" class="btn add-button">Thêm mới</a>
+        @endif
     </div>
-    <div class="container mt-5 ">
-    <form action="" method="get" class="d-flex justify-content-center">
-        <div class="input-group w-50">
-            <!-- Nút tìm kiếm -->
-            <button class="btn btn-primary" type="submit" name="btn">
-                <i class="bi bi-search"></i> <!-- Icon tìm kiếm -->
-            </button>
-            <!-- Ô input tìm kiếm -->
-            <input
-                type="text"
-                class="form-control"
-                name="nhap"
-                placeholder="Tìm kiếm sản phẩm..."
-                aria-label="Search"
-            >
-        </div>
-    </form>
-</div>
-    @if(Auth::user()->role !== 3)
-    <a href="{{ route('admin.sizes.create') }}" class="btn add-button">Thêm mới</a>
-    @endif
+    <div class="custom-filter-bar d-flex align-items-center">
+        <form action="" method="get" class="d-flex justify-content-center">
+            <div class="custom-input-group">
+                <input type="text" class="custom-form-control" name="nhap" placeholder="Tìm kiếm sản phẩm..."
+                    aria-label="Search">
+                <button class="custom-btn custom-btn-primary" type="submit">
+                    <i class="bi bi-search"></i> <!-- Icon tìm kiếm -->
+                </button>
+            </div>
+        </form>
+        <a href="{{ route('admin.sizes.index') }}" class="btn ml-3">
+            <image src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
+        </a>
+    </div>
     <table class="product-table table table-bordered text-center align-middle mb-5">
         <thead class="thead-dark">
             <tr>
@@ -54,12 +50,12 @@
                 <td>{{ $size->name }}</td>
                 <td>
                     <div class="icon-product d-flex justify-content-center gap-2">
-                        <a href="{{ route('admin.sizes.detail', $size->size_id) }}"  class=" text-info action-icons">
+                        <a href="{{ route('admin.sizes.detail', $size->size_id) }}" class=" text-info action-icons">
                             <button class="action-btn eye" title="Xem chi tiết">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </a>
-                        <a href="{{ route('admin.sizes.edit', $size->size_id) }}"  class="text-warning action-icons">
+                        <a href="{{ route('admin.sizes.edit', $size->size_id) }}" class="text-warning action-icons">
                             <button class="action-btn edit" title="Chỉnh sửa">
                                 <i class="fas fa-edit"></i>
                             </button>

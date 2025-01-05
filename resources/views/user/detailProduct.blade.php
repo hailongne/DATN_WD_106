@@ -143,9 +143,20 @@
                     <div class="description-header">
                         <h3>Mô tả sản phẩm:</h3>
                     </div>
-                    <p>
-                        {{ $product->description ?? 'Mô tả sản phẩm đang được cập nhật...' }}
-                    </p>
+                    <div>
+                        @php
+                            $description = $product->description
+                                ? $product->description
+                                : 'Mô tả sản phẩm đang được cập nhật...';
+
+                            // Xử lý Markdown thủ công
+                            $description = nl2br(e($description)); // Chuyển đổi xuống dòng
+                            $description = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $description); // In đậm
+                            $description = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $description); // In nghiêng
+                        @endphp
+
+                        {!! $description !!}
+                    </div>
                 </div>
             </div>
         </div>
@@ -204,51 +215,51 @@
         <div class="container-review">
             <h2>Các bạn hãy đánh giá sản phẩm nha!</h2>
             @if($reviews->isEmpty())
-                <div class="text-center">
-                    <h5>Chưa có bình luận nào cho sản phẩm này.</h5>
-                    <p>Hãy là người bình luận đầu tiên</p>
-                </div>
+            <div class="text-center">
+                <h5>Chưa có bình luận nào cho sản phẩm này.</h5>
+                <p>Hãy là người bình luận đầu tiên</p>
+            </div>
             @else
-                <div id="reviewsContainer" class="reviewsContainer">
-                    @foreach ($reviews as $review)
-                        <div class="review">
-                            <span class="review-date">
-                                {{ optional($review->created_at)->format('d-m-Y') ?? 'N/A' }}
-                            </span>
-                            <span class="review-time">
-                                {{ optional($review->created_at)->format('H:i') ?? 'N/A' }}
-                            </span>
-                            <div class="rating text-right">
-                                @if ($review->rating == 1)
-                                    ★
-                                @elseif ($review->rating == 2)
-                                    ★★
-                                @elseif ($review->rating == 3)
-                                    ★★★
-                                @elseif ($review->rating == 4)
-                                    ★★★★
-                                @elseif ($review->rating == 5)
-                                    ★★★★★
-                                @endif
-                            </div>
-                            <p class="review-text">{{ $review->comment }}</p>
-                        </div>
-                        <!-- Tin nhắn trả lời của admin -->
-                        @if($review->replies->isNotEmpty())
-                            @foreach($review->replies as $reply)
-                                <div class="admin-response">
-
-                                    <div class="admin-info mr-2">
-                                        <p>Quản trị viên: </p>
-                                    </div>
-                                    <p>
-                                        {{ $reply->content }}
-                                    </p>
-                                </div>
-                            @endforeach
+            <div id="reviewsContainer" class="reviewsContainer">
+                @foreach ($reviews as $review)
+                <div class="review">
+                    <span class="review-date">
+                        {{ optional($review->created_at)->format('d-m-Y') ?? 'N/A' }}
+                    </span>
+                    <span class="review-time">
+                        {{ optional($review->created_at)->format('H:i') ?? 'N/A' }}
+                    </span>
+                    <div class="rating text-right">
+                        @if ($review->rating == 1)
+                        ★
+                        @elseif ($review->rating == 2)
+                        ★★
+                        @elseif ($review->rating == 3)
+                        ★★★
+                        @elseif ($review->rating == 4)
+                        ★★★★
+                        @elseif ($review->rating == 5)
+                        ★★★★★
                         @endif
-                    @endforeach
+                    </div>
+                    <p class="review-text">{{ $review->comment }}</p>
                 </div>
+                <!-- Tin nhắn trả lời của admin -->
+                @if($review->replies->isNotEmpty())
+                @foreach($review->replies as $reply)
+                <div class="admin-response">
+
+                    <div class="admin-info mr-2">
+                        <p>Quản trị viên: </p>
+                    </div>
+                    <p>
+                        {{ $reply->content }}
+                    </p>
+                </div>
+                @endforeach
+                @endif
+                @endforeach
+            </div>
             @endif
             <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -259,7 +270,7 @@
                         <label for="star1">★</label>
 
                         <input type="radio" id="star2" name="rating" value="2" onclick="selectStar(2)">
-<label for="star2">★★</label>
+                        <label for="star2">★★</label>
 
                         <input type="radio" id="star3" name="rating" value="3" onclick="selectStar(3)">
                         <label for="star3">★★★</label>
@@ -324,58 +335,58 @@
                 </a>
                 <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 1])}}">
                     <div>
-<p>1 Sao (0)</p>
+                        <p>1 Sao (0)</p>
                     </div>
                 </a>
             </div>
             <div id="reviewsContainer">
                 @foreach ($reviewAll as $value)
-                    <div class="review1">
-                        <div class="review-header">
-                            <div class="user-info">
-                                <img src="https://via.placeholder.com/40" alt="User Avatar" />
-                                <h3>{{$value->user->name}}</h3>
-                            </div>
+                <div class="review1">
+                    <div class="review-header">
+                        <div class="user-info">
+                            <img src="https://via.placeholder.com/40" alt="User Avatar" />
+                            <h3>{{$value->user->name}}</h3>
                         </div>
-                        <span class="review-date">{{ optional($value->created_at)->format('d-m-Y H:i') ?? 'N/A' }}</span>
-                        <div class="rating">
-                            @if ($value->rating == 1)
-                                ★
-                            @elseif ($value->rating == 2)
-                                ★★
-                            @elseif ($value->rating == 3)
-                                ★★★
-                            @elseif ($value->rating == 4)
-                                ★★★★
-                            @elseif ($value->rating == 5)
-                                ★★★★★
-                            @endif
-                        </div>
-                        <p class="review-text"> {{ $value->comment }}</p>
-                        <div class="review-images">
-                            <div class="image-container">
-                                <img src="{{Storage::url($value->image)}}" alt="Review Image" />
-                                <div class="action-buttons">
-                                    <form action="{{ route('user.product.like', $value->review_id) }}" method="POST"
-                                        style="display:inline;">
-                                        @csrf
-                                        <button type="submit" class="custom-btn-active-admin status-btn-active">
-                                            <i class="fas fa-thumbs-up ">{{$value->likes->count()}}</i>
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('user.product.report', $value->review_id) }}" method="POST"
-                                        style="display:inline;">
-                                        @csrf
-                                        <button type="submit" class="custom-btn-active-admin status-btn-active">
-                                            <i class="fas fa-flag">{{$value->reports->count()}}</i>
-                                        </button>
-                                    </form>
+                    </div>
+                    <span class="review-date">{{ optional($value->created_at)->format('d-m-Y H:i') ?? 'N/A' }}</span>
+                    <div class="rating">
+                        @if ($value->rating == 1)
+                        ★
+                        @elseif ($value->rating == 2)
+                        ★★
+                        @elseif ($value->rating == 3)
+                        ★★★
+                        @elseif ($value->rating == 4)
+                        ★★★★
+                        @elseif ($value->rating == 5)
+                        ★★★★★
+                        @endif
+                    </div>
+                    <p class="review-text"> {{ $value->comment }}</p>
+                    <div class="review-images">
+                        <div class="image-container">
+                            <img src="{{Storage::url($value->image)}}" alt="Review Image" />
+                            <div class="action-buttons">
+                                <form action="{{ route('user.product.like', $value->review_id) }}" method="POST"
+                                    style="display:inline;">
+                                    @csrf
+                                    <button type="submit" class="custom-btn-active-admin status-btn-active">
+                                        <i class="fas fa-thumbs-up ">{{$value->likes->count()}}</i>
+                                    </button>
+                                </form>
+                                <form action="{{ route('user.product.report', $value->review_id) }}" method="POST"
+                                    style="display:inline;">
+                                    @csrf
+                                    <button type="submit" class="custom-btn-active-admin status-btn-active">
+                                        <i class="fas fa-flag">{{$value->reports->count()}}</i>
+                                    </button>
+                                </form>
 
 
-                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
                 @endforeach
             </div>
 
@@ -384,228 +395,228 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var reviewsContainer = document.getElementById('reviewsContainer');
-            reviewsContainer.scrollTop = reviewsContainer.scrollHeight;
+    document.addEventListener('DOMContentLoaded', function() {
+        var reviewsContainer = document.getElementById('reviewsContainer');
+        reviewsContainer.scrollTop = reviewsContainer.scrollHeight;
+    });
+
+    let selectedColor = '';
+    let selectedSize = '';
+    let inStock = parseInt(document.getElementById('product-stock').innerText) || 0;
+
+    //Mua ngay
+    document.getElementById('add-to-cart-form').addEventListener('submit', function(e) {
+        const color = document.getElementById('selected-color').value;
+        const size = document.getElementById('selected-size').value;
+        const qty = document.getElementById('qty-hidden').value;
+
+        // Kiểm tra các lựa chọn
+        if (!color || !size || !qty || qty < 1) {
+            e.preventDefault(); // Ngừng gửi form nếu thiếu thông tin
+
+            let message = '';
+            if (!color) {
+                message += 'Vui lòng chọn màu sắc.\n';
+            }
+            if (!size) {
+                message += 'Vui lòng chọn kích thước.\n';
+            }
+            // Hiển thị thông báo lỗi
+            alert(message);
+            return;
+        }
+    });
+
+    function changeColor(colorId, element) {
+        // Cập nhật giá trị vào input ẩn
+        document.getElementById('selected-color').value = colorId;
+
+        // Xóa lớp active khỏi tất cả các nút màu
+        const colorOptions = document.querySelectorAll('.color-option');
+        colorOptions.forEach(option => {
+            option.classList.remove('active');
         });
 
-        let selectedColor = '';
-        let selectedSize = '';
-        let inStock = parseInt(document.getElementById('product-stock').innerText) || 0;
+        // Thêm lớp active cho nút màu được chọn
+        element.classList.add('active');
+    }
 
-        //Mua ngay
-        document.getElementById('add-to-cart-form').addEventListener('submit', function(e) {
-            const color = document.getElementById('selected-color').value;
-            const size = document.getElementById('selected-size').value;
-            const qty = document.getElementById('qty-hidden').value;
 
-            // Kiểm tra các lựa chọn
-            if (!color || !size || !qty || qty < 1) {
-                e.preventDefault(); // Ngừng gửi form nếu thiếu thông tin
+    // Hàm size
+    function selectSize(sizeId, element) {
+        // Cập nhật giá trị vào input ẩn
+        document.getElementById('selected-size').value = sizeId;
 
-                let message = '';
-                if (!color) {
-                    message += 'Vui lòng chọn màu sắc.\n';
-                }
-                if (!size) {
-                    message += 'Vui lòng chọn kích thước.\n';
-                }
-                // Hiển thị thông báo lỗi
-                alert(message);
-                return;
-            }
+        // Lấy giá và tồn kho từ thuộc tính data của nút được chọn
+        const newPrice = element.getAttribute('data-price');
+        const newStock = element.getAttribute('data-stock');
+
+        // Cập nhật giá sản phẩm hiển thị
+        document.getElementById('product-price').innerText = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(newPrice);
+
+        // Cập nhật số lượng tồn kho hiển thị
+        document.getElementById('product-stock').innerText = `${newStock} sản phẩm`;
+
+        // Cập nhật số lượng tồn kho vào biến toàn cục
+        inStock = parseInt(newStock);
+
+        // Xóa lớp active khỏi tất cả các nút kích thước
+        const sizeOptions = document.querySelectorAll('.size-option');
+        sizeOptions.forEach(option => {
+            option.classList.remove('active');
         });
 
-        function changeColor(colorId, element) {
-            // Cập nhật giá trị vào input ẩn
-            document.getElementById('selected-color').value = colorId;
+        // Thêm lớp active cho kích thước được chọn
+        element.classList.add('active');
+    }
 
-            // Xóa lớp active khỏi tất cả các nút màu
-            const colorOptions = document.querySelectorAll('.color-option');
-            colorOptions.forEach(option => {
-                option.classList.remove('active');
+
+    // Hàm cập nhật giá sản phẩm
+    function updatePrice(price, type, element) {
+        // Loại bỏ trạng thái "selected" của các lựa chọn hiện tại
+        if (type === 'color') {
+            document.querySelectorAll('.color-option').forEach(option => {
+                option.classList.remove('selected');
             });
-
-            // Thêm lớp active cho nút màu được chọn
-            element.classList.add('active');
-        }
-
-
-        // Hàm size
-        function selectSize(sizeId, element) {
-            // Cập nhật giá trị vào input ẩn
-            document.getElementById('selected-size').value = sizeId;
-
-            // Lấy giá và tồn kho từ thuộc tính data của nút được chọn
-            const newPrice = element.getAttribute('data-price');
-            const newStock = element.getAttribute('data-stock');
-
-            // Cập nhật giá sản phẩm hiển thị
-            document.getElementById('product-price').innerText = new Intl.NumberFormat('vi-VN', {
-                style: 'currency',
-                currency: 'VND'
-            }).format(newPrice);
-
-            // Cập nhật số lượng tồn kho hiển thị
-            document.getElementById('product-stock').innerText = `${newStock} sản phẩm`;
-
-            // Cập nhật số lượng tồn kho vào biến toàn cục
-            inStock = parseInt(newStock);
-
-            // Xóa lớp active khỏi tất cả các nút kích thước
-            const sizeOptions = document.querySelectorAll('.size-option');
-            sizeOptions.forEach(option => {
-                option.classList.remove('active');
-            });
-
-            // Thêm lớp active cho kích thước được chọn
-            element.classList.add('active');
-        }
-
-
-        // Hàm cập nhật giá sản phẩm
-        function updatePrice(price, type, element) {
-            // Loại bỏ trạng thái "selected" của các lựa chọn hiện tại
-            if (type === 'color') {
-                document.querySelectorAll('.color-option').forEach(option => {
-                    option.classList.remove('selected');
-                });
-            } else if (type === 'size') {
-                document.querySelectorAll('.size-option').forEach(option => {
-                    option.classList.remove('selected');
-                });
-            }
-
-            // Đánh dấu lựa chọn hiện tại là "selected"
-            element.classList.add('selected');
-
-            // Cập nhật giá hiển thị
-            const priceElement = document.getElementById('product-price');
-            priceElement.textContent = `${Number(price).toLocaleString()} VND`;
-        }
-
-        function changeQuantity(change) {
-            const quantityInput = document.getElementById('quantity');
-            let currentQuantity = parseInt(quantityInput.value) || 1;
-            currentQuantity += change;
-
-            if (currentQuantity < 1) currentQuantity = 1;
-            // Kiểm tra nếu số lượng vượt quá số lượng có sẵn trong kho
-            if (currentQuantity > inStock) {
-                alert('Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!');
-                return; // Không cho phép thay đổi nếu vượt quá kho
-            }
-
-            quantityInput.value = currentQuantity;
-            updateQuantity(currentQuantity);
-        }
-
-        function updateQuantity(value) {
-            let qty = parseInt(value);
-
-            if (isNaN(qty) || qty < 1) {
-                qty = 1;
-            }
-
-            // Kiểm tra nếu số lượng vượt quá số lượng có sẵn trong kho
-            if (qty > inStock) {
-                alert('Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!');
-                return; // Dừng lại nếu vượt quá kho
-            }
-
-            // Cập nhật giá trị của input hiển thị
-            document.getElementById('quantity').value = qty;
-
-            // Cập nhật giá trị của hidden input
-            document.getElementById('qty-hidden').value = qty;
-        }
-
-        function addToCart() {
-            const color = document.getElementById('selected-color').value;
-            const size = document.getElementById('selected-size').value;
-            const qty = document.getElementById('qty-hidden').value;
-
-            // Kiểm tra nếu chưa chọn màu sắc, kích thước hoặc số lượng
-            if (!color || !size || !qty) {
-                alert("Vui lòng chọn đầy đủ màu sắc, kích thước và số lượng.");
-                return; // Dừng lại nếu thiếu lựa chọn
-            }
-
-            // Gửi yêu cầu AJAX đến server
-            const formData = new FormData();
-            formData.append('product_id', document.querySelector('[name="product_id"]').value);
-            formData.append('color_id', color);
-            formData.append('size_id', size);
-            formData.append('qty', qty);
-            formData.append('_token', document.querySelector('[name="_token"]').value);
-
-            fetch("{{ route('user.cart.add') }}", {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Sản phẩm đã được thêm vào giỏ hàng.');
-                        location.reload();
-                    } else {
-                        alert('Có lỗi xảy ra, vui lòng thử lại.');
-                    }
-                })
-                .catch(error => {
-                    alert('Lỗi kết nối, vui lòng thử lại.');
-                });
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast-notification');
-            const toastMessage = document.getElementById('toast-message');
-            toastMessage.innerText = message;
-            toast.style.display = 'flex';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
-        }
-
-        function closeToast() {
-            document.getElementById('toast-notification').style.display = 'none';
-        }
-        // xử lý phần đánh giá
-
-        let selectedStars = 0;
-
-        function selectStar(star) {
-            const stars = document.querySelectorAll(".star");
-            selectedStars = star;
-            stars.forEach((s, index) => {
-                s.classList.toggle("selected", index < star);
+        } else if (type === 'size') {
+            document.querySelectorAll('.size-option').forEach(option => {
+                option.classList.remove('selected');
             });
         }
 
-        function handleFiles(files) {
-            const uploadedImagesDiv =
-                document.getElementById("uploadedImages");
-            uploadedImagesDiv.innerHTML = "";
+        // Đánh dấu lựa chọn hiện tại là "selected"
+        element.classList.add('selected');
 
-            Array.from(files).forEach((file) => {
-                const imgContainer = document.createElement("div");
-                imgContainer.className = "image-container";
+        // Cập nhật giá hiển thị
+        const priceElement = document.getElementById('product-price');
+        priceElement.textContent = `${Number(price).toLocaleString()} VND`;
+    }
 
-                const img = document.createElement("img");
-                img.src = URL.createObjectURL(file);
-                img.alt = file.name;
+    function changeQuantity(change) {
+        const quantityInput = document.getElementById('quantity');
+        let currentQuantity = parseInt(quantityInput.value) || 1;
+        currentQuantity += change;
 
-                const removeButton = document.createElement("button");
-                removeButton.className = "remove-image";
-                removeButton.innerHTML = "&times;";
-                removeButton.onclick = () => {
-                    imgContainer.remove();
-                };
-
-                imgContainer.appendChild(img);
-                imgContainer.appendChild(removeButton);
-                uploadedImagesDiv.appendChild(imgContainer);
-            });
+        if (currentQuantity < 1) currentQuantity = 1;
+        // Kiểm tra nếu số lượng vượt quá số lượng có sẵn trong kho
+        if (currentQuantity > inStock) {
+            alert('Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!');
+            return; // Không cho phép thay đổi nếu vượt quá kho
         }
+
+        quantityInput.value = currentQuantity;
+        updateQuantity(currentQuantity);
+    }
+
+    function updateQuantity(value) {
+        let qty = parseInt(value);
+
+        if (isNaN(qty) || qty < 1) {
+            qty = 1;
+        }
+
+        // Kiểm tra nếu số lượng vượt quá số lượng có sẵn trong kho
+        if (qty > inStock) {
+            alert('Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!');
+            return; // Dừng lại nếu vượt quá kho
+        }
+
+        // Cập nhật giá trị của input hiển thị
+        document.getElementById('quantity').value = qty;
+
+        // Cập nhật giá trị của hidden input
+        document.getElementById('qty-hidden').value = qty;
+    }
+
+    function addToCart() {
+        const color = document.getElementById('selected-color').value;
+        const size = document.getElementById('selected-size').value;
+        const qty = document.getElementById('qty-hidden').value;
+
+        // Kiểm tra nếu chưa chọn màu sắc, kích thước hoặc số lượng
+        if (!color || !size || !qty) {
+            alert("Vui lòng chọn đầy đủ màu sắc, kích thước và số lượng.");
+            return; // Dừng lại nếu thiếu lựa chọn
+        }
+
+        // Gửi yêu cầu AJAX đến server
+        const formData = new FormData();
+        formData.append('product_id', document.querySelector('[name="product_id"]').value);
+        formData.append('color_id', color);
+        formData.append('size_id', size);
+        formData.append('qty', qty);
+        formData.append('_token', document.querySelector('[name="_token"]').value);
+
+        fetch("{{ route('user.cart.add') }}", {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Sản phẩm đã được thêm vào giỏ hàng.');
+                    location.reload();
+                } else {
+                    alert('Có lỗi xảy ra, vui lòng thử lại.');
+                }
+            })
+            .catch(error => {
+                alert('Lỗi kết nối, vui lòng thử lại.');
+            });
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast-notification');
+        const toastMessage = document.getElementById('toast-message');
+        toastMessage.innerText = message;
+        toast.style.display = 'flex';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+
+    function closeToast() {
+        document.getElementById('toast-notification').style.display = 'none';
+    }
+    // xử lý phần đánh giá
+
+    let selectedStars = 0;
+
+    function selectStar(star) {
+        const stars = document.querySelectorAll(".star");
+        selectedStars = star;
+        stars.forEach((s, index) => {
+            s.classList.toggle("selected", index < star);
+        });
+    }
+
+    function handleFiles(files) {
+        const uploadedImagesDiv =
+            document.getElementById("uploadedImages");
+        uploadedImagesDiv.innerHTML = "";
+
+        Array.from(files).forEach((file) => {
+            const imgContainer = document.createElement("div");
+            imgContainer.className = "image-container";
+
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(file);
+            img.alt = file.name;
+
+            const removeButton = document.createElement("button");
+            removeButton.className = "remove-image";
+            removeButton.innerHTML = "&times;";
+            removeButton.onclick = () => {
+                imgContainer.remove();
+            };
+
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(removeButton);
+            uploadedImagesDiv.appendChild(imgContainer);
+        });
+    }
     </script>
     @endsection

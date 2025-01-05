@@ -9,47 +9,40 @@
 
 <body>
 
-    <div class="container mt-5">
+    <div class="container">
 
-    @if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-    @if (session('success'))
+        @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+        @endif
+        @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
-    @endif
-        <div class="button-header">
+        @endif
+        <div class="button-header mb-3">
             <button>
                 Danh sách màu sắc <i class="fa fa-star"></i>
             </button>
+            @if(Auth::user()->role !== 3)
+            <a href="{{ route('admin.colors.create') }}" class="btn add-button">Thêm mới</a>
+            @endif
         </div>
-        <div class="container mt-4">
-    <form action="" method="get" class="d-flex justify-content-center">
-        <div class="input-group w-50">
-            <!-- Nút tìm kiếm -->
-            <button class="btn btn-primary" type="submit" name="btn">
-                <i class="bi bi-search"></i> <!-- Icon tìm kiếm -->
-            </button>
-            <!-- Ô input tìm kiếm -->
-            <input
-                type="text"
-                class="form-control"
-                name="nhap"
-                placeholder="Tìm kiếm sản phẩm..."
-                aria-label="Search"
-            >
+        <div class="custom-filter-bar d-flex align-items-center">
+            <form action="" method="get" class="d-flex justify-content-center">
+                <div class="custom-input-group">
+                    <input type="text" class="custom-form-control" name="nhap" placeholder="Tìm kiếm sản phẩm..."
+                        aria-label="Search">
+                    <button class="custom-btn custom-btn-primary" type="submit">
+                        <i class="bi bi-search"></i> <!-- Icon tìm kiếm -->
+                    </button>
+                </div>
+            </form>
+            <a href="{{ route('admin.colors.index') }}" class="btn ml-3">
+                <image src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
+            </a>
         </div>
-    </form>
-</div>
-
-        @if(Auth::user()->role !== 3)
-        <a href="{{ route('admin.colors.create') }}" class="btn add-button">Thêm mới</a>
-    
-        @endif
-     
 
         <table class="product-table table table-bordered text-center align-middle mb-5">
             <thead class="thead-dark">
@@ -76,7 +69,7 @@
                             </a>
 
                             <!-- Chỉnh sửa thông tin -->
-                            <a href="{{ route('admin.colors.edit', $color->color_id) }}" >
+                            <a href="{{ route('admin.colors.edit', $color->color_id) }}">
                                 <button class="action-btn edit" title="Chỉnh sửa">
                                     <i class="fas fa-edit"></i>
                                 </button>

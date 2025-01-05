@@ -6,7 +6,7 @@
             <th>Tên Sản Phẩm</th>
             <th>Kích cỡ</th>
             <th>Màu</th>
-            <th>Gíai</th>
+            <th>Giá</th>
             <th>Số lượng</th>
         </tr>
     </thead>
