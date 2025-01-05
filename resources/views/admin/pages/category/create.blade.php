@@ -26,7 +26,7 @@
                 <img src="#" alt="Ảnh danh mục" id="imagePreview" />
                 <span id="noImageText">Ảnh danh mục</span>
             </div>
-            
+
             <!-- Upload Button -->
             <button type="button" class="custom-btn-upload-admin" onclick="document.getElementById('image').click();">
                 <i class="bi bi-upload"></i> <span class="ml-2"> Tải lên</span>
