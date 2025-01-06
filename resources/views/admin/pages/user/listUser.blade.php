@@ -1,33 +1,46 @@
 @extends('admin.index')
 <style>
-.form-select {
-    border-radius: 5px;
-    padding: 8px 12px;
-    border: 1px solid #ced4da;
-    font-size: 16px;
-    color: #495057;
-}
+    .form-select {
+        border-radius: 5px;
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        font-size: 16px;
+        color: #495057;
+    }
 
-.form-select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
-}
+    .form-select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+    }
 
-.mb-4 {
-    margin-bottom: 1.5rem;
-    /* Tương đương với 24px */
-}
+    .mb-4 {
+        margin-bottom: 1.5rem;
+        /* Tương đương với 24px */
+    }
 
-.d-inline-block {
-    display: inline-block;
-}
+    .d-inline-block {
+        display: inline-block;
+    }
 
-.w-25 {
-    width: 25%;
-    /* 25% chiều rộng của bố cục cha */
-}
+    .w-25 {
+        width: 25%;
+        /* 25% chiều rộng của bố cục cha */
+    }
 </style>
+
 @section('content')
+@if (session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
+
+@if (session('error'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
+
 <div class="container">
     <div class="button-header mb-3">
         <button>Quản lý danh sách người dùng <i class="fa fa-star"></i></button>
@@ -76,21 +89,22 @@
                     @endswitch
                 </td>
                 <td>
-                    @if (auth()->user()->role == 1)
-                    <!-- Kiểm tra nếu người dùng hiện tại là Admin -->
-                    <form method="POST" action="{{ route('admin.users.update-role', $user->user_id) }}"
-                        style="display: inline;">
-                        @csrf
-                        <select name="role" class="form-select w-50 d-inline-block" onchange="this.form.submit()">
-                            <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>Admin</option>
-                            <option value="2" {{ $user->role == 2 ? 'selected' : '' }}>User</option>
-                            <option value="3" {{ $user->role == 3 ? 'selected' : '' }}>Manager</option>
-                        </select>
-                    </form>
-                    @else
-                    <span>Không thể chỉnh sửa</span> <!-- Nếu người dùng không phải Admin, hiển thị thông báo -->
-                    @endif
+                    @if (auth()->user()->role < $user->role && auth()->user()->user_id != $user->user_id)
+                        <!-- Chỉ cho phép nếu người dùng có vai trò cao hơn tài khoản đang xem -->
+                        <form method="POST" action="{{ route('admin.users.update-role', $user->user_id) }}" style="display: inline;">
+                            @csrf
+                            <select name="role" class="form-select w-50 d-inline-block" onchange="this.form.submit()">
+                                <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>Admin</option>
+                                <option value="2" {{ $user->role == 2 ? 'selected' : '' }}>User</option>
+                                <option value="3" {{ $user->role == 3 ? 'selected' : '' }}>Manager</option>
+                            </select>
+                        </form>
+                        @else
+                        <span>Không thể chỉnh sửa</span>
+                        @endif
                 </td>
+
+
             </tr>
             @empty
             <tr>
@@ -103,9 +117,16 @@
 
 <!-- Script -->
 <script>
-document.getElementById('role').addEventListener('change', function() {
-    // Tự động submit form khi thay đổi tùy chọn
-    document.getElementById('filterForm').submit();
-});
+    document.getElementById('role').addEventListener('change', function() {
+        // Tự động submit form khi thay đổi tùy chọn
+        document.getElementById('filterForm').submit();
+    });
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.classList.add('fade'); 
+            setTimeout(() => alert.remove(), 500); 
+        });
+    }, 3000); 
 </script>
 @endsection

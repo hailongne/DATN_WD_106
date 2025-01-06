@@ -22,25 +22,28 @@ class UserController extends Controller
         return view('admin.pages.user.listUser', compact('users', 'role'));
     }
 
-    /**
-     * Hiển thị form chỉnh sửa vai trò của người dùng.
-     */
-
-    /**
-     * Cập nhật vai trò của người dùng.
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
             'role' => 'required|integer',
         ]);
-
+    
         $user = User::findOrFail($id);
+
+        if (auth()->user()->user_id == $id) {
+            return redirect()->route('admin.users.listUser')->with('error', 'Bạn không thể chỉnh sửa quyền của chính mình!');
+        }
+
+        if (auth()->user()->role >= $user->role) {
+            return redirect()->route('admin.users.listUser')->with('error', 'Bạn không thể chỉnh sửa quyền của tài khoản có cùng hoặc vai trò cao hơn bạn!');
+        }
+    
         $user->role = $request->input('role');
         $user->save();
-
+    
         return redirect()->route('admin.users.listUser')->with('success', 'Cập nhật vai trò thành công!');
     }
+    
 
 
 }
