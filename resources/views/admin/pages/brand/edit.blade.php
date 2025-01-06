@@ -22,7 +22,7 @@
         @enderror
 
         <div class="form-group">
-            <label for="slug" class="custom-label">Tên đường dẫn</label>
+            <label for="slug" class="custom-label">Tên đường dẫn <span class="required">*</span></label>
             <input type="text" class="form-control" id="slug" name="slug" value="{{ $detailBrand->slug }}"
                 placeholder="Nhập tên đường dẫn" />
         </div>
@@ -30,7 +30,7 @@
         <span class="text-danger">{{$message}}</span>
         @enderror
         <div class="form-group">
-            <label for="description" class="custom-label">Mô tả</label>
+            <label for="description" class="custom-label">Mô tả <span class="required">*</span></label>
             <textarea class="form-control" id="description" name="description" rows="3"
                 placeholder="Nhập mô tả">{{ $detailBrand->description }}</textarea>
         </div>

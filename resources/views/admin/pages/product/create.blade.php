@@ -1,19 +1,50 @@
 @extends('admin.index')
 @section('content')
 <style>
-/* CSS */
-.form-container {
+.img-container,
+.img-container-edit {
+    width: 150px;
+    height: 200px;
+    margin-right: 20px;
+    border: 1px dashed #6c757d;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 100px;
-    /* Khoảng cách giữa các form */
-    margin-top: 30px;
-    /* Khoảng cách trên */
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    position: relative;
+}
+
+.img-container img {
+    max-width: 100%;
+    max-height: 100%;
+    display: none;
+    position: absolute;
+}
+
+
+.img-container-edit img {
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+
+}
+
+.img-container span {
+    position: absolute;
+    font-size: 14px;
+}
+
+.img-container img.show {
+    display: block;
+}
+
+.img-container:hover {
+    background-color: #e9ecef;
 }
 </style>
-<link rel="stylesheet" href="{{asset('css/admin/formAddProduct.css')}}">
-
 <div class="container">
 
     <form action="{{route('admin.products.store')}}" id="productForm" method="POST" enctype="multipart/form-data">
@@ -110,11 +141,11 @@
             <div class="col-3 mr-5">
                 <label class="custom-label" for="productSubtitle">Chú thích sản phẩm</label>
                 <input type="text" value="{{old('subtitle')}}" class="form-control" id="productSubtitle" name="subtitle"
-                    placeholder="Nhập Chú thích sản phẩm" maxlength="50" style="height: 52px;" />
+                    placeholder="Nhập Chú thích sản phẩm" style="height: 52px;" />
+                @error('sku')
+                <span class="text-danger">{{$message}}</span>
+                @enderror
             </div>
-            @error('subtitle')
-            <span class="text-danger">{{$message}}</span>
-            @enderror
 
             <div class="col-4 mr-4 accordion" id="sizeAccordion">
                 <label class="custom-label" for="productDescription">Kích thước</label>
@@ -136,7 +167,8 @@
                             @foreach($sizes as $size)
                             <div>
                                 <input type="checkbox" class="size-checkbox" id="size{{ $size->id }}" name="size_id[]"
-                                    value="{{ $size->size_id }}">
+                                    value="{{ $size->size_id }}"
+                                    {{ in_array($size->size_id, old('size_id', [])) ? 'checked' : '' }} required>
                                 <label for="size{{ $size->id }}">{{ $size->name }}</label>
                             </div>
                             @endforeach
@@ -157,25 +189,26 @@
                     </h2>
                     <div id="collapseColors" class="accordion-collapse collapse show" aria-labelledby="headingColors">
                         <div class="accordion-body">
-                            <!-- Checkbox chọn tất cả -->
                             <div>
                                 <input type="checkbox" id="selectAllColors" onclick="toggleAllColors(this)">
                                 <label for="selectAllColors"><strong>Chọn tất cả</strong></label>
                             </div>
                             <hr />
-                            <!-- Danh sách các màu -->
                             @foreach($colors as $color)
                             <div>
                                 <input type="checkbox" class="color-checkbox" id="color{{ $color->color_id }}"
                                     name="color_id[]" value="{{ $color->color_id }}" @if(in_array($color->color_id,
                                 old('color_id', []))) checked
-                                @endif>
+                                @endif required>
                                 <label for="color{{ $color->color_id }}">{{ $color->name }}</label>
                             </div>
                             @endforeach
                         </div>
                     </div>
                 </div>
+                @error('color_id')
+                <span class="text-danger">{{$message}}</span>
+                @enderror
             </div>
         </div>
 
@@ -183,18 +216,18 @@
             <div class="col-12">
                 <label class="custom-label" for="productDescription">Mô tả sản phẩm</label>
                 <textarea class="form-control" id="productDescription" name="description"
-                    placeholder="Nhập mô tả sản phẩm..."></textarea>
+                    placeholder="Nhập mô tả sản phẩm...">{{ old('description') }}</textarea>
                 @error('description')
                 <span class="text-danger">{{$message}}</span>
                 @enderror
             </div>
             <div class="col-12 mt-3">
-                <button type="button" class="btn btn-primary btn-sm" onclick="previewDescription()">Xem trước định
-                    dạng</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="previewDescription()">Xem trước mô tả sản
+                    phẩm</button>
             </div>
             <div class="col-12 mt-3">
-                <div id="descriptionPreview" class="p-3 border rounded bg-light">
-                    <strong>Xem trước sẽ hiển thị ở đây.</strong>
+                <div id="descriptionPreview" class="p-3 border rounded bg-light ">
+                    Mô tả sản phẩm sẽ hiển thị trước ở đây
                 </div>
             </div>
         </div>
@@ -289,4 +322,5 @@ function toggleAllSizes(selectAllCheckbox) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @endpush
+
 @endsection

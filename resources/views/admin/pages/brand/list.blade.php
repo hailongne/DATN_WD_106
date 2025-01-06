@@ -65,11 +65,11 @@
                 </td>
                 <td>
                     <div class="icon-product d-flex justify-content-center gap-2">
-                        <a href="{{ route('admin.brands.detail', $brand->brand_id) }}" class="text-info">
+                        <!-- <a href="{{ route('admin.brands.detail', $brand->brand_id) }}" class="text-info">
                             <button class="action-btn eye" title="Xem chi tiết">
                                 <i class="fas fa-eye"></i>
                             </button>
-                        </a>
+                        </a> -->
                         <a href="{{ route('admin.brands.edit', $brand->brand_id) }}" class="text-warning">
                             <button class="action-btn edit" title="Chỉnh sửa">
                                 <i class="fas fa-edit"></i>
