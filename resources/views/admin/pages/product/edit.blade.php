@@ -1,21 +1,50 @@
 @extends('admin.index')
 @section('content')
-@push('styles')
 <style>
-/* CSS */
-.form-container {
+.img-container,
+.img-container-edit {
+    width: 150px;
+    height: 200px;
+    margin-right: 20px;
+    border: 1px dashed #6c757d;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 100px;
-    /* Khoảng cách giữa các form */
-    margin-top: 30px;
-    /* Khoảng cách trên */
+    color: #6c757d;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    position: relative;
+}
+
+.img-container img {
+    max-width: 100%;
+    max-height: 100%;
+    display: none;
+    position: absolute;
+}
+
+
+.img-container-edit img {
+    max-width: 100%;
+    max-height: 100%;
+    position: absolute;
+
+}
+
+.img-container span {
+    position: absolute;
+    font-size: 14px;
+}
+
+.img-container img.show {
+    display: block;
+}
+
+.img-container:hover {
+    background-color: #e9ecef;
 }
 </style>
-<link rel="stylesheet" href="{{asset('css/admin/formAddProduct.css')}}">
-@endpush
-<link rel="stylesheet" href="{{asset('css/admin/formAddProduct.css')}}">
 <div class="container">
     <form id="productForm" method="POST" action="{{route('admin.products.update', $product->product_id)}}"
         class="custom-form-container" enctype="multipart/form-data">
@@ -44,7 +73,8 @@
                     <!-- Upload Button -->
                     <button type="button" class="custom-btn-upload-admin"
                         onclick="document.getElementById('productImage').click();">
-                        <i class="bi bi-upload"></i> <span class="ms-2">Tải lên</span>
+                        <i class="bi bi-upload"></i> <span class="ms-2">Tải lên <span
+                                class="custom-required-star">*</span></span>
                     </button>
                     <input type="file" class="form-control-file d-none" id="productImage" name="main_image_url"
                         accept="image/*" onchange="showImage(event)" />
@@ -56,7 +86,8 @@
 
             <div class="col-md-4 mr-4">
                 <div class="mb-4">
-                    <label class="custom-label" for="productName">Tên sản phẩm</label>
+                    <label class="custom-label" for="productName">Tên sản phẩm <span
+                            class="custom-required-star">*</span></label>
                     <input type="text" class="form-control" id="productName" name="name" placeholder="Nhập tên sản phẩm"
                         required maxlength="50" value="{{$product->name}}" />
                     @error('name')
@@ -64,7 +95,8 @@
                     @enderror
                 </div>
                 <div>
-                    <label class="custom-label" for="productCategory">Danh mục sản phẩm</label>
+                    <label class="custom-label" for="productCategory">Danh mục sản phẩm <span
+                            class="custom-required-star">*</span></label>
                     <select class="form-control" id="productCategory" name="product_category_id" required>
                         <option value="0">Chọn danh mục sản phẩm</option>
                         @foreach($categories as $category)
@@ -82,7 +114,8 @@
 
             <div class="col-md-4">
                 <div class="mb-4">
-                    <label class="custom-label" for="productSKU">Mã sản phẩm</label>
+                    <label class="custom-label" for="productSKU">Mã sản phẩm <span
+                            class="custom-required-star">*</span></label>
                     <input type="text" class="form-control" id="productSKU" name="sku" placeholder="Nhập mã sản phẩm"
                         required maxlength="50" value="{{$product->sku}}" />
                     @error('sku')
@@ -90,7 +123,8 @@
                     @enderror
                 </div>
                 <div>
-                    <label class="custom-label" for="productBrand">Thương hiệu sản phẩm</label>
+                    <label class="custom-label" for="productBrand">Thương hiệu sản phẩm <span
+                            class="custom-required-star">*</span></label>
                     <select class="form-control" id="productBrand" name="brand_id" required>
                         <option value="">Chọn thương hiệu sản phẩm</option>
                         @foreach($brands as $brand)
@@ -110,17 +144,19 @@
 
         <div class="row gx-2 mb-5">
             <div class="col-3 mr-5">
-                <label class="custom-label" for="productSubtitle">Chú thích sản phẩm</label>
+                <label class="custom-label" for="productSubtitle">Chú thích sản phẩm <span
+                        class="custom-required-star">*</span></label>
                 <input type="text" class="form-control" id="productSubtitle" name="subtitle"
                     placeholder="Nhập Chú thích sản phẩm" maxlength="50" style="height: 52px;"
-                    value="{{$product->subtitle}}" />
+                    value="{{$product->subtitle}}" required />
+                @error('sku')
+                <span class="text-danger">{{$message}}</span>
+                @enderror
             </div>
-            @error('subtitle')
-            <span class="text-danger">{{$message}}</span>
-            @enderror
 
             <div class="col-4 mr-4 accordion" id="sizeAccordion">
-                <label class="custom-label" for="productDescription">Kích thước</label>
+                <label class="custom-label" for="productDescription">Kích thước <span
+                        class="custom-required-star">*</span></label>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -138,10 +174,9 @@
                             <hr />
                             @foreach($sizes as $size)
                             <div>
-                                <input type="checkbox" id="size{{ $size->id }}" name="size_id[]"
+                                <input type="checkbox" class="size-checkbox" id="size{{ $size->id }}" name="size_id[]"
                                     value="{{ $size->size_id }}" @if(in_array($size->size_id, old('size_id',
-                                $product->sizes->pluck('size_id')->toArray())))
-                                checked @endif
+                                $product->sizes->pluck('size_id')->toArray()))) checked @endif
                                 />
                                 <label for="size{{ $size->size_id }}">{{ $size->name }}</label>
                             </div>
@@ -153,7 +188,8 @@
 
             <!-- Dropdown Màu sắc sản phẩm -->
             <div class="col-4 accordion" id="colorAccordion">
-                <label class="custom-label" for="productDescription">Màu sắc</label>
+                <label class="custom-label" for="productDescription">Màu sắc <span
+                        class="custom-required-star">*</span></label>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingColors">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -163,17 +199,16 @@
                     </h2>
                     <div id="collapseColors" class="accordion-collapse collapse show" aria-labelledby="headingColors">
                         <div class="accordion-body">
-                            <!-- Checkbox chọn tất cả -->
                             <div>
                                 <input type="checkbox" id="selectAllColors" onclick="toggleAllColors(this)">
                                 <label for="selectAllColors"><strong>Chọn tất cả</strong></label>
                             </div>
                             <hr />
-                            <!-- Danh sách các màu -->
                             @foreach($colors as $color)
                             <div>
-                                <input type="checkbox" id="color{{ $color->color_id }}" name="color_id[]"
-                                    value="{{ $color->color_id }}" @if(in_array($color->color_id, old('color_id',
+                                <input type="checkbox" class="color-checkbox" id="color{{ $color->color_id }}"
+                                    name="color_id[]" value="{{ $color->color_id }}" @if(in_array($color->color_id,
+                                old('color_id',
                                 $product->colors->pluck('color_id')->toArray()))) checked @endif />
                                 <label for="color{{ $color->color_id }}">{{ $color->name }}</label>
                             </div>
@@ -184,34 +219,11 @@
             </div>
         </div>
 
-        <!-- Select filter -->
-        <div class="row gx-2 mb-3">
-            <div class="col-md-12">
-                <label class="custom-label">Lọc sản phẩm theo phân loại</label>
-            </div>
-            <div class="col-md-4">
-                <label for="is_active">Sản phẩm hoạt động</label>
-                <input type="checkbox" name="is_active" id="is_active" value="1"
-                    {{ $product->is_active ? 'checked' : '' }}>
-            </div>
-
-            <div class="col-md-4">
-                <label for="is_hot">Sản phẩm hot</label>
-                <input type="checkbox" name="is_hot" id="is_hot" value="1" {{ $product->is_hot ? 'checked' : '' }}>
-            </div>
-
-            <div class="col-md-4">
-                <label for="is_best_seller">Sản phẩm bán chạy</label>
-                <input type="checkbox" name="is_best_seller" id="is_best_seller" value="1"
-                    {{ $product->is_best_seller ? 'checked' : '' }}>
-            </div>
-        </div>
-
-
         <!-- Fifth Row -->
         <div class="row gx-2 mb-3">
             <div class="col-12">
-                <label class="custom-label" for="productDescription">Mô tả sản phẩm</label>
+                <label class="custom-label" for="productDescription">Mô tả sản phẩm <span
+                        class="custom-required-star">*</span></label>
                 <textarea class="form-control" id="productDescription" name="description"
                     placeholder="Nhập mô tả sản phẩm" rows="5"
                     required>{{ old('description', $product->description) }}</textarea>
@@ -276,7 +288,6 @@ function showImage(event) {
     }
 }
 
-
 function toggleAll(type) {
     console.log("Toggled type:", type);
 
@@ -330,4 +341,5 @@ function toggleAllSizes(selectAllCheckbox) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @endpush
+
 @endsection

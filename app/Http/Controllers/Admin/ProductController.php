@@ -56,6 +56,26 @@ class ProductController extends Controller
 
         return redirect()->back()->with('success', 'Trạng thái sản phẩm đã được thay đổi!');
     }
+    public function toggleHot($id)
+    {
+        $product = Product::findOrFail($id);
+
+        // Thay đổi trạng thái is_active
+        $product->is_hot = !$product->is_hot;
+        $product->save();
+
+        return redirect()->back()->with('success', 'Trạng thái sản phẩm đã được thay đổi!');
+    }
+    public function toggleBestSeller($id)
+    {
+        $product = Product::findOrFail($id);
+
+        // Thay đổi trạng thái is_active
+        $product->is_best_seller = !$product->is_best_seller;
+        $product->save();
+
+        return redirect()->back()->with('success', 'Trạng thái sản phẩm đã được thay đổi!');
+    }
 
     public function getData()
     {
@@ -228,15 +248,16 @@ class ProductController extends Controller
     public function detailProduct($id)
     {
         $attPros = AttributeProduct::with([
-            'product:product_id,name,sku,is_best_seller,is_hot,is_active,main_image_url',
+            'product:product_id,name,sku,is_best_seller,is_hot,is_active,main_image_url,description,slug,subtitle',
             'color:color_id,name',
             'size:size_id,name'
         ])
-            ->where('product_id', $id)
-            ->get();
+        ->where('product_id', $id)
+        ->get();
 
         return view('admin.pages.product.detail', compact('attPros'));
     }
+
     public function editProduct($id)
     {
         $product = Product::findOrFail($id);

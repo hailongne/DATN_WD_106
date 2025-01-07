@@ -13,12 +13,42 @@
             <img src="{{ asset('imagePro/image/banner/Banner4.png') }}" class="d-block w-100" alt="Banner 4">
         </div>
     </div>
-    <!-- <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button> -->
+</div>
+<div class="info-section">
+    <div class="info-item">
+        <div class="info-icon">
+            <i class="fas fa-shipping-fast"></i> <!-- Miễn phí vận chuyển -->
+        </div>
+        <div class="info-text">
+            <h4>Phí vận chuyển</h4>
+            <p> Chỉ 40k toàn quốc</p>
+        </div>
+    </div>
+    <div class="info-item">
+        <div class="info-icon">
+            <i class="fas fa-sync-alt"></i> <!-- Đổi hàng tận nhà -->
+        </div>
+        <div class="info-text">
+            <h4>Đổi hàng tận nhà</h4>
+            <p>Trong vòng 15 ngày</p>
+        </div>
+    </div>
+    <div class="info-item">
+        <div class="info-icon">
+            <i class="fas fa-money-check-alt"></i> <!-- Thanh toán COD -->
+        </div>
+        <div class="info-text">
+            <h4>Thanh toán COD</h4>
+            <p>Yên tâm mua sắm</p>
+        </div>
+    </div>
+    <div class="info-item">
+        <div class="info-icon">
+            <i class="fas fa-phone-alt"></i> <!-- Hotline -->
+        </div>
+        <div class="info-text">
+            <h4>Hotline: 0369 312 858</h4>
+            <p>Hỗ trợ bạn từ 8h30-24h00</p>
+        </div>
+    </div>
 </div>
