@@ -21,7 +21,8 @@
         <div class="form-section">
             <div class="row gx-2 mb-3">
                 <div class="col-6">
-                    <label for="tenMaGiamGia" class="custom-label">Tên mã giảm giá:</label>
+                    <label for="tenMaGiamGia" class="custom-label">Tên mã giảm giá <span
+                            class="text-danger">*</span></label>
                     <input type="text" id="tenMaGiamGia" value="{{old('code')}}" name="code"
                         placeholder="Nhập tên mã giảm giá" class="form-control" />
                     @error('code')
@@ -29,7 +30,8 @@
                     @enderror
                 </div>
                 <div class="col-6">
-                    <label for="tenMaGiamGia" class="custom-label">Giá trị giảm giá</label>
+                    <label for="tenMaGiamGia" class="custom-label">Giá trị giảm giá <span
+                            class="text-danger">*</span></label>
                     <select class="form-select" id="value" aria-label="Default select example">
                         <option selected>Chọn loại giảm giá</option>
                         <option value="1">Số tiền giảm giá</option>
@@ -50,7 +52,8 @@
             </div>
             <div class="row gx-2 mb-3">
                 <div class="col-4">
-                    <label for="condition" class="custom-label">Giá trị tối thiểu</label>
+                    <label for="condition" class="custom-label">Giá trị tối thiểu <span
+                            class="text-danger">*</span></label>
                     <input type="number" id="condition" value="{{old('min_order_value')}}" name="min_order_value"
                         placeholder="Nhập điều kiện áp dụng" class="form-control" />
                 </div>
@@ -58,7 +61,8 @@
                 <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="col-4">
-                    <label for="max_order_value" class="custom-label">Giá trị tối đa:</label>
+                    <label for="max_order_value" class="custom-label">Giá trị tối đa <span
+                            class="text-danger">*</span></label>
                     <input type="number" id="max_order_value" value="{{old('max_order_value')}}" name="max_order_value"
                         placeholder="Nhập giá trị tối đa" class="form-control" />
                     @error('max_order_value')
@@ -66,7 +70,7 @@
                     @enderror
                 </div>
                 <div class="col-4">
-                    <label for="quantity" class="custom-label">Số lượng:</label>
+                    <label for="quantity" class="custom-label">Số lượng <span class="text-danger">*</span></label>
                     <input type="number" id="quantity" name="quantity" value="{{old('quantity')}}"
                         placeholder="Nhập số lượng" class="form-control" />
                     @error('quantity')
@@ -76,7 +80,8 @@
             </div>
             <div class="row gx-2 mb-3">
                 <div class="col-6">
-                    <label for="start_date" class="custom-label">Thời gian từ ngày:</label>
+                    <label for="start_date" class="custom-label">Thời gian từ ngày <span
+                            class="text-danger">*</span></label>
                     <input type="datetime-local" value="{{old('start_date')}}" name="start_date" id="start_date"
                         class="form-control" />
 
@@ -85,7 +90,8 @@
                     @enderror
                 </div>
                 <div class="col-6">
-                    <label for="end_date" class="custom-label">Thời gian đến ngày:</label>
+                    <label for="end_date" class="custom-label">Thời gian đến ngày <span
+                            class="text-danger">*</span></label>
                     <input type="datetime-local" value="{{old('end_date')}}" name="end_date" id="end_date"
                         class="form-control" />
                 </div>
@@ -94,7 +100,7 @@
                 @enderror
             </div>
             <div class="row gx-2 mb-3">
-                <label>Chọn kiểu</label>
+                <label>Chọn kiểu <span class="text-danger">*</span></label>
                 <div class="form-check">
                     <input type="radio" name="is_public" id="public" value="1" class="form-check-input" checked>
                     <label for="public" class="form-check-label">Public</label>
@@ -178,6 +184,8 @@ public.addEventListener('click', function() {
     customer.style.display = "none";
 });
 </script>
+
 @endpush
+
 </body>
 @endsection

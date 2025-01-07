@@ -46,7 +46,7 @@
                     <input type="text" class="custom-form-control" name="nhap" placeholder="Tìm kiếm sản phẩm..."
                         aria-label="Search">
                     <button class="custom-btn custom-btn-primary" type="submit">
-                        <i class="bi bi-search"></i> <!-- Icon tìm kiếm -->
+                        <i class="bi bi-search"></i>
                     </button>
                 </div>
             </form>
@@ -88,15 +88,16 @@
         <table class="product-table table table-bordered text-center align-middle mb-5">
             <thead class="thead-dark">
                 <tr>
-                    <th style="width: 5%;"></th>
-                    <th style="width: 15%;">Hình ảnh</th>
-                    <th style="width: 15%;">Tên Sản Phẩm</th>
-                    <th style="width: 10%;">Mã</th>
-                    <th style="width: 15%;">Danh mục</th>
-                    <th style="width: 15%;">Thương hiệu</th>
-                    <th style="width: 10%;">Hoạt động </th>
-                    <th style="width: 20%;">
-                    </th>
+                    <th></th>
+                    <th>Hình ảnh</th>
+                    <th>Tên </th>
+                    <th>Mã</th>
+                    <th>Danh mục</th>
+                    <!-- <th>Thương hiệu</th> -->
+                    <th>Hot </th>
+                    <th>Bán chạy </th>
+                    <th>Hoạt động </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -110,14 +111,35 @@
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->sku }}</td>
                     <td>{{ $product->category->name }}</td>
-                    <td>{{ $product->brand->name }}</td>
+                    <!-- <td>{{ $product->brand->name }}</td> -->
+
+                    <td>
+                        <form action="{{ route('admin.products.toggleHot', $product->product_id) }}" method="POST"
+                            style="display:inline;">
+                            @csrf
+                            <button type="submit"
+                                class="custom-btn-active-admin {{ $product->is_hot ? 'btn-success' : 'btn-danger' }}">
+                                <p>{{ $product->is_hot ? 'Đã bật' : 'Đã tắt' }}</p>
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="{{ route('admin.products.toggleBestSeller', $product->product_id) }}"
+                            method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit"
+                                class="custom-btn-active-admin {{ $product->is_best_seller ? 'btn-success' : 'btn-danger' }}">
+                                <p>{{ $product->is_best_seller ? 'Đã bật' : 'Đã tắt' }}</p>
+                            </button>
+                        </form>
+                    </td>
                     <td>
                         <form action="{{ route('admin.products.toggle', $product->product_id) }}" method="POST"
                             style="display:inline;">
                             @csrf
                             <button type="submit"
                                 class="custom-btn-active-admin {{ $product->is_active ? 'btn-success' : 'btn-danger' }}">
-                                <p>{{ $product->is_active ? 'Hoàn thành' : 'Đã hủy' }}</p>
+                                <p>{{ $product->is_active ? 'Đang bán' : 'Dừng bán' }}</p>
                             </button>
                         </form>
                     </td>

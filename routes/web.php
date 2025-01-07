@@ -135,6 +135,8 @@ Route::group(
             ],
             function () {
                 Route::get('/list-product', [ProductController::class, 'listProduct'])->name(name: 'index');
+                Route::post('/product/{id}/toggleHot', [ProductController::class, 'toggleHot'])->name('toggleHot');
+                Route::post('/product/{id}/toggleBestSeller', [ProductController::class, 'toggleBestSeller'])->name('toggleBestSeller');
                 Route::post('/product/{id}/toggle', [ProductController::class, 'toggle'])->name('toggle');
                 Route::get('/get-data', [ProductController::class, 'getData'])->name('create');
                 Route::post('/add-product', [ProductController::class, 'addProduct'])->name('store');

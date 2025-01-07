@@ -2,7 +2,17 @@
 
 @section('content')
 
+<style>
+.action-btn i {
+    font-size: 18px;
+}
 
+.table th,
+.table td {
+    font-size: 18px;
+    line-height: 1.2;
+}
+</style>
 <div class="container mt-5">
     @if (session('error'))
     <div class="alert alert-danger">
@@ -50,11 +60,11 @@
                 <td>{{ $size->name }}</td>
                 <td>
                     <div class="icon-product d-flex justify-content-center gap-2">
-                        <a href="{{ route('admin.sizes.detail', $size->size_id) }}" class=" text-info action-icons">
+                        <!-- <a href="{{ route('admin.sizes.detail', $size->size_id) }}" class=" text-info action-icons">
                             <button class="action-btn eye" title="Xem chi tiết">
                                 <i class="fas fa-eye"></i>
                             </button>
-                        </a>
+                        </a> -->
                         <a href="{{ route('admin.sizes.edit', $size->size_id) }}" class="text-warning action-icons">
                             <button class="action-btn edit" title="Chỉnh sửa">
                                 <i class="fas fa-edit"></i>

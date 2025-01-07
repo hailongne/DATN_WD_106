@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="{{asset('css/admin/table.css')}}">
     <link rel="stylesheet" href="{{asset('css/admin/form.css')}}">
     <link rel="stylesheet" href="{{asset('css/admin/coupon.css')}}">
+    <link rel="stylesheet" href="{{asset('css/admin/orderDetail.css')}}">
     @stack('styles')
     <style>
     *:focus {

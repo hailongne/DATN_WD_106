@@ -14,6 +14,11 @@
             <br />
             <a href="{{ route('user.profiles.edit-profile', ['id' => Auth::user()->user_id]) }}" class="custom-text-link-profile">Chỉnh sửa tài khoản</a>
             <br />
+            <a href="{{route('user.product.listLove', ['id' => Auth::user()->user_id])}}" class="nav-link">
+                        <!-- <i class="fa-solid fa-heart"></i> -->
+                        Sản phẩm yêu thích
+                        </a>
+                        <br/>
             <a href="{{route('user.order.history')}}" class="custom-text-link-profile">Lịch sử đơn hàng</a>
             <br />
         </div>
