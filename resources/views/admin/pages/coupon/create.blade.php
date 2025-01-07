@@ -39,13 +39,14 @@
 
                     </select>
                 </div>
-                <div class="form-group" id="value1" style="display: none;">
-                    <label for="discount">Gía trị</label>
+                <div class="row gx-2 mb-3" id="value1">
+                    <label class="custom-label" for="discount">Gía trị</label>
                     <input type="number"
-                
-                     id="discount" placeholder="Nhập điều kiện áp dụng" />
+                class="form-control"
+                     id="discount" name="discount_amount" placeholder="Nhập số tiền giảm giá" />
                 </div>
                 @error('discount_amount')
+
                     <span class="text-danger">{{$message}}</span>
                     @enderror
                     @error('discount_percentage')
@@ -126,7 +127,7 @@
                 </button>
             </div>
             <div class="search-group mb-3">
-                <input type="text" placeholder="Tìm kiếm khách hàng" class="form-control" />
+                <input type="text" placeholder="Tìm kiếm khách hàng" name="nhap" class="form-control" />
                 <button class="btn btn-primary">Tìm</button>
             </div>
             <table class="product-table table table-bordered text-center align-middle">
@@ -166,28 +167,28 @@
 value = document.getElementById('value');
 discount = document.getElementById('discount');
 
-        value.addEventListener('change', function () {
-            if (value.value == 1) {
-                document.getElementById('value1').style.display = "block";
-                discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
-                discount.setAttribute('name', 'discount_amount')
-            }
-            else {
-                document.getElementById('value1').style.display = "block";
-                discount.setAttribute('placeholder', 'Nhập phần trăm giảm giá')
-                discount.setAttribute('name', 'discount_percentage')
-            }
-        });
-        private = document.getElementById('private');
-        public = document.getElementById('public');
-        customer = document.getElementById('customer-section');
-        private.addEventListener('click', function () {
-            customer.style.display = "block";
-        });
-        public.addEventListener('click', function () {
-            customer.style.display = "none";
-        });
-    </script>
+value.addEventListener('change', function() {
+    if (value.value == 1) {
+        document.getElementById('value1').style.display = "block";
+        discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
+        discount.setAttribute('name', 'discount_amount')
+    } else {
+        document.getElementById('value1').style.display = "block";
+        discount.setAttribute('placeholder', 'Nhập phần trăm giảm giá')
+        discount.setAttribute('name', 'discount_percentage')
+    }
+});
+private = document.getElementById('private');
+public = document.getElementById('public');
+customer = document.getElementById('customer-section');
+private.addEventListener('click', function() {
+    customer.style.display = "block";
+});
+public.addEventListener('click', function() {
+    customer.style.display = "none";
+});
+</script>
+
 @endpush
 
 </body>
