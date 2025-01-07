@@ -1,59 +1,125 @@
 @extends('admin.index')
-@push('styles')
-<link rel="stylesheet" href="{{asset('css/style.css')}}">>
-@endpush
 @section('content')
 
 <body>
-    <div class="container order-details mt-5">
-        <div class="row">
-            <div class="col-md-6">
-                <div class="order-card">
-                    <h2>1. Thông tin khách hàng</h2>
-                    <p><strong>Tên người mua: </strong>{{ $order->recipient_name }}</p>
-                    <p><strong>Email: </strong>{{ $order->user->email }}</p>
-                    <p><strong>Số điện thoại nhận hàng: </strong>{{ $order->phone }}</p>
-                    <p><strong>Địa chỉ nhận hàng: </strong>{{ $order->shipping_address  }}</p>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="order-card">
-                    <h2>2. Thông tin đơn hàng</h2>
-                    <p><strong>Mã đơn hàng:</strong> {{ $order->order_id }}</p>
-                    @php
-                    $statusLabels = [
-                    'pending' => 'Đang chờ xử lý',
-                    'shipped' => 'Đang vận chuyển',
-                    'delivered' => 'Đã giao hàng',
-                    'cancelled' => 'Đã hủy',
-                    'completed' => 'Hoàn thành',
-                    ];
-                    $statusTranslations = [
-                    'pending' => 'Chờ xử lý',
-                    'paid' => 'Đã thanh toán',
-                    'failed' => 'Thanh toán thất bại',
-                    'refunded' => 'Hoàn tiền',
-                    'cancelled' => 'Đã hủy',
-                    ];
+    <div class="button-header mb-3">
+        <button>Chi tiết đơn hàng<strong> #{{ $order->order_id }} </strong> <i class="fa fa-star"></i></button>
+    </div>
+    @php
+    $statusLabels = [
+    'pending' => 'Đơn hàng đang chờ xử lý',
+    'processing' => 'Đơn Hàng đang xử lý',
+    'shipped' => 'Đơn hàng đang vận chuyển',
+    'delivered' => 'Đơn hàng đã giao hàng',
+    'cancelled' => 'Đơn hàng đã hủy',
+    'completed' => 'Đơn hàng đã hoàn thành',
+    ];
+    $statusTranslations = [
+    'pending' => 'Chờ xử lý',
+    'paid' => 'Đã thanh toán',
+    'failed' => 'Thanh toán thất bại',
+    'refunded' => 'Hoàn tiền',
+    'cancelled' => 'Đã hủy',
+    ];
 
-                    @endphp
-                    <p><strong>Trạng thái đơn hàng:</strong> {{ $statusLabels[$order->status] ?? 'Không xác định' }}</p>
-                    <p><strong>Trạng thái thanh toán:</strong> {{ $statusTranslations[$order->payment_status] ?? 'Không xác định' }}</p>
-                    <p><strong>Ngày mua hàng:</strong> {{ $order->created_at->format('d-m-Y H:i:s') }}</p>
-                    <p><strong>Ngày cập nhật đơn hàng:</strong> {{ $order->updated_at->format('d-m-Y H:i:s') }}</p>
-                    <!-- <p><strong>Trạng thái:</strong> Chờ xác nhận</p> -->
-                    <div class="mt-4">
-                        <!-- <button class="btn btn-success" id="confirmOrderBtn">Xác nhận đơn hàng</button>
-                        <button class="btn btn-danger" id="cancelOrderBtn">Hủy đơn hàng</button> -->
+    @endphp
+    <div class="card align-items-center justify-content-between mb-4">
+        <div class=" title-card d-flex row">
+            <div class="text-back d-flex col">
+                <a href="{{ route('admin.orders') }}">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+            <div class="custom-status col">
+                <span class="text-info ml-3">{{ $statusLabels[$order->status] ?? 'Không xác định' }}</span>
+                <span class=" text-nowrap">MÃ ĐƠN HÀNG: #{{ $order->order_id }} <span class="ml-3">|</span></span>
+            </div>
+        </div>
+        <hr />
+        <div class="card-order-history">
+            <div class="timeline mb-3">
+                @foreach ($order->statusHistories as $history)
+                <div class="step completed">
+                    <div class="icon">
+                        @switch(strtolower($history->new_status))
+                        @case('pending')
+                        <i class="fas fa-clock"></i>
+                        @break
+                        @case('processing')
+                        <i class="fas fa-spinner"></i>
+                        @break
+                        @case('shipped')
+                        <i class="fas fa-truck"></i>
+                        @break
+                        @case('delivered')
+                        <i class="fas fa-box-open"></i>
+                        @break
+                        @case('cancelled')
+                        <i class="fas fa-times-circle"></i>
+                        @break
+                        @case('completed')
+                        <i class="fas fa-check-circle"></i>
+                        @break
+                        @default
+                        <i class="fas fa-question-circle"></i>
+                        @endswitch
                     </div>
+                    <div class="text">
+                        <p>{{ $statusLabels[strtolower($history->new_status)] ?? $history->new_status }}</p>
+                        <span>{{ $history->created_at->format('H:i d-m-Y') }}</span>
+                        <br />
+                        <span>Cập nhật bởi: <strong>{{ $history->updatedBy->name ?? 'Không xác định' }}</strong></span>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            <hr />
+            <div class="order-tracking-container-special-long-classname">
+                <div class="recipient-address-section-super-unique-classname">
+                    <h2>Thông tin khách hàng</h2>
+                    <p><strong>{{ $order->recipient_name }}</strong></p>
+                    <p><span class="custom-title-profile">Email:</span>{{ $order->user->email }}</p>
+                    <p><span class="custom-title-profile">SĐT:</span>{{ $order->phone }}</p>
+                    <p><span class="custom-title-profile">Địa chỉ:</span>{{ $order->shipping_address  }}</p>
+                    <br />
+                    <h2>Thông tin đơn hàng</h2>
+                    <p><span class="custom-title-profile">Mã đơn hàng: </span><strong> #{{ $order->order_id }}</strong>
+                    </p>
+                    <p><span class="custom-title-profile">Trạng thái đơn hàng:
+                        </span>{{ $statusLabels[$order->status] ?? 'Không xác định' }}</p>
+                    <p><span class="custom-title-profile">Trạng thái thanh toán:</span>
+                        {{ $statusTranslations[$order->payment_status] ?? 'Không xác định' }}</p>
+                    <p><span class="custom-title-profile">Ngày mua hàng:</span>
+                        {{ $statusTranslations[$order->payment_status] ?? 'Không xác định' }}</p>
+                    <p><span class="custom-title-profile">Ngày cập nhật đơn hàng:
+                        </span>{{ $order->updated_at->format('d-m-Y') }} </p>
+                    <p><span class="custom-title-profile">Thời gian cập nhật:</span>
+                        {{ $order->updated_at->format('H:i:s') }}</p>
+                </div>
+                <div class="order-status-timeline-section-extremely-long-classname">
+                    @if ($order->statusHistories->isNotEmpty())
+                    <ul class="order-status-ul-timeline-ul-super-detailed-long-classname">
+                        @foreach ($order->statusHistories as $history)
+                        <li class="timeline-step-special-status-{{ strtolower($history->new_status) }}">
+                            <div class="timeline-status-time-special-classname">
+                                {{ $history->created_at->format('H:i d-m-Y') }}</div>
+                            <div class="timeline-step-description-details-classname">
+                                <p><strong>{{ $statusLabels[strtolower($history->new_status)] ?? $history->new_status }}</strong>
+                                </p>
+                                <p>{{ $history->description ?? 'Thông tin chưa có' }}</p>
+                                <p>Cập nhật bởi: <strong>{{ $history->updatedBy->name ?? 'Không xác định' }}</strong>
+                                </p>
+                            </div>
+                        </li>
+                        @endforeach
+                    </ul>
+                    @endif
                 </div>
             </div>
         </div>
-        <div class="order-card">
-            <h2>3. Chi tiết đơn hàng</h2>
-            <p>Khách hàng ghi chú:</p>
-            <table class="table table-bordered order-table mt-4">
-                <thead class="thead-light">
+        <div class="card-table-special-long-classname">
+            <table class="product-table table table-bordered text-center align-middle">
+                <thead class="thead-dark">
                     <tr>
                         <th>Ảnh</th>
                         <th>Tên sản phẩm</th>
@@ -68,51 +134,43 @@
                     @foreach ($order->orderItems as $index => $orderItem)
                     <tr>
                         <td class="text-center">
-                            <img src="/storage/{{ $orderItem->product->main_image_url }}" alt="{{ $orderItem->product->name }}" width="50" height="50">
+                            <img src="/storage/{{ $orderItem->product->main_image_url }}"
+                                alt="{{ $orderItem->product->name }}" width="50" height="50">
                         </td>
                         <td>{{ $orderItem->product->name }}</td>
-                        <td>{{ number_format($orderItem->attributeProduct->price ?? 0) }} VND</td>
+                        <td>{{ number_format($orderItem->attributeProduct->price ?? 0) }} đ</td>
                         <td>{{ $orderItem->color ? $orderItem->color->name : 'N/A' }}</td> <!-- Màu sắc -->
                         <td>{{ $orderItem->size ? $orderItem->size->name : 'N/A' }}</td> <!-- Kích cỡ -->
                         <td class="text-center">{{ $orderItem->quantity }}</td>
-                        <td class="text-right">{{ number_format($orderItem->attributeProduct->price * $orderItem->quantity, 0, 2) }} đ</td>
+                        <td class="text-right text-danger"><strong>
+                                {{ number_format($orderItem->attributeProduct->price * $orderItem->quantity, 0, 2) }}</strong>đ
+                        </td>
                     </tr>
                     @endforeach
-                    @if ($order->statusHistories->isNotEmpty())
-                    <hr />
-                    <p><strong>Lịch sử trạng thái đơn hàng:</strong></p>
-                    <ul class="status-history-list">
-                        @foreach ($order->statusHistories as $history)
-                        <li>
-                            <span class="status-timestamp">{{ $history->created_at->format('d/m/Y H:i') }}</span> -
-                            <span class="status-change">Trạng thái: <strong>{{ $statusLabels[strtolower($history->new_status)] ?? $history->new_status }}</strong></span>
-                            - <span class="status-update-by">Cập nhật bởi: <strong>{{ $history->updatedBy->name ?? 'Không xác định' }}</strong></span>
-                        </li>
-                        @endforeach
-                    </ul>
-                    @endif
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="6">Tổng giá trị đơn hàng</td>
-                        <td>{{ number_format($order->orderItems->sum(function($item) { return $item->price * $item->quantity; }), 0, ',', '.') }}
-                            VND</td>
+                        <td colspan="6" class="text-end">Tổng giá trị đơn hàng</td>
+                        <td class="text-end">
+                            {{ number_format($order->orderItems->sum(function($item) { return $item->price * $item->quantity; }), 0, ',', '.') }}đ
+                        </td>
                     </tr>
                     <tr>
-                        <td colspan="6">Phí Ship</td>
-                        <td>40,000 VND</td>
+                        <td colspan="6" class="text-end">Phí Ship</td>
+                        <td class="text-end">40,000đ</td>
                     </tr>
                     <tr>
-                        <td colspan="6">Thành tiền</td>
-                        <td>{{ number_format($order->orderItems->sum(function($item) { return $item->price * $item->quantity; }) + 40000, 0, ',', '.') }}
-                            VND</td>
+                        <td colspan="6" class="text-end">Thành tiền</td>
+                        <td class="text-end text-danger"><strong>
+                                {{ number_format($order->orderItems->sum(function($item) { return $item->price * $item->quantity; }) + 40000, 0, ',', '.') }}</strong>đ
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="text-end">Phương thức thanh toán</td>
+                        <td class="text-end">{{ $orderItem->payment_method }}</td>
                     </tr>
                 </tfoot>
             </table>
-            <!-- <div class="text-right mt-4">
-                <strong>Tổng tiền:</strong>
-                <span class="total-amount">482.470 đ</span>
-            </div> -->
         </div>
     </div>
 
@@ -144,24 +202,31 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        document.getElementById('confirmOrderBtn').addEventListener('click', function() {
-            this.classList.add('btn-cancel');
-            document.getElementById('cancelOrderBtn').classList.add('btn-cancel');
-            document.getElementById('cancelOrderBtn').innerText = 'Đã hủy';
-            document.getElementById('cancelOrderBtn').disabled = true;
-        });
+    document.getElementById('confirmOrderBtn').addEventListener('click', function() {
+        this.classList.add('btn-cancel');
+        document.getElementById('cancelOrderBtn').classList.add('btn-cancel');
+        document.getElementById('cancelOrderBtn').innerText = 'Đã hủy';
+        document.getElementById('cancelOrderBtn').disabled = true;
+    });
 
-        document.getElementById('cancelOrderBtn').addEventListener('click', function() {
-            $('#cancelModal').modal('show');
-        });
+    document.getElementById('cancelOrderBtn').addEventListener('click', function() {
+        $('#cancelModal').modal('show');
+    });
 
-        document.getElementById('cancelForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            // Xử lý logic hủy đơn hàng ở đây
-            $('#cancelModal').modal('hide');
-            alert('Đơn hàng đã được hủy với lý do: ' + document.getElementById('reason').value);
-        });
+    document.getElementById('cancelForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Xử lý logic hủy đơn hàng ở đây
+        $('#cancelModal').modal('hide');
+        alert('Đơn hàng đã được hủy với lý do: ' + document.getElementById('reason').value);
+    });
     </script>
     @endpush
 </body>
+
+
+
+
+
+
+
 @endsection

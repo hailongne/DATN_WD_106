@@ -21,7 +21,7 @@
         </div>
         <div class="info-text">
             <h4>Phí vận chuyển</h4>
-            <p> Chỉ 14k toàn quốc</p>
+            <p> Chỉ 40k toàn quốc</p>
         </div>
     </div>
     <div class="info-item">
