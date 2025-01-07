@@ -1,0 +1,119 @@
+/* General Styles */
+body {
+    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+}
+
+/* Header */
+h1.text-primary {
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    background: linear-gradient(45deg, #007bff, #0056b3);
+    color: white;
+    padding: 10px 20px;
+}
+
+.card-body {
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Product Image */
+.img-fluid {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* Badge Styles */
+.badge {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+
+.badge.bg-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107;
+    color: black;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+/* Table Styles */
+.table {
+    margin-top: 20px;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.table thead {
+    background-color: #e9ecef;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.table th, .table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Back Button */
+.btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+    border-radius: 5px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    color: white;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-body .row {
+        flex-direction: column;
+    }
+
+    .card-body .col-md-8 {
+        margin-top: 15px;
+    }
+}

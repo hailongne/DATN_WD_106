@@ -29,3 +29,53 @@
 .button-header button .fa-star {
     font-size: 18px;
 }
+
+.btn-primary {
+    background-color: black !important;
+    color: white !important;
+    padding: 10px 20px;
+    font-size: 14px !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    border: 1px solid black !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: white !important;
+    color: black !important;
+    outline: 2px solid rgba(0, 0, 0, 0.1);
+    outline-offset: -2px;
+}
+
+
+.btn-primary:active{
+    transform: scale(0.98) !important;
+}
+
+.btn-info {
+    background-color: rgb(2, 140, 172) !important;
+    color: white !important;
+    padding: 10px 20px;
+    font-size: 14px !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    border: 1px solid rgb(2, 140, 172) !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-info:hover {
+    background-color: rgb(255, 255, 255) !important;
+    color: rgb(2, 140, 172) !important;
+    outline: 2px solid rgb(2, 140, 172) !important;
+    outline-offset: -2px;
+}
+
+.btn-info:active{
+    transform: scale(0.98) !important;
+}

@@ -35,6 +35,11 @@
 <form action="{{route('admin.colors.store')}}" method="POST" class="custom-form-container"
     enctype="multipart/form-data">
     @csrf
+        <div class="button-header mb-3">
+            <button>
+                Thêm mới màu sắc <i class="fa fa-star"></i>
+            </button>
+        </div>
     <div class="form-group">
         <label for="name" class="custom-label">Tên màu sắc <span class="custom-required-star">*</span></label>
         <input type=" text" class="form-control" value="{{old('name')}}" id="name" name="name" placeholder="Nhập tên màu sắc"  />
@@ -55,6 +60,7 @@
 @enderror
     <div class="button-group">
         <button type="submit" class="btn btn-primary">Thêm mới</button>
+        <a href="{{ route('admin.colors.index') }}" class="btn btn-info">Hủy</a>
     </div>
 </form>
 </div>

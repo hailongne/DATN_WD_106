@@ -12,15 +12,17 @@
         <label for="name" class="custom-label">Tên kích thước <span class="custom-required-star">*</span></label>
         
         <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên kích cỡ"  />
+
         @error('name')
 <span class="text-danger">{{$message}}</span>
 @enderror
     </div>
     <div class="button-group">
         <button type="submit" class="btn btn-primary">Thêm mới</button>
+        <a href="{{ route('admin.sizes.index') }}" class="btn btn-info">Hủy</a>
     </div>
 </form>
-</div>  
+</div>
 <!-- Thêm các Scripts cần thiết -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

@@ -1,17 +1,60 @@
 @extends('admin.index')
 
 @push('styles')
+<style>
+.brand-info {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.brand-info h3 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.brand-info p {
+    font-size: 1rem;
+    color: #555;
+    margin: 5px 0;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+.text-center {
+    margin-top: 20px;
+}
+</style>
 @endpush
 
 @section('content')
-<div class="container mt-5 ">
-    <h1 class="text-center">Chi Tiết Thương Hiệu</h1>
-    <div class="two">
-        <div class="brand-info">
+
+<div class="container mt-5">
+    <!-- Tiêu đề -->
+    <div class="button-header">
+        <button>Chi tiết Thương Hiệu <i class="fa fa-star"></i></button>
+    </div>
+    <div class="card">
+        <div class="card-body">
             <h3>
-                Tên Thương Hiệu:
                 <span id="name">{{$detailBrand->name}}</span>
             </h3>
+            <hr>
+
             <p>
                 <strong>Mô Tả:</strong>
                 <span id="description">{{$detailBrand->description}}</span>
@@ -29,17 +72,9 @@
                 <span id="updated_at">{{ \Carbon\Carbon::parse($detailBrand->updated_at)->format('d/m/Y H:i') }}</span>
             </p>
         </div>
-    </div>
-    <div class="text-center">
-        <a href="{{ route('admin.brands.index') }}" class="btn btn-success">Quay lại danh sách thương hiệu</a>
+        <div class="button-group">
+            <a href="{{ route('admin.brands.index') }}" class="btn btn-info mb-2">Quay lại</a>
+        </div>
     </div>
 </div>
-</div>
-
-@push('scripts')
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
-@endpush
 @endsection

@@ -19,6 +19,7 @@
     </div>
     <div class="button-group">
         <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="{{ route('admin.sizes.index') }}" class="btn btn-info">Hủy</a>
     </div>
 </form>
 </div>

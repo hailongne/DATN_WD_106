@@ -24,7 +24,12 @@
         <div class="cart-items-container">
             @foreach($cartItems as $item)
             <div class="product-card">
-            <input type="checkbox" name="product_checkbox[]" value="{{ $item->id }}" class="product-checkbox-item">
+                @php
+                        $attributeProduct = $item->product->attributeProducts->firstWhere('size_id',
+                        $item->size_id);
+                        @endphp
+            <input type="checkbox" name="product_checkbox[]" value="{{ $item->id }}" class="product-checkbox-item"
+            data-price="{{ ($attributeProduct ? $attributeProduct->price : 0) * $item->qty }}"  >
                 <div class="product-image">
                     <a href="{{ route('user.product.detail', $item->product_id) }}" class="product-card-link">
                         <img src="/storage/{{ $item->product->main_image_url }}" alt="{{ $item->product->name }}"
@@ -108,8 +113,8 @@
         @else
         <div class="cart-summary">
             <div class="summary-content">
-                <span class="summary-title">Tổng đơn hàng({{ count($cartItems) }} sản phẩm):</span>
-                <span class="summary-price">{{ number_format($finalTotal - 40000 , 0, ',', '.') }} đ</span>
+                <span class="summary-title">Tổng đơn hàng :</span>
+                <span class="summary-price">0 đ</span>
             </div>
             <div class="container-checkout">
                 <form action="{{ route('user.order.confirm') }}" method="POST" class="payment-form">
@@ -265,6 +270,36 @@
             document.getElementById('remove-item-form-' + itemId).submit();
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const selectAllCheckbox = document.getElementById('select-all-checkbox');
+    
+    selectAllCheckbox.addEventListener('change', function () {
+        const productCheckboxes = document.querySelectorAll('.product-checkbox-item');
+        productCheckboxes.forEach(function (checkbox) {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+        updateTotalPrice(); // Cập nhật giá khi chọn tất cả
+    });
+
+    // Lắng nghe sự kiện thay đổi cho từng checkbox sản phẩm
+    document.querySelectorAll('.product-checkbox-item').forEach(function (checkbox) {
+        checkbox.addEventListener('change', updateTotalPrice);
+    });
+
+    function updateTotalPrice() {
+        let total = 0;
+        document.querySelectorAll('.product-checkbox-item:checked').forEach(function (checkbox) {
+            const price = parseFloat(checkbox.getAttribute('data-price'));
+            total += price;
+        });
+        document.querySelector('.summary-price').textContent = numberWithCommas(total) + ' đ';
+    }
+
+    function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+});
 </script>
 
 @endsection

@@ -14,7 +14,7 @@ body {
 
 /* Sidebar */
 .sidebar {
-  width: 260px;
+  width: 220px;
   height: 100vh;
   background-color: #222; /* Nền tối */
   color: #fff; /* Chữ trắng */
@@ -81,12 +81,12 @@ body {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: none; /* Ẩn submenu mặc định */
+  display: none;
   flex-direction: column;
-  position: absolute; /* Để định vị submenu */
-  top: 0; /* Căn chỉnh theo chiều dọc */
-  left: 100%; /* Canh submenu hiển thị bên phải menu chính */
-  background-color: #333; /* Màu nền của submenu */
+  position: absolute;
+  top: 0;
+  left: 80%;
+  background-color: #333;
   border: 1px solid #444;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   min-width: 230px;
@@ -96,7 +96,7 @@ body {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
-  margin-top: 10px; /* Đẩy submenu xuống dưới khi cần */
+  margin-top: 10px;
 }
 
 /* Hiển thị submenu khi hover */
@@ -119,6 +119,7 @@ body {
   background-color: #444;
   color: #fff;
 }
+
 
 /* Mũi tên */
 .arrow {

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderCancelled;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatusHistory;
 use App\Models\ShoppingCart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -170,6 +172,8 @@ class OrderController extends Controller
         // Cập nhật trạng thái đơn hàng
         $order->update(['status' => 'cancelled']);
 
+        Mail::to($order->user->email)->send(new OrderCancelled($order));
+        
         session()->flash('alert_2', 'Đơn hàng đã được hủy thành công.');
         return redirect()->route('user.order.history');
     }

@@ -34,6 +34,11 @@
 <div class="container mt-5">
 <form action="{{route('admin.colors.update', $color->color_id)}}" method="POST" class="custom-form-container"
     enctype="multipart/form-data">
+        <div class="button-header mb-3">
+            <button>
+                Chỉnh sửa màu sắc <i class="fa fa-star"></i>
+            </button>
+        </div>
     @csrf
     @method('PUT')
     <div class="form-group">
@@ -49,14 +54,15 @@
         <div class="d-flex align-items-center">
             <input type="color" class="round-color-picker mr-2" id="color_code" name="color_code"
                 onchange="updateColorDisplay()" value="{{$color->color_code}}" />
-            <span id="color-display">#000000</span>
+            <span id="color-display">{{$color->color_code}}</span>
         </div>
     </div>
     @error('color_code')
 <span class="text-danger">{{$message}}</span>
 @enderror
     <div class="button-group">
-        <button type="submit" class="btn btn-primary">Thêm mới</button>
+        <button type="submit" class="btn btn-primary">Lưu</button>
+        <a href="{{ route('admin.colors.index') }}" class="btn btn-info">Hủy</a>
     </div>
 </form>
 </div>

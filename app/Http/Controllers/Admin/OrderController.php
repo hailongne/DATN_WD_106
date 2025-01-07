@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderStatusUpdated;
 use App\Models\OrderStatusHistory;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -61,35 +63,41 @@ class OrderController extends Controller
             // Cập nhật trạng thái đơn hàng
             $order->status = $request->status;
             $order->save();
+    
             foreach ($order->orderItems as $orderItem) {
                 $product = $orderItem->product;
-            
+    
                 if ($product && $product->attributeProducts) {
                     $attributeProduct = $product->attributeProducts
                         ->where('size_id', $orderItem->size_id)
                         ->first();
-            
+    
                     if ($attributeProduct) {
                         // Cộng lại số lượng vào in_stock
-                        $attributeProduct->in_stock += $orderItem->quantity; // Đổi `qty` thành `quantity`
+                        $attributeProduct->in_stock += $orderItem->quantity;
                         $attributeProduct->save();
                     }
                 }
             }
+    
             // Ghi lại lịch sử thay đổi trạng thái
             OrderStatusHistory::create([
                 'order_id' => $order->order_id,
-                'previous_status' => $previousStatus, // Trạng thái cũ
-                'new_status' => $request->status,    // Trạng thái mới
-                'updated_by' => auth()->id(),        // ID người thực hiện thay đổi
+                'previous_status' => $previousStatus,
+                'new_status' => $request->status,
+                'updated_by' => auth()->id(),
             ]);
     
+            // Gửi email thông báo cập nhật trạng thái
+            Mail::to($order->user->email)->send(new OrderStatusUpdated($order, $previousStatus, $request->status));
+    
             // Trả về phản hồi JSON thành công
-            return response()->json(['success' => true, 'message' => 'Cập nhật trạng thái thành công!']);
+            return response()->json(['success' => true, 'message' => 'Cập nhật trạng thái thành công và đã gửi email!']);
         }
     
         // Nếu không tìm thấy đơn hàng
         return response()->json(['success' => false, 'message' => 'Không tìm thấy đơn hàng!']);
     }
+    
     
 }

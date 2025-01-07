@@ -1,8 +1,10 @@
 /* CSS cho bảng sản phẩm */
+
+
 .product-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 16px;
+    margin-top: 5px;
     border: none;
 }
 
@@ -51,30 +53,23 @@
 
 /* Button Thêm mới */
 .add-button {
-    padding: 5px 14px;
-    margin: 0px 20px 10px 0px;
-    font-size: 14px;
-    font-weight: 500;
-    float: right;
-    color: white;
-    border: 1px solid transparent;
-    background-color: #000000;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 14px !important;
+    float: right !important;
+    border: 1.5px solid black !important;
+    text-align: center !important;
+    text-decoration: none !important;
+    border-radius: 6px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1) !important;
 }
 
 .add-button:hover {
-    background-color: #ffffff;
-    transform: scale(1.05);
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
-    border: 1px solid #000000;
+    background-color: black !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15) !important;
+    border: 1px solid rgb(0, 0, 0) !important;
 }
-
-
-
 /* Icon hành động */
 .icon-product {
     display: flex;
@@ -123,24 +118,6 @@
     color: white;
 }
 
-/* Nút thêm mới */
-.add-button-product {
-    background-color: black;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    border: none;
-    font-size: 14px;
-    text-decoration: none;
-    cursor: pointer;
-    margin-bottom: 16px;
-}
-
-.add-button-product:hover {
-    background-color: transparent;
-    color: black;
-    border: 1px solid black;
-}
 
 /* Icon sản phẩm */
 .icon-product .action-btn {
@@ -191,35 +168,51 @@
     font-family: Arial, sans-serif;
     font-size: 14px;
     font-weight: bold;
-    padding: 10px 15px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-transform: capitalize;
 }
 
+/* Trạng thái Hoạt động */
 .custom-btn-active-admin.btn-success {
-    background-color: #28a745;
+    background: linear-gradient(45deg, #28a745, #218838);
     color: white;
 }
 
 .custom-btn-active-admin.btn-success:hover {
-    background-color: #218838;
+    background: linear-gradient(45deg, #218838, #1e7e34);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
 }
 
+/* Trạng thái Tắt hoạt động */
 .custom-btn-active-admin.btn-danger {
-    background-color: #dc3545;
+    background: linear-gradient(45deg, #dc3545, #c82333);
     color: white;
 }
 
 .custom-btn-active-admin.btn-danger:hover {
-    background-color: #c82333;
+    background: linear-gradient(45deg, #c82333, #bd2130);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
 }
 
+/* Căn chỉnh nội dung chữ */
 .custom-btn-active-admin p {
     margin: 0;
     padding: 0;
     font-size: 10px;
+    line-height: 1.5;
+}
+
+/* Hiệu ứng khi nhấn vào nút */
+.custom-btn-active-admin:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* CSS pagination */
@@ -278,4 +271,52 @@ input[type="number"]::-webkit-inner-spin-button {
 /* Ẩn spinner trên Firefox */
 input[type="number"] {
     -moz-appearance: textfield;
+}
+
+/* Container chung cho thanh bộ lọc */
+.custom-filter-bar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding-bottom: 5px;
+    padding-left: 20px;
+}
+
+/* Các mục con trong thanh bộ lọc */
+.custom-filter-item {
+    margin: 0;
+}
+
+/* Input và Select trong bộ lọc */
+.custom-input-group {
+    display: flex;
+    align-items: center;
+}
+
+.custom-form-control {
+    padding: 6px 12px;
+    font-size: 14px;
+    width: 200px;
+    border-radius: 0px;
+    transition: all 0.3s ease;
+    border: 1px solid #000;
+}
+
+.custom-form-control:focus {
+    border-color: #000;
+    outline: none;
+}
+
+/* Nút trong bộ lọc */
+.custom-btn {
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: #000000;
+    border: 1px solid #000;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }

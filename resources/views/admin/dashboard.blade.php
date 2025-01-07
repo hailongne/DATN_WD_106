@@ -2,13 +2,11 @@
 
 @section('content')
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ asset('css/admin/dashboard.css') }}">
 @endpush
-<div class="container">
+
     <div class="button-header">
-        <button>
-            Thống kê <i class="fa fa-star"></i>
-        </button>
+        <button>Thống kê <i class="fa fa-star"></i></button>
     </div>
 
     <div class="row g-2 mb-4">
@@ -16,17 +14,17 @@
             <form method="GET" action="{{ route('admin.dashboard') }}">
                 <div class="row align-items-end">
                     <!-- Lọc theo ngày cho Doanh thu -->
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <label for="start_date" class="form-label">Từ ngày:</label>
-                        <input type="date" id="start_date" name="start_date" class="form-control" 
+                        <input type="date" id="start_date" name="start_date" class="form-control"
                             value="{{ request('start_date', $startDate) }}">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
                         <label for="end_date" class="form-label">Đến ngày:</label>
-                        <input type="date" id="end_date" name="end_date" class="form-control" 
+                        <input type="date" id="end_date" name="end_date" class="form-control"
                             value="{{ request('end_date', $endDate) }}">
                     </div>
-                    <div class="col-md-4 mt-3 mt-md-0">
+                    <div class="col-md-1">
                         <button type="submit" class="custom-btn-filte-dashboard w-100">Lọc</button>
                     </div>
                 </div>
@@ -56,11 +54,26 @@
             </div>
         </div>
     </div>
-    <div class="card mb-4">
-        <div class="card-header">Thống kê số lượng sản phẩm đã bán</div>
-        <div class="card-body">
-            <canvas id="soldProductsChart"></canvas>
+    <div class="row mb-4">
+
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">Thống kê số lượng sản phẩm đã bán</div>
+            <div class="card-body">
+                <canvas id="soldProductsChart"></canvas>
+            </div>
         </div>
+        </div>
+    <div class="col-md-6">
+
+            <!-- Biểu đồ sản phẩm theo danh mục -->
+            <div class="card mb-4">
+                <div class="card-header">Tổng sản phẩm theo danh mục</div>
+            <div class="card-body">
+                <canvas id="categoryChart"></canvas>
+            </div>
+
+            </div>        </div>
     </div>
     <div class="card mb-4">
         <div class="card-header">Thống kê sản phẩm trong kho</div>
@@ -90,17 +103,7 @@
                 </tbody>
             </table>
         </div>
-    </div
-
-
-        <!-- Biểu đồ sản phẩm theo danh mục -->
-    <div class="card mb-4">
-        <div class="card-header">Tổng sản phẩm theo danh mục</div>
-        <div class="card-body">
-            <canvas id="categoryChart"></canvas>
-        </div>
     </div>
-</div>
 
 <!-- Script vẽ biểu đồ -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

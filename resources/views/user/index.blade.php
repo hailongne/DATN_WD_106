@@ -17,10 +17,13 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/slide.css') }}">
 
     @stack('styles')
     <style>
     *:focus {
+        border: 1px solid black;
         outline: none !important;
         box-shadow: none !important;
     }
