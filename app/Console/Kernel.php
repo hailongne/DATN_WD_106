@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly(); 
         $schedule->job(new \App\Jobs\AutoUpdateDeliveryStatusJob())->daily();
+        $schedule->command('stock:send-low-stock-email')->daily();
     }
 
     /**

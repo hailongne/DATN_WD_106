@@ -5,6 +5,7 @@ use App\Models\BannedWord;
 use App\Models\Like;
 use App\Models\LoveProduct;
 use App\Models\Report;
+use App\Models\ProductView;;
 use App\Models\Reviews;
 use App\Models\Product;
 use App\Models\Attribute;
@@ -70,13 +71,14 @@ class ProductsController extends Controller
                 ->where('is_active', true)
                 ->get();
         }
-
-
+       
+    
         // Lấy top 10 sản phẩm bán chạy (sold_count > 100) và đang hoạt động
         $bestSellers = Product::getBestSellers();
         $hotProducts = Product::getHotProducts();
         // Trả về view với dữ liệu
-        return view('user.product', compact('listProduct', 'hotProducts', 'bestSellers'))->with('alert', 'Bạn đang vào trang sản phẩm');
+        return view('user.product', 
+        compact('listProduct', 'hotProducts', 'bestSellers',))->with('alert', 'Bạn đang vào trang sản phẩm');
     }
 
 
@@ -87,6 +89,21 @@ class ProductsController extends Controller
         $product = Product::where('product_id', $productId)
             ->with(['attributeProducts.color', 'attributeProducts.size', 'attributeProducts']) // Eager load color and size attributes
             ->firstOrFail();
+            if ($product) {
+                // Thêm hoặc tìm bản ghi trong ProductView
+                $productView = ProductView::firstOrCreate(
+                    [
+                        'product_id' => $productId,
+                        'user_id' => Auth::id(),
+                    ],
+                    [
+                        'view_count' => 0 // Giá trị mặc định khi thêm mới
+                    ]
+                );
+            
+                // Tăng view_count
+                $productView->increment('view_count');
+            }
         //Hiển thj sản phẩm liên quan
         $relatedProducts = Product::where('product_category_id', $product->product_category_id)
             ->where('product_id', '!=', $product->product_id) // Loại trừ sản phẩm hiện tại

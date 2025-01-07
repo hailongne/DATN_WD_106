@@ -87,26 +87,32 @@ class ProductController extends Controller
             'size_id.*.exists' => 'Kích thước không tồn tại.',
         ]);
         $image = null;
+
         if ($request->hasFile('main_image_url')) {
             $anh = $request->file('main_image_url');
             if ($anh->isValid()) {
+                // Tạo tên mới cho ảnh để tránh trùng lặp
                 $newAnh = time() . "." . $anh->getClientOriginalExtension();
-                // Save the image to the 'imagePro' directory in the public folder
-                $image = $anh->move(public_path('storage/imagePro/'), $newAnh);
+        
+                // Lưu ảnh vào thư mục 'imagePro/images' trong storage/app/public
+                $image = $anh->storeAs('imagePro', $newAnh, 'public');
             }
+        } else {
+            // Sử dụng ảnh mặc định nếu không có ảnh tải lên
+            $image = 'imagePro/images/default.jpg'; // Đảm bảo file này tồn tại trong storage/app/public
         }
+        
 
         // Create a new product using the request data
         $product = Product::create([
             'brand_id' => $request->input('brand_id'),
             'name' => $request->input('name'),
             'product_category_id' => $request->input('product_category_id'),
-            'main_image_url' => $image ? 'imagePro/' . $image->getBasename() : null,  // Store the relative path/-strong/-heart:>:o:-((:-h 'view_count' => 0,
+          'main_image_url' => $image ? 'imagePro/' . basename($image) : null, // Lấy tên file từ đường dẫn
             'sku' => $request->input('sku'),
             'description' => $request->input('description'),
             'subtitle' => $request->input('subtitle'),
             'slug' => Str::slug($request->input('name')),
-            'is_active' => $request->has('is_active') ? 1 : 0,  // Check if is_active is present
         ]);
 
         // Process color and size IDs (they could be comma-separated or an array)

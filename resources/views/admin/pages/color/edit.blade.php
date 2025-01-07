@@ -32,14 +32,14 @@
 }
 </style>
 <div class="container mt-5">
-<form action="{{route('admin.colors.store')}}" method="POST" class="custom-form-container"
+<form action="{{route('admin.colors.update', $color->color_id)}}" method="POST" class="custom-form-container"
     enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="form-group">
         <label for="name" class="custom-label">Tên màu sắc <span class="custom-required-star">*</span></label>
         <input type=" text" class="form-control" id="name" name="name" value="{{$color->name}}"
-            placeholder="Nhập tên thương hiệu"  />
+            placeholder="Nhập tên màu sắc"  />
     </div>
     @error('name')
 <span class="text-danger">{{$message}}</span>

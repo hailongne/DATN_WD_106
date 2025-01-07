@@ -29,11 +29,11 @@
 
                     </select>
                 </div>
-                <div class="form-group" id="value1" style="display: none;">
+                <div class="form-group" id="value1">
                     <label for="discount">Gía trị</label>
                     <input type="number"
                 
-                     id="discount" placeholder="Nhập điều kiện áp dụng" />
+                     id="discount" name="discount_amount" placeholder="Nhập số tiền giảm giá" />
                 </div>
                 @error('discount_amount')
                     <span class="text-danger">{{$message}}</span>
@@ -150,7 +150,6 @@
         value.addEventListener('change', function () {
             if (value.value == 1) {
                 document.getElementById('value1').style.display = "block";
-                discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
                 discount.setAttribute('name', 'discount_amount')
             }
             else {

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('product_id')->references('product_id')->on('products')->onDelete('cascade');
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
-            $table->timestamp('view_at')->default(now());
+            $table->bigInteger('view_count')->default(0);
             $table->timestamps();
         });
     }
