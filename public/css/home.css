@@ -36,40 +36,79 @@
     font-size: 18px;
 }
 
-/* Căn chỉnh giá sản phẩm và icon giỏ hàng */
-.product-card-link {
-    text-decoration: none;
-    color: inherit;
+/* Định dạng chung cho container sản phẩm */
+.product-container {
+    position: relative;
+    display: inline-block;
+    overflow: visible;
 }
 
-.product-card-link:hover .card {
-    animation: shake 0.3s ease-in-out;
+/* Ẩn các nút mặc định */
+.cart-icon {
+    position: absolute;
+    z-index: 10;
+    display: none;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-@keyframes shake {
-    0% {
-        transform: translateX(0);
-    }
+.love-icon {
+    top: 30px;
+    left: 25px;
+    font-size: 20px;
+    color: #e63946;
+}
 
-    25% {
-        transform: translateX(-5px);
-    }
+.detail-icon {
+    top: 60px;
+    left: 30px;
+    color: #000000;
+    font-size: 20px;
+    color: #2a9d8f;
+}
 
-    50% {
-        transform: translateX(5px);
-    }
+/* Hiển thị icon khi hover vào sản phẩm */
+.product-container:hover .cart-icon {
+    display: block;
+    transform: scale(1);
+    opacity: 0;
+    animation: fadeIn 0.3s ease forwards ;
+}
 
-    75% {
-        transform: translateX(-5px);
+/* Hiệu ứng fade-in */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
     }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 
-    100% {
-        transform: translateX(0);
-    }
+/* Hiệu ứng hover cho nút */
+.cart-icon:hover {
+    transform: scale(1.2) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease !important;
+}
+
+/* Hiệu ứng hover cho love-icon */
+.love-icon:hover {
+    transform: rotate(10deg) scale(1.2) !important;
+    transition: transform 0.3s ease, color 0.3s ease !important;
+}
+
+/* Hiệu ứng hover cho detail-icon */
+.detail-icon:hover {
+    color: #2a9d8f;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease !important;
 }
 
 .product-item {
-    transition: box-shadow 0.3s ease-in-out;
+    transition: box-shadow 0.3s ease-in-out !important;
 }
 
 .product-item:hover {
@@ -117,41 +156,33 @@
 
 /* Thêm thông tin sản phẩm */
 .card-body {
-  padding: 10px;
-  text-align: center;
+  padding: 2px;
 }
 
-.card-title {
-  font-size: 16px;
+.classname-special-title {
+  font-size: 14px;
   color: #333;
-  margin: 5px 15px;
+  margin: 5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
 }
 
-
-.product-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px;
-  color: #555;
+.classname-special-subtitle{
+  font-size: 12px;
+  margin: 5px;
+  color:#555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .product-price {
-    font-weight: 500;
-    color: #000000;
-    display: flex;
-}
-
-.cart-icon {
-  color: #333;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.cart-icon:hover {
+  display: flex;
+  margin: 5px;
+  justify-content: space-between;
+  align-items: center;
   color: #2a9d8f;
 }
