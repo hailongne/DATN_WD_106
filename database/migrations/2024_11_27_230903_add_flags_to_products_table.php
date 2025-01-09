@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->boolean('is_hot')->default(false); // Đánh dấu sản phẩm hot
+            $table->boolean('is_hot')->default(false); // Đánh dấu Sản phẩm nổi bật
             $table->boolean('is_best_seller')->default(false);  // Mặc định là 'không phải bán chạy'
 
         });
