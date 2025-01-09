@@ -1,66 +1,11 @@
-/* Reset cơ bản cho body */
-.body {
-    margin: 0; /* Loại bỏ margin mặc định của body */
-    padding: 0; /* Loại bỏ padding mặc định của body */
-    width: 100%; /* Đảm bảo chiều rộng của body là 100% */
+/* Container chính */
+.container {
+    background: white;
+    padding: 16px 0;
+    border-radius: 8px;
+    max-width: 1500px;
 }
 
-/* Phần danh sách review */
-.reviews {
-    font-family: Arial, sans-serif;
-  margin-bottom: 30px;
-}
-
-.reviews h2 {
-  font-size: 20px;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-/* Review Container */
-.review {
-  border-bottom: 1px solid #ddd;
-  padding: 10px 0;
-  margin-bottom: 15px;
-}
-
-/* Review Header */
-.review-header {
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.review H3 {
-  font-size: 24px;
-  color: #333;
-}
-
-.review-header .rating {
-  font-size: 14px;
-  color: #f39c12;
-}
-
-.review-header {
-  font-size: 12px;
-  color: #555;
-}
-
-/* Review Text */
-.review-text {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 10px;
-  line-height: 1.6;
-}
-
-/* Review Images */
-.review-images img {
-  max-width: 100px;
-  height: auto;
-  margin-right: 5px;
-  border-radius: 5px;
-}
 
 /* Buttons Section */
 .review-buttons {
@@ -197,7 +142,6 @@
 }
 
 /* chi tiết sản phẩm */
-
 .container-details {
     width: 80%;
     margin: 25px auto;
@@ -218,9 +162,9 @@
 }
 
 .detail-section h3 {
-    font-size: 16px;
+    font-size: 14px;
     color: #555;
-    width: 150px; /* Đặt chiều rộng cho cột tiêu đề */
+    width: 150px;
     margin: 0;
 }
 
@@ -245,16 +189,12 @@
   margin-bottom: 15px;
 }
 
-.product-description{
-    color: #777;
+.description-content-detail{
+    font-size: 12px;
 }
 
-/* Container chính */
-.container {
-    background: white;
-    padding: 16px 0;
-    border-radius: 8px;
-    max-width: 1500px;
+.product-description{
+    color: #777;
 }
 
 /* Phần Header */
@@ -491,34 +431,6 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
     -moz-appearance: textfield;
-}
-
-.custom-cart{
-    background-color: #f6f4f4;
-    color: #000000;
-    border: 1px solid #000000;
-    margin-right: 10px;
-    padding: 10px;
-    border-radius: 2px;
-}
-
-.custom-cart:hover {
-    background-color: #ffffff;
-    color: #000000;
-    border: 1px solid #000000;
-}
-
-.custom-buy{
-    background-color: #000000;
-    color: white;
-    margin-right: 10px;
-    padding: 10px;
-    border-radius: 2px;
-}
-
-.custom-buy :hover{
-    background-color: white;
-    color: white;
 }
 
 .product-stock {

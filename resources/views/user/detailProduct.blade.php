@@ -2,8 +2,6 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/detailProduct.css') }}">
-<link rel="stylesheet" href="{{ asset('css/huongListReview.css') }}">
-<link rel="stylesheet" href="{{ asset('css/huongReview.css') }}">
 @endpush
 
 @section("content")
@@ -20,6 +18,7 @@
             <div class="contai">
                 <div class="options">
                     <h1 class="product-name">{{ $product->name }}</h1>
+                    <p class="text-muted">{{ $product->subtitle }}</p>
                     <div class="product-meta">
                         <span class="rating">★★★★☆</span>
                         <span class="comments">| 120 bình luận</span>
@@ -77,7 +76,7 @@
                 </div>
 
                 <div class="d-flex">
-                    <button type="button" class="custom-cart" onclick="addToCart()">Thêm vào giỏ hàng</button>
+                    <button type="button" class="custom-btn" onclick="addToCart()">Thêm vào giỏ hàng</button>
 
                     <form id="add-to-cart-form" action="{{ route('user.cart.buy') }}" method="POST">
                         @csrf
@@ -114,45 +113,41 @@
 
                 <div class="detail-section">
                     <h3>Danh Mục:</h3>
-                    <p>{{ $product->category->name ?? 'Chưa cập nhật' }}</p>
+                    <p> {{ $product->category->name ?? 'Chưa cập nhật' }}</p>
                 </div>
                 <div class="detail-section">
                     <h3>Màu sắc:</h3>
                     <p>
-                        @foreach($product->attributeProducts->unique('color_id') as $attributeProduct)
-                        <span
-                            style="color: {{ $attributeProduct->color->color_code }}; padding: 2px 6px; margin-right: 5px; border-radius: 4px;">
-                            {{ $attributeProduct->color->name }}
-                        </span>
-                        @endforeach
+                        @php
+                        $colors = $product->attributeProducts->unique('color_id')->pluck('color.name')->toArray();
+                        @endphp
+                        {{ implode(', ', $colors) }}
                     </p>
                 </div>
 
-                <div class="detail-section mb-5">
+                <div class="detail-section mb-2">
                     <h3>Size:</h3>
                     <p>
-                        @foreach($product->attributeProducts->unique('size_id') as $attributeProduct)
-                        <span
-                            style="padding: 2px 6px; margin-right: 5px; border: 1px solid #333; border-radius: 100px;">
-                            {{ $attributeProduct->size->name }}
-                        </span>
-                        @endforeach
+                        @php
+                        $sizes = $product->attributeProducts->unique('size_id')->pluck('size.name')->toArray();
+                        @endphp
+                        {{ implode(', ', $sizes) }}
                     </p>
                 </div>
                 <div class="product-description">
                     <div class="description-header">
                         <h3>Mô tả sản phẩm:</h3>
                     </div>
-                    <div>
+                    <div class="description-content-detail">
                         @php
-                            $description = $product->description
-                                ? $product->description
-                                : 'Mô tả sản phẩm đang được cập nhật...';
+                        $description = $product->description
+                        ? $product->description
+                        : 'Mô tả sản phẩm đang được cập nhật...';
 
-                            // Xử lý Markdown thủ công
-                            $description = nl2br(e($description)); // Chuyển đổi xuống dòng
-                            $description = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $description); // In đậm
-                            $description = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $description); // In nghiêng
+                        // Xử lý Markdown thủ công
+                        $description = nl2br(e($description)); // Chuyển đổi xuống dòng
+                        $description = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $description); // In đậm
+                        $description = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $description); // In nghiêng
                         @endphp
 
                         {!! $description !!}
