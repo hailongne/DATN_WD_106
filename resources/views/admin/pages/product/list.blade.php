@@ -94,7 +94,7 @@
                     <th>Mã</th>
                     <th>Danh mục</th>
                     <!-- <th>Thương hiệu</th> -->
-                    <th>Hot </th>
+                    <th>Nổi bật </th>
                     <th>Bán chạy </th>
                     <th>Hoạt động </th>
                     <th></th>

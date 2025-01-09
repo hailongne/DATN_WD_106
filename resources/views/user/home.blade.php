@@ -21,7 +21,7 @@ alert("{{ session('error') }}");
             <p class="no-product-message">Không tìm thấy sản phẩm trong danh sách.</p>
             @else
             <div class="product-slide">
-                @foreach($listProduct as $product)
+                @foreach($listProduct->sortByDesc('created_at') as $product)
                 <div class="product-container">
                     <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">
                         @csrf
@@ -39,8 +39,6 @@ alert("{{ session('error') }}");
                                     class="product-image"
                                     onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
                                 <div class="card-body">
-                                    <h5 class="classname-special-title">{{ $product->name }}</h5>
-                                    <p class="classname-special-subtitle">{{ $product->subtitle }}</p>
                                     @php
                                     // Lấy danh sách giá từ các thuộc tính
                                     $prices = $product->attributeProducts->pluck('price');
@@ -71,27 +69,35 @@ alert("{{ session('error') }}");
                                         <!-- Hiển thị giá khuyến mãi -->
                                         @if ($minPrice === $maxPrice)
                                         <!-- Giá trị khuyến mãi chỉ hiển thị một giá -->
-                                        <strong>{{ number_format($originalMinPrice, 0, ',', '.') }}</strong> đ<br>
-                                        <strong>{{ number_format($minPrice, 0, ',', '.') }}</strong> đ
+                                        <strong>{{ number_format($originalMinPrice, 0, ',', '.') }}</strong> ₫<br>
+                                        <strong>{{ number_format($minPrice, 0, ',', '.') }}</strong> ₫
                                         @else
                                         <!-- Hiển thị giá gốc và giá khuyến mãi (phạm vi) -->
                                         <strong>{{ number_format($originalMinPrice, 0, ',', '.') }} -
-                                            {{ number_format($originalMaxPrice, 0, ',', '.') }}</strong> đ<br>
+                                            {{ number_format($originalMaxPrice, 0, ',', '.') }}</strong> ₫<br>
                                         <strong>{{ number_format($minPrice, 0, ',', '.') }} -
-                                            {{ number_format($maxPrice, 0, ',', '.') }}</strong> đ
+                                            {{ number_format($maxPrice, 0, ',', '.') }}</strong> ₫
                                         @endif
                                         @else
                                         <!-- Không có khuyến mãi -->
                                         @if ($originalMinPrice === $originalMaxPrice)
                                         <!-- Hiển thị một giá duy nhất -->
-                                        {{ number_format($originalMinPrice, 0, ',', '.') }} đ
+                                        {{ number_format($originalMinPrice, 0, ',', '.') }} ₫
                                         @else
                                         <!-- Hiển thị phạm vi giá -->
                                         {{ number_format($originalMinPrice, 0, ',', '.') }} -
-                                        {{ number_format($originalMaxPrice, 0, ',', '.') }} đ
+                                        {{ number_format($originalMaxPrice, 0, ',', '.') }} ₫
                                         @endif
                                         @endif
                                     </span>
+                                    <p class="classname-special-title">{{ $product->name }}</p>
+                                    <p class="classname-special-subtitle">{{ $product->subtitle }}</p>
+                                    @php
+                                    $createdAt = \Carbon\Carbon::parse($product->created_at);
+                                    $now = \Carbon\Carbon::now();
+                                    $isNewProduct = $createdAt->diffInDays($now) <= 7; @endphp @if ($isNewProduct) <p
+                                        class="classname-special-button-new">Mới</p>
+                                        @endif
                                 </div>
                             </div>
                         </a>
@@ -114,7 +120,7 @@ alert("{{ session('error') }}");
         <p class="no-product-message">Không tìm thấy sản phẩm bán chạy.</p>
         @else
         <div class="product-slide">
-            @foreach($bestSellers as $soldProduct)
+            @foreach($bestSellers->sortByDesc('created_at') as $soldProduct)
             <div class="product-container">
                 <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">
                     @csrf
@@ -132,8 +138,6 @@ alert("{{ session('error') }}");
                                 alt="{{ $soldProduct->name }}" class="product-image"
                                 onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
                             <div class="card-body">
-                                <h5 class="classname-special-title">{{ $soldProduct->name }}</h5>
-                                <p class="classname-special-subtitle">{{ $soldProduct->subtitle }}</p>
                                 @php
                                 $prices = $soldProduct->attributeProducts->pluck('price');
                                 $minPrice = $prices->min();
@@ -141,12 +145,20 @@ alert("{{ session('error') }}");
                                 @endphp
                                 <span class="product-price">
                                     @if ($minPrice == $maxPrice)
-                                    {{ number_format($minPrice, 0, ',', '.') }} đ
+                                    {{ number_format($minPrice, 0, ',', '.') }} ₫
                                     @else
                                     {{ number_format($minPrice, 0, ',', '.') }} -
-                                    {{ number_format($maxPrice, 0, ',', '.') }} đ
+                                    {{ number_format($maxPrice, 0, ',', '.') }} ₫
                                     @endif
                                 </span>
+                                <p class="classname-special-title">{{ $soldProduct->name }}</p>
+                                <p class="classname-special-subtitle">{{ $soldProduct->subtitle }}</p>
+                                @php
+                                $createdAt = \Carbon\Carbon::parse($soldProduct->created_at);
+                                $now = \Carbon\Carbon::now();
+                                $isNewProduct = $createdAt->diffInDays($now) <= 7; @endphp @if ($isNewProduct) <p
+                                    class="classname-special-button-new">Mới</p>
+                                    @endif
                             </div>
                         </div>
                     </a>
@@ -158,18 +170,18 @@ alert("{{ session('error') }}");
     </div>
 
 
-    <!-- Sản phẩm hot -->
+    <!-- Sản phẩm nổi bật -->
     <div class="button-header mt-5">
         <button>
-            Gentle Manor - Sản phẩm hot <i class="fa fa-star"></i>
+            Gentle Manor - Sản phẩm nổi bật <i class="fa fa-star"></i>
         </button>
     </div>
     <div class="row product-carousel">
         @if($hotProducts->isEmpty())
-        <p class="no-product-message">Không tìm thấy sản phẩm hot.</p>
+        <p class="no-product-message">Không tìm thấy Sản phẩm nổi bật.</p>
         @else
         <div class="product-slide">
-            @foreach($hotProducts as $hotProduct)
+            @foreach($hotProducts->sortByDesc('created_at') as $hotProduct)
             <div class="product-container">
                 <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">
                     @csrf
@@ -187,8 +199,6 @@ alert("{{ session('error') }}");
                                 alt="{{ $hotProduct->name }}" class="product-image"
                                 onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
                             <div class="card-body">
-                                <h5 class="classname-special-title">{{ $hotProduct->name }}</h5>
-                                <p class="classname-special-subtitle">{{ $soldProduct->subtitle }}</p>
                                 @php
                                 $prices = $hotProduct->attributeProducts->pluck('price');
                                 $minPrice = $prices->min();
@@ -196,15 +206,20 @@ alert("{{ session('error') }}");
                                 @endphp
                                 <span class="product-price">
                                     @if ($minPrice == $maxPrice)
-                                    {{ number_format($minPrice, 0, ',', '.') }} đ
+                                    {{ number_format($minPrice, 0, ',', '.') }} ₫
                                     @else
                                     {{ number_format($minPrice, 0, ',', '.') }} -
-                                    {{ number_format($maxPrice, 0, ',', '.') }} đ
+                                    {{ number_format($maxPrice, 0, ',', '.') }} ₫
                                     @endif
                                 </span>
-                                <a href="{{ route('user.product.detail', $product->product_id) }}" class="cart-icon">
-                                    <i class="fa fa-info-circle"></i>
-                                </a>
+                                <p class="classname-special-title">{{ $hotProduct->name }}</p>
+                                <p class="classname-special-subtitle">{{ $soldProduct->subtitle }}</p>
+                                @php
+                                $createdAt = \Carbon\Carbon::parse($hotProduct->created_at);
+                                $now = \Carbon\Carbon::now();
+                                $isNewProduct = $createdAt->diffInDays($now) <= 7; @endphp @if ($isNewProduct) <p
+                                    class="classname-special-button-new">Mới</p>
+                                    @endif
                             </div>
                         </div>
                     </a>

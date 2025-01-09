@@ -10,33 +10,31 @@
     </div>
     @endif
     <div class="product-list">
-        <div class="filter-container d-flex justify-content-between align-items-center">
-            <div class="filter-product-new">
-                <a href="#" class="custom-btn-product-new">Mới nhất</a>
-            </div>
-            <div class="filter-product-new">
-                <a href="#" class="custom-btn-product-new">Bán chạy</a>
-            </div>
-            <div class="filter-product-new">
-                <a href="#" class="custom-btn-product-new">Hot</a>
-            </div>
+        <div class="filter-container">
             <div class="filter-product-new">
                 <a href="#" class="custom-btn-product-new">Áo</a>
             </div>
             <div class="filter-product-new">
                 <a href="#" class="custom-btn-product-new">Quần</a>
             </div>
+            <div class="filter-product-new">
+                <a href="#" class="custom-btn-product-new">Set Quần Áo</a>
+            </div>
             <div class="filter-group">
                 <select class="form-select filter-select" id="filterCategory">
-                    <option value="">Giá</option>
-                    <option value="high">Giá cao đến thấp</option>
-                    <option value="low">Giá thấp đến cao</option>
+                    <option value="">Mới Nhất</option>
+                    <option value="">Giá: Tăng dần</option>
+                    <option value="">Giá: Giảm dần</option>
+                    <option value="">Sản phẩm nổi bật</option>
+                    <option value="">Sản phẩm nổi bật</option>
+                    <option value="">Tên: A-Z</option>
+                    <option value="">Tên: Z-A</option>
                 </select>
             </div>
         </div>
         <div class="product-items">
             @if(isset($listProduct) && $listProduct->isNotEmpty())
-            @foreach($listProduct as $product)
+            @foreach($listProduct->sortByDesc('created_at') as $product)
             <div class="product-container">
                 <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">
                     @csrf
@@ -54,8 +52,6 @@
                                 class="product-image"
                                 onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
                             <div class="card-body">
-                                <h5 class="classname-special-title">{{ $product->name }}</h5>
-                                <p class="classname-special-subtitle">{{ $product->subtitle }}</p>
                                 @php
                                 // Lấy danh sách giá từ các thuộc tính
                                 $prices = $product->attributeProducts->pluck('price');
@@ -86,27 +82,35 @@
                                     <!-- Hiển thị giá khuyến mãi -->
                                     @if ($minPrice === $maxPrice)
                                     <!-- Giá trị khuyến mãi chỉ hiển thị một giá -->
-                                    <strong>{{ number_format($originalMinPrice, 0, ',', '.') }}</strong> đ<br>
-                                    <strong>{{ number_format($minPrice, 0, ',', '.') }}</strong> đ
+                                    <strong>{{ number_format($originalMinPrice, 0, ',', '.') }}</strong> ₫<br>
+                                    <strong>{{ number_format($minPrice, 0, ',', '.') }}</strong> ₫
                                     @else
                                     <!-- Hiển thị giá gốc và giá khuyến mãi (phạm vi) -->
                                     <strong>{{ number_format($originalMinPrice, 0, ',', '.') }} -
-                                        {{ number_format($originalMaxPrice, 0, ',', '.') }}</strong> đ<br>
+                                        {{ number_format($originalMaxPrice, 0, ',', '.') }}</strong> ₫<br>
                                     <strong>{{ number_format($minPrice, 0, ',', '.') }} -
-                                        {{ number_format($maxPrice, 0, ',', '.') }}</strong> đ
+                                        {{ number_format($maxPrice, 0, ',', '.') }}</strong> ₫
                                     @endif
                                     @else
                                     <!-- Không có khuyến mãi -->
                                     @if ($originalMinPrice === $originalMaxPrice)
                                     <!-- Hiển thị một giá duy nhất -->
-                                    {{ number_format($originalMinPrice, 0, ',', '.') }} đ
+                                    {{ number_format($originalMinPrice, 0, ',', '.') }} ₫
                                     @else
                                     <!-- Hiển thị phạm vi giá -->
                                     {{ number_format($originalMinPrice, 0, ',', '.') }} -
-                                    {{ number_format($originalMaxPrice, 0, ',', '.') }} đ
+                                    {{ number_format($originalMaxPrice, 0, ',', '.') }} ₫
                                     @endif
                                     @endif
                                 </span>
+                                <h5 class="classname-special-title">{{ $product->name }}</h5>
+                                <p class="classname-special-subtitle">{{ $product->subtitle }}</p>
+                                @php
+                                $createdAt = \Carbon\Carbon::parse($product->created_at);
+                                $now = \Carbon\Carbon::now();
+                                $isNewProduct = $createdAt->diffInDays($now) <= 7; @endphp @if ($isNewProduct) <p
+                                    class="classname-special-button-new">Mới</p>
+                                    @endif
                             </div>
                         </div>
                     </a>
@@ -163,14 +167,14 @@
                                     @if ($promotion)
                                     <!-- Hiển thị giá gốc (gạch ngang) và giá khuyến mãi -->
                                     <strong>{{ number_format($originalMinPrice, 0, ',', '.') }} -
-                                        {{ number_format($originalMaxPrice, 0, ',', '.') }}</strong> đ
+                                        {{ number_format($originalMaxPrice, 0, ',', '.') }}</strong> ₫
                                     <br>
                                     <strong>{{ number_format($minPrice, 0, ',', '.') }} -
-                                        {{ number_format($maxPrice, 0, ',', '.') }}</strong> đ
+                                        {{ number_format($maxPrice, 0, ',', '.') }}</strong> ₫
                                     @else
                                     <!-- Hiển thị giá gốc nếu không có khuyến mãi -->
                                     {{ number_format($originalMinPrice, 0, ',', '.') }} -
-                                    {{ number_format($originalMaxPrice, 0, ',', '.') }} đ
+                                    {{ number_format($originalMaxPrice, 0, ',', '.') }} ₫
                                     @endif
                                 </span>
                             </div>
@@ -180,12 +184,11 @@
             </div>
             @endforeach
             @else
-            <!-- Nếu cả listProduct và products đều không có sản phẩm -->
+            <!-- Nếu cả listProduct và products₫ều không có sản phẩm -->
             <div class="center-container">
                 <img src="{{asset('imagePro/icon/icon-no-search-product.png')}}" alt="No results found"
                     class="center-img">
                 <h5>Không tìm thấy kết quả nào</h5>
-                <p>Hãy sử dụng các từ khóa chung hơn</p>
             </div>
             @endif
         </div>
