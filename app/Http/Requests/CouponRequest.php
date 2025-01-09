@@ -24,8 +24,8 @@ class CouponRequest extends FormRequest
         $couponId = $this->route('id');
         return [
             'code' => 'required|string|unique:coupons,code,'.$couponId.',coupon_id',
-            'discount_amount' => 'nullable|numeric|min:1',
-            'discount_percentage' => 'nullable|numeric|min:1|max:100',
+            'discount_amount' => 'nullable|numeric|min:1|required_without:discount_percentage',
+            'discount_percentage' => 'nullable|numeric|min:1|max:100|required_without:discount_amount',
             'quantity' => 'required|integer|min:1',
             'min_order_value' => 'nullable|numeric|min:1',
             'max_order_value' => 'nullable|numeric|min:1|gte:min_order_value', // Dùng gte để đảm bảo giá trị nhỏ nhất
@@ -45,6 +45,8 @@ class CouponRequest extends FormRequest
             'code.unique' => 'Mã coupon đã tồn tại.',
             'discount_amount.numeric' => 'Giảm giá phải là một số.',
             'discount_amount.min' => 'Giảm giá phải lớn hơn 0.',
+            'discount_amount.required_without' => 'Bạn phải nhập số tiền giảm giá nếu không nhập phần trăm giảm giá.',
+            'discount_percentage.required_without' => 'Bạn phải nhập phần trăm giảm giá nếu không nhập số tiền giảm giá.',
             'discount_percentage.numeric' => 'Phần trăm giảm giá phải là một số.',
             'discount_percentage.min' => 'Phần trăm giảm giá phải lớn hơn 0.',
             'discount_percentage.max' => 'Phần trăm giảm giá không được vượt quá 100.',

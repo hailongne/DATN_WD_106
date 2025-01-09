@@ -27,6 +27,13 @@ class Product extends Model
         'is_hot',
         'view_count',
     ];
+    public function views()
+    {
+        return $this->hasMany(ProductView::class, 'product_id'); // 'product_id' là khóa ngoại trong bảng 'product_views'
+    }
+    
+
+
     public function colors()
     {
         return $this->belongsToMany(Color::class, 'attribute_products', 'product_id', 'color_id')

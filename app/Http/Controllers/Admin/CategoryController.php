@@ -56,7 +56,7 @@ class CategoryController extends Controller
             $newImage = time() . "." . $image->getClientOriginalExtension();
 
             // Lưu ảnh vào thư mục 'imagePro' trong thư mục 'public'
-            $anh = $image->storeAs('/storage/imagePro/images', $newImage, 'public');
+            $anh = $image->storeAs('images', $newImage, 'public');
         }else {
             // Nếu không có ảnh, sử dụng ảnh mặc định
             $anh = 'default.jpg';

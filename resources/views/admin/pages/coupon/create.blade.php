@@ -38,11 +38,15 @@
                         <option value="2">Phần trăm giảm giá</option>
 
                     </select>
-                    <div class="form-group" id="value1" style="display: none;">
-                        <label for="discount">Giá trị</label>
-                        <input type="number" id="discount" placeholder="Nhập điều kiện áp dụng" />
-                    </div>
-                    @error('discount_amount')
+                </div>
+                <div class="row gx-2 mb-3" id="value1">
+                    <label class="custom-label" for="discount">Gía trị</label>
+                    <input type="number"
+                class="form-control"
+                     id="discount" name="discount_amount" placeholder="Nhập số tiền giảm giá" />
+                </div>
+                @error('discount_amount')
+
                     <span class="text-danger">{{$message}}</span>
                     @enderror
                     @error('discount_percentage')
@@ -123,7 +127,7 @@
                 </button>
             </div>
             <div class="search-group mb-3">
-                <input type="text" placeholder="Tìm kiếm khách hàng" class="form-control" />
+                <input type="text" placeholder="Tìm kiếm khách hàng" name="nhap" class="form-control" />
                 <button class="btn btn-primary">Tìm</button>
             </div>
             <table class="product-table table table-bordered text-center align-middle">

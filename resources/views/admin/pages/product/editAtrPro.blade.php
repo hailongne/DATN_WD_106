@@ -117,15 +117,6 @@
                         removeIcon.style.top = '5px';
                         removeIcon.style.right = '5px';
                         removeIcon.style.cursor = 'pointer';
-
-                        removeIcon.addEventListener('click', function() {
-                            imgContainer.remove();
-                            const updatedImagesData = imagesData.find(img => img
-                                .color_id == colorId);
-                            if (updatedImagesData) {
-                                updatedImagesData.images = Array.from(
-                                        previewContainer.querySelectorAll('img'))
-                                    .map(img => img.src);
                             }
                         });
 
@@ -205,11 +196,13 @@
             const errorElement = urlErrors[index]; // Lấy phần tử hiển thị lỗi
 
             // Kiểm tra nếu không có file nào được chọn
-            if (files.length === 0 && files.length <= 4) {
-                errorElement.textContent =
-                'Vui lòng chọn ít nhất một ảnh và không quá 4 ảnh'; // Hiển thị lỗi
-                isFormValid = false; // Đặt form không hợp lệ
-            } else {
+            if (files.length === 0) {
+    errorElement.textContent = 'Vui lòng chọn ít nhất một ảnh';  // Hiển thị lỗi nếu không có ảnh
+    isFormValid = false;  // Đặt form không hợp lệ
+}else if (files.length > 4) {
+    errorElement.textContent = 'Không được chọn quá 4 ảnh';  // Hiển thị lỗi nếu chọn nhiều hơn 4 ảnh
+    isFormValid = false;  // Đặt form không hợp lệ
+} else {
                 let isValid = true;
 
                 // Kiểm tra từng file
