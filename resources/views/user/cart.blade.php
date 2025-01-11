@@ -66,35 +66,46 @@
                         <p>Màu sắc: </p>
                         <div class="color-options">
                             @foreach($item->attributeProducts->unique('color_id') as $attributeProduct)
-                            <div class="color-option" style="background-color: {{ $attributeProduct->color->color_code }};"
-                                onclick="changeColor({{ $item->id }}, '{{ $attributeProduct->color->color_id }}', this)">
-                            </div>
+                                <div class="color-option 
+                                    @if(old('color-' . $item->id, $item->color_id) == $attributeProduct->color->color_id) 
+                                        active 
+                                    @endif"
+                                    style="background-color: {{ $attributeProduct->color->color_code }};"
+                                    onclick="changeColor({{ $item->id }}, '{{ $attributeProduct->color->color_id }}', this)">
+                                </div>
                             @endforeach
                         </div>
+
                         <p class="section-title">Size:</p>
                         <div class="size-options">
                             @foreach($item->attributeProducts->unique('size_id') as $attributeProduct)
-                            <button class="size-option" data-id="{{ $attributeProduct->size->size_id }}"
-                                data-price="{{ $attributeProduct->price }}"
-                                value=""
-                                onclick="selectSize({{ $item->id }}, '{{ $attributeProduct->size->size_id }}', this)">
-                                {{ $attributeProduct->size->name }}
-                            </button>
+                                <button class="size-option 
+                                    @if(old('size-' . $item->id, $item->size_id) == $attributeProduct->size->size_id) 
+                                        selected 
+                                    @endif"
+                                    data-id="{{ $attributeProduct->size->size_id }}"
+                                    data-price="{{ $attributeProduct->price }}"
+                                    onclick="selectSize({{ $item->id }}, '{{ $attributeProduct->size->size_id }}', this)">
+                                    {{ $attributeProduct->size->name }}
+                                </button>
                             @endforeach
                         </div>
+
                         <p class="section-title">Số lượng:</p>
                         <div class="quantity-container d-flex">
                             <div class="custom-quantity" onclick="changeQuantity({{ $item->id }}, -1)">-</div>
                             <input type="number" id="quantity{{ $item->id }}" name="display-qty" class="custom-quantity-input" min="1"
-                                value="{{ $item->qty }}" onchange="updateQuantity({{ $item->id }}, this.value)">
+                                value="{{ old('quantity-' . $item->id, $item->qty) }}" onchange="updateQuantity({{ $item->id }}, this.value)">
                             <div class="custom-quantity" onclick="changeQuantity({{ $item->id }}, 1)">+</div>
                         </div>
+
                         <div class="popup-buttons text-end">
                             <button onclick="confirmSelection({{ $item->id }})">Xác nhận</button>
                             <button onclick="closePopup({{ $item->id }})">Hủy</button>
                         </div>
                     </div>
                 </div>
+
                 <div class="remove-btn">
                 <form id="remove-item-form-{{ $item->id }}" action="{{ route('user.cart.remove', $item->id) }}" method="POST">
                     @csrf
@@ -181,52 +192,54 @@
     });
 });
 
-    function confirmSelection(itemId) {
-        const colorId = selectedColor[itemId];
-        const sizeId = selectedSize[itemId];
-        const quantity = document.getElementById('quantity' + itemId).value;
-        if (!colorId || !sizeId || quantity < 1) {
-            let message = '';
-            if (!colorId) {
-                message += 'Vui lòng chọn màu sắc.\n';
-            }
-            if (!sizeId) {
-                message += 'Vui lòng chọn kích thước.\n';
-            }
-            if (quantity < 1) {
-                message += 'Vui lòng chọn số lượng hợp lệ.\n';
-            }
-            alert(message);
-            return;
+function confirmSelection(itemId) {
+    const colorId = selectedColor[itemId] || "{{ $item->color->color_id }}"; // Dùng giá trị cũ nếu không chọn màu mới
+    const sizeId = selectedSize[itemId] || "{{ $item->size->size_id }}"; // Dùng giá trị cũ nếu không chọn size mới
+    const quantity = document.getElementById('quantity' + itemId).value;
+
+    if (!colorId || !sizeId || quantity < 1) {
+        let message = '';
+        if (!colorId) {
+            message += 'Vui lòng chọn màu sắc.\n';
         }
-
-        fetch('{{ route('user.cart.cupdate', ['id' => ':itemId']) }}'.replace(':itemId', itemId), {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        color_id: colorId,
-                        size_id: sizeId,
-                        quantity: quantity
-                    })
-                })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    location.reload();
-                } else {
-                    alert('Có lỗi xảy ra: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('Có lỗi xảy ra khi cập nhật giỏ hàng.');
-            });
-
-        closePopup(itemId);
+        if (!sizeId) {
+            message += 'Vui lòng chọn kích thước.\n';
+        }
+        if (quantity < 1) {
+            message += 'Vui lòng chọn số lượng hợp lệ.\n';
+        }
+        alert(message);
+        return;
     }
+
+    fetch('{{ route('user.cart.cupdate', ['id' => ':itemId']) }}'.replace(':itemId', itemId), {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            color_id: colorId,
+            size_id: sizeId,
+            quantity: quantity
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message);
+            location.reload();
+        } else {
+            alert('Có lỗi xảy ra: ' + data.message);
+        }
+    })
+    .catch(error => {
+        alert('Có lỗi xảy ra khi cập nhật giỏ hàng.');
+    });
+
+    closePopup(itemId);
+}
+
 
     let selectedColor = {};
     let selectedSize = {};
