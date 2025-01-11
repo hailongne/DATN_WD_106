@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\LowStockAlert;
 use App\Mail\OrderCancelled;
+use App\Models\AttributeProduct;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatusHistory;
@@ -19,16 +21,19 @@ class OrderController extends Controller
         if (!auth()->check()) {
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để xem lịch sử mua hàng.');
         }
-    
+
         // Lấy danh sách đơn hàng của người dùng
         $orders = Order::where('user_id', auth()->id())
-            ->with(['orderItems.product'=> function($query){
-                $query->withTrashed();
-            }
-            , 'statusHistories']) // Eager load thêm lịch sử trạng thái và người cập nhật
+            ->with([
+                'orderItems.product' => function ($query) {
+                    $query->withTrashed();
+                }
+                ,
+                'statusHistories'
+            ]) // Eager load thêm lịch sử trạng thái và người cập nhật
             ->orderBy('order_id', 'desc') // Sắp xếp theo ngày đặt hàng mới nhất
             ->paginate(10);
-    
+
         session()->flash('alert', 'Bạn đang vào trang lịch sử mua hàng');
         // Trả về view danh sách đơn hàng
         return view('user.orders.orderHistory', compact('orders'));
@@ -37,20 +42,20 @@ class OrderController extends Controller
     {
         // Tìm đơn hàng, nếu không tồn tại trả về lỗi
         $order = Order::findOrFail($orderId);
-    
+
         // Kiểm tra quyền truy cập: chỉ cho phép người dùng sở hữu đơn hàng xác nhận
         if ($order->user_id !== auth()->id()) {
             return redirect()->route('user.order.history')->with('error', 'Bạn không có quyền xác nhận đơn hàng này.');
         }
-    
+
         // Kiểm tra nếu đơn hàng đã được xác nhận nhận hàng trước đó
         if ($order->received) {
             return redirect()->route('user.order.history')->with('info', 'Đơn hàng này đã được xác nhận trước đó.');
         }
-    
+
         // Cập nhật trạng thái "received" cho đơn hàng
         $order->received = true;
-    
+
         // Nếu đơn hàng được nhận, tự động chuyển trạng thái thành "completed" và đánh dấu thanh toán
         if ($order->status !== 'completed') {
             $order->status = 'completed';
@@ -58,9 +63,9 @@ class OrderController extends Controller
         if ($order->payment_status !== 'paid') {
             $order->payment_status = 'paid';
         }
-    
+
         $order->save();
-    
+
         // Ghi lại lịch sử thay đổi trạng thái
         OrderStatusHistory::create([
             'order_id' => $order->order_id,
@@ -70,21 +75,23 @@ class OrderController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-    
+
         // Gửi thông báo thành công
         session()->flash('alert', 'Đã xác nhận nhận hàng thành công!');
         return redirect()->route('user.order.history')->with('alert', 'Đơn hàng đã được xác nhận nhận hàng.');
     }
-    
+
 
     public function show($orderId)
     {
         // Lấy thông tin đơn hàng của người dùng đang đăng nhập
         $order = Order::with([
-            'orderItems.product'=> function($query){
+            'orderItems.product' => function ($query) {
                 $query->withTrashed();
             },
-            'orderItems.color', 'orderItems.size'])->find($orderId);
+            'orderItems.color',
+            'orderItems.size'
+        ])->find($orderId);
         session()->flash('alert', 'Bạn đang vào trang chi tiết đơn hàng');
         return view('user.orders.detail', compact('order'));
     }
@@ -148,12 +155,12 @@ class OrderController extends Controller
         }
         foreach ($order->orderItems as $orderItem) {
             $product = $orderItem->product;
-        
+
             if ($product && $product->attributeProducts) {
                 $attributeProduct = $product->attributeProducts
                     ->where('size_id', $orderItem->size_id)
                     ->first();
-        
+
                 if ($attributeProduct) {
                     // Cộng lại số lượng vào in_stock
                     $attributeProduct->in_stock += $orderItem->quantity; // Đổi `qty` thành `quantity`
@@ -173,7 +180,7 @@ class OrderController extends Controller
         $order->update(['status' => 'cancelled']);
 
         Mail::to($order->user->email)->send(new OrderCancelled($order));
-        
+
         session()->flash('alert_2', 'Đơn hàng đã được hủy thành công.');
         return redirect()->route('user.order.history');
     }
@@ -181,29 +188,29 @@ class OrderController extends Controller
     {
         // Lấy thông tin người dùng đang đăng nhập
         $user = Auth::user();
-    
+
         if (!$user) {
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thanh toán!');
         }
-    
+
         // Lấy giỏ hàng của người dùng
         $shoppingCart = ShoppingCart::where('user_id', $user->user_id)->first();
         if (!$shoppingCart) {
             return redirect()->route('shopping-cart')->with('error', 'Giỏ hàng trống!');
         }
-    
+
         // Lấy các ID sản phẩm đã được chọn từ request
         $selectedProductIds = explode(',', $request->input('selected_products'));
-    
+
         // Lọc các items trong giỏ hàng dựa trên các ID đã được chọn
         $cartItems = $shoppingCart->cartItems->filter(function ($item) use ($selectedProductIds) {
             return in_array($item->id, $selectedProductIds);
         });
-    
+
         if ($cartItems->isEmpty()) {
             return redirect()->back()->with('error', 'Không có sản phẩm nào được chọn để thanh toán!');
         }
-    
+
         // Tính tổng tiền đơn hàng (không bao gồm phí vận chuyển)
         $totalWithoutShipping = 0;
         $productDetails = []; // Lưu thông tin chi tiết sản phẩm
@@ -215,10 +222,10 @@ class OrderController extends Controller
                 if ($attributeProduct->in_stock < $item->qty) {
                     return redirect()->route('shopping-cart')->with('error', 'Sản phẩm "' . $item->product->name . '" không đủ số lượng trong kho!');
                 }
-    
+
                 // Tính tổng tiền
                 $totalWithoutShipping += $attributeProduct->price * $item->qty;
-    
+
                 // Lưu thông tin chi tiết sản phẩm
                 $productDetails[] = [
                     'name' => $item->product->name,
@@ -232,12 +239,18 @@ class OrderController extends Controller
                     'color_id' => $item->color_id,  // Lưu color_id
                     'size_id' => $item->size_id    // Lưu size_id
                 ];
-    
+
                 // Cập nhật số lượng tồn kho sau khi thanh toán
                 $attributeProduct->update([
                     'in_stock' => $attributeProduct->in_stock - $item->qty,
                 ]);
+                // Kiểm tra nếu tồn kho nhỏ hơn hoặc bằng ngưỡng cảnh báo
+               
             }
+        }
+        $attributeProducts = AttributeProduct::where('in_stock', '<=', 'warning_threshold')->get();
+        foreach ($attributeProducts as $attributeProduct) {
+            $this->sendLowStockEmail($attributeProduct);
         }
         // Thêm phí vận chuyển
         $shippingFee = 40000;
@@ -251,7 +264,7 @@ class OrderController extends Controller
             'shippingFee' => $shippingFee
         ]);
     }
-    
+
     public function confirmOrderVNPay(Request $request)
     {
         // Lấy thông tin người dùng đang đăng nhập
@@ -297,6 +310,10 @@ class OrderController extends Controller
         $attributeProduct->update([
             'in_stock' => $attributeProduct->in_stock - $item->qty,
         ]);
+        $attributeProducts = AttributeProduct::where('in_stock', '<=', 'warning_threshold')->get();
+        foreach ($attributeProducts as $attributeProduct) {
+            $this->sendLowStockEmail($attributeProduct);
+        }
         // Thêm phí vận chuyển
         $shippingFee = 40000;
         $total = $totalWithoutShipping + $shippingFee;
@@ -308,5 +325,14 @@ class OrderController extends Controller
             'total' => $total,
             'shippingFee' => $shippingFee
         ]);
+
+    }
+    public function sendLowStockEmail($attributeProduct)
+    {
+        // Địa chỉ email của quản trị viên
+        $adminEmail = 'longnhph44749@fpt.edu.vn'; // Địa chỉ email của quản trị viên
+
+        // Gửi email cảnh báo
+        Mail::to($adminEmail)->send(new LowStockAlert($attributeProduct));
     }
 }

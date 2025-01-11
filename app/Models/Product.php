@@ -18,7 +18,6 @@ class Product extends Model
         'sku',
         'name',
         'main_image_url',
-        'view_count',
         'description',
         'subtitle',
         'slug',

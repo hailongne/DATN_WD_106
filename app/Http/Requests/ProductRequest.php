@@ -32,7 +32,7 @@ class ProductRequest extends FormRequest
        'main_image_url' => $this->isMethod('put') ? 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' : 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Chỉ bắt buộc khi tạo mới sản phẩm
             'sku' => 'required|string|max:255|unique:products,sku,' . $productId . ',product_id', // Mã sản phẩm là bắt buộc, không được trùng lặp
             'description' => 'required|string', // Mô tả sản phẩm là bắt buộc
-            'subtitle' => 'nullable|string|max:255', // Phụ đề có thể rỗng nhưng không quá 255 ký tự
+            'subtitle' => 'required|string|max:255', // Phụ đề có thể rỗng nhưng không quá 255 ký tự
         ];
     }
     public function messages(): array
@@ -64,7 +64,7 @@ class ProductRequest extends FormRequest
         'description.required' => 'Mô tả sản phẩm là bắt buộc.',
         'description.string' => 'Mô tả sản phẩm phải là một chuỗi ký tự.',
         
-        'subtitle.nullable' => 'Phụ đề có thể rỗng.',
+        'subtitle.required' => 'Phụ đề là bắt buộc .',
         'subtitle.string' => 'Phụ đề phải là một chuỗi ký tự.',
         'subtitle.max' => 'Phụ đề không được vượt quá 255 ký tự.',
         

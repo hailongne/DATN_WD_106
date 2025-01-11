@@ -51,7 +51,6 @@ class CategoryController extends Controller
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
-
             // Tạo tên mới cho ảnh để tránh trùng lặp
             $newImage = time() . "." . $image->getClientOriginalExtension();
 

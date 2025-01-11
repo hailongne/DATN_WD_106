@@ -34,7 +34,7 @@ class HomeController extends Controller
         ->join('product_views', 'products.product_id', '=', 'product_views.product_id')
         ->where('product_views.user_id', Auth::id())  // Lọc theo người dùng hiện tại
         ->groupBy('products.product_id', 'products.brand_id', 'products.product_category_id', 
-        'products.name','products.main_image_url','products.view_count','.products.description','products.sku','products.subtitle',
+        'products.name','products.main_image_url','products.view_count','products.description','products.sku','products.subtitle',
         'products.slug','products.is_active','products.deleted_at','products.created_at'
         ,'products.updated_at','products.is_hot','products.is_best_seller')  // Nhóm theo sản phẩm
         ->orderByDesc('total_views')  // Sắp xếp theo tổng lượt xem giảm dần

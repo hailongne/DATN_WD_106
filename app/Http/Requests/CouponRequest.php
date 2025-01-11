@@ -23,21 +23,34 @@ class CouponRequest extends FormRequest
     {
         $couponId = $this->route('id');
         return [
-            'code' => 'required|string|unique:coupons,code,'.$couponId.',coupon_id',
+            'code' => 'required|string|unique:coupons,code,' . $couponId . ',coupon_id',
             'discount_amount' => 'nullable|numeric|min:1|required_without:discount_percentage',
-            'discount_percentage' => 'nullable|numeric|min:1|max:100|required_without:discount_amount',
+            'discount_percentage' => 'nullable|numeric|min:1|max:99|required_without:discount_amount',
             'quantity' => 'required|integer|min:1',
-            'min_order_value' => 'nullable|numeric|min:1',
-            'max_order_value' => 'nullable|numeric|min:1|gte:min_order_value', // Dùng gte để đảm bảo giá trị nhỏ nhất
+            'min_order_value' => 'required|numeric|min:1',
+            'max_order_value' => [
+                'required',
+                'numeric',
+                'min:1',
+                function ($attribute, $value, $fail) {
+                    if ($this->filled('discount_amount') && $value <= $this->discount_amount) {
+                        $fail('Giá trị đơn hàng tối đa phải lớn hơn số tiền giảm giá.');
+                    }
+                    if ($value <= $this->min_order_value) {
+                        $fail('Giá trị đơn hàng tối đa phải lớn hơn giá trị đơn hàng tối thiểu.');
+                    }
+                },
+            ],
             'condition' => 'nullable|string',
             'user_id' => 'nullable|exists:users,user_id',
             'is_public' => 'boolean',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after:start_date',
             'is_active' => 'boolean',
+
         ];
     }
-    
+
     public function messages(): array
     {
         return [
@@ -55,9 +68,10 @@ class CouponRequest extends FormRequest
             'quantity.min' => 'Số lượng coupon phải lớn hơn 0.',
             'min_order_value.numeric' => 'Giá trị đơn hàng tối thiểu phải là một số.',
             'min_order_value.min' => 'Giá trị đơn hàng tối thiểu phải lớn hơn hoặc bằng 1.',
+            'min_order_value.required' => 'Giá trị đơn hàng tối thiểu không được để trống.',
+            'max_order_value.required' => 'Giá trị đơn hàng tối đa không được để trống.',
             'max_order_value.numeric' => 'Giá trị đơn hàng tối đa phải là một số.',
             'max_order_value.min' => 'Giá trị đơn hàng tối đa phải lớn hơn hoặc bằng 1.',
-            'max_order_value.gte' => 'Giá trị tối đa phải lớn hơn hoặc bằng giá trị tối thiểu.', // Thông báo lỗi tùy chỉnh
             'condition.string' => 'Điều kiện phải là chuỗi ký tự.',
             'user_id.exists' => 'Người dùng không tồn tại.',
             'is_public.boolean' => 'Chỉ nhận giá trị true hoặc false.',
@@ -67,7 +81,7 @@ class CouponRequest extends FormRequest
             'is_active.boolean' => 'Chỉ nhận giá trị true hoặc false.',
         ];
     }
-    
 
-    
+
+
 }

@@ -38,6 +38,7 @@ class ColorRequest extends FormRequest
             'name.max' => 'Tên màu không được vượt quá 50 ký tự.',
             'name.string' => 'Tên màu phải là chuỗi ký tự.',
             'color_code.required' => 'Yêu cầu không để trống',
+            'color_code.unique' => ' Mã màu đã tồn tại.',  // Thông báo lỗi khi tên màu bị trùng
             'color_code.string' => 'Mã màu phải là chuỗi ký tự.',
             'color_code.size' => 'Mã màu phải có độ dài chính xác 7 ký tự.',
             'color_code.regex' => 'Mã màu phải có định dạng #RRGGBB, ví dụ: #FF5733',  // Kiểm tra định dạng mã màu hex

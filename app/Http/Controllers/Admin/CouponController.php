@@ -41,6 +41,7 @@ class CouponController extends Controller
     }
 
     public function createCoupon(Request $request){
+        $users=User::where('name', 'like', '%' . $request->input('nhap') . '%')->get();
         return view('admin.pages.coupon.create',compact('users'));
     }
     public function addCoupon(CouponRequest $request)

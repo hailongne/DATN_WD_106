@@ -65,7 +65,7 @@
             <div class="d-flex align-items-center">
                 <!-- Image Preview Area -->
                 <div class="img-container mr-3">
-                    <img src="#" alt="Ảnh danh mục" id="imagePreview" />
+                    <img src="{{old('image')}}" alt="Ảnh danh mục" id="imagePreview" />
                     <span id="noImageText">Ảnh danh mục</span>
                 </div>
 
@@ -74,7 +74,7 @@
                     onclick="document.getElementById('image').click();">
                     <i class="bi bi-upload"></i> <span class="ml-2"> Tải lên</span>
                 </button>
-                <input type="file" class="form-control-file d-none" value="{{old('image')}}" id="image" name="image"
+                <input type="file" class="form-control-file d-none" id="image" name="image"
                     accept="image/*" onchange="showImage(event)" />
             </div>
             @error('image')

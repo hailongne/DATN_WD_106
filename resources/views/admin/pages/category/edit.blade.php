@@ -98,7 +98,7 @@
         @enderror
         <div class="form-group">
             <label class="custom-label" for="slug">Tên đường dẫn <span class="custom-required-star">*</span></label>
-            <input type="text" class="form-control" value="{{ $category->slug }} id=" slug" name="slug"
+            <input type="text" class="form-control" value="{{ $category->slug }}" id="slug" name="slug"
                 placeholder="Nhập tên đường dẫn" />
         </div>
         @error('slug')

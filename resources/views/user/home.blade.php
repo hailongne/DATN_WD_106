@@ -12,17 +12,18 @@ alert("{{ session('error') }}");
 
 <div class="container mb-5">
 
-    <!-- Danh sách sản phẩm gần đây -->
-    <div class="button-header mt-5">
-        <button>
-            Gentle Manor - Danh sách sản phẩm gần đây <i class="fa fa-star"></i>
-        </button>
-    </div>
+    <!-- Danh sách sản phẩm quan tâm -->
+   
     <div class="row">
 <div class="product-carousel">
     @if($topProducts->isEmpty())
-        <p class="no-product-message">Không tìm thấy sản phẩm trong danh sách.</p>
+       
     @else
+    <div class="button-header mt-5">
+        <button>
+            Gentle Manor - Danh sách sản phẩm quan tâm <i class="fa fa-star"></i>
+        </button>
+    </div>
         <div class="product-slide">
             @foreach($topProducts as $product)
 
@@ -89,6 +90,7 @@ alert("{{ session('error') }}");
             @endforeach
         </div>
     @endif
+</div>
 </div>
 
 

@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->foreign('color_id')->references('color_id')->on('colors')->onDelete('cascade');
             $table->unsignedInteger('size_id');
             $table->foreign('size_id')->references('size_id')->on('sizes')->onDelete('cascade');
-            $table->integer('in_stock')->default(0);
+            $table->integer('in_stock')->default(6);
             $table->double('price', 16, 2)->default(value: 0);
             $table->timestamps();
         });

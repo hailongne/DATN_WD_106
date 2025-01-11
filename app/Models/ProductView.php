@@ -11,8 +11,8 @@ class ProductView extends Model
     protected $table = 'product_views';
     protected $primaryKey = 'product_view_id';
     protected $fillable = [
-        'product_id ',
-        'user_id ',
+        'product_id',
+        'user_id',
         'view_count',
     ];
     public function user(){

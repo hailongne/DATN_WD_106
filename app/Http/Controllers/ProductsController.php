@@ -93,7 +93,7 @@ class ProductsController extends Controller
                 // Thêm hoặc tìm bản ghi trong ProductView
                 $productView = ProductView::firstOrCreate(
                     [
-                        'product_id' => $productId,
+                        'product_id' => $product->product_id,
                         'user_id' => Auth::id(),
                     ],
                     [

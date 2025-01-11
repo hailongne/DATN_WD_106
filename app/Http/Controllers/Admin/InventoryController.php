@@ -61,21 +61,14 @@ class InventoryController extends Controller
     $attributeProduct->update([
         'in_stock' => $request->input('in_stock'),
     ]);
-
-    // Kiểm tra nếu tồn kho nhỏ hơn hoặc bằng ngưỡng cảnh báo
-    $attributeProducts = AttributeProduct::where('in_stock', '<=', 'warning_threshold')->get();
-    foreach ($attributeProducts as $attributeProduct) {
-        $this->sendLowStockEmail($attributeProduct);
-    }
-
-    return back()->with('success', 'Cập nhật tồn kho thành công!');
+    return redirect()->route('admin.inventories.index')->with('success', 'Cập nhật tồn kho thành công!');
 }
-public function sendLowStockEmail($attributeProduct)
-{
-    // Địa chỉ email của quản trị viên
-    $adminEmail = 'longxahoi7@gmail.com'; // Địa chỉ email của quản trị viên
+// public function sendLowStockEmail($attributeProduct)
+// {
+//     // Địa chỉ email của quản trị viên
+//     $adminEmail = 'longxahoi7@gmail.com'; // Địa chỉ email của quản trị viên
 
-    // Gửi email cảnh báo
-    Mail::to($adminEmail)->send(new LowStockAlert($attributeProduct));
-}
+//     // Gửi email cảnh báo
+//     Mail::to($adminEmail)->send(new LowStockAlert($attributeProduct));
+// }
 }

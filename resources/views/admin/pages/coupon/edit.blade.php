@@ -82,7 +82,7 @@
                 <div class="col-4">
                     <label for="max_order_value" class="custom-label">Giá trị tối đa <span
                             class="text-danger">*</span></label>
-                    <input type="number" id="max_order_value" value="{{$coupon->min_order_value}}"
+                    <input type="number" id="max_order_value" value="{{$coupon->max_order_value}}"
                         name="max_order_value" placeholder="Nhập giá trị tối đa" class="form-control" />
                     @error('max_order_value')
                     <span class="text-danger">{{$message}}</span>
@@ -101,7 +101,7 @@
                 <div class="col-6">
                     <label for="start_date" class="custom-label">Thời gian từ ngày <span
                             class="text-danger">*</span></label>
-                    <input type="datetime-local" value="{{$coupon->created_at}}" name="start_date" id="start_date"
+                    <input type="datetime-local"  name="start_date" value="{{ \Carbon\Carbon::parse($coupon->start_date)->format('Y-m-d\TH:i') }}" id="start_date"
                         class="form-control" />
 
                     @error('start_date')
@@ -111,7 +111,7 @@
                 <div class="col-6">
                     <label for="end_date" class="custom-label">Thời gian đến ngày <span
                             class="text-danger">*</span></label>
-                    <input type="datetime-local" value="{{$coupon->updated_at}}" name="end_date" id="end_date"
+                    <input type="datetime-local" value="{{ \Carbon\Carbon::parse($coupon->end_date)->format('Y-m-d\TH:i') }}" name="end_date" id="end_date"
                         class="form-control" />
                 </div>
                 @error('end_date')
@@ -157,7 +157,7 @@
                 </thead>
                 <tbody>
                     @foreach ($users as $user)
-                    @if($user->user_id != Auth::user()->user_id || $user->role !=1)
+                    @if($user->user_id != Auth::user()->user_id && $user->role !=1)
                     <tr>
                         @if($userCoupon->contains('user_id', $user->user_id))
                         <td class="checkbox">

@@ -142,7 +142,7 @@
                 <label class="custom-label" for="productSubtitle">Chú thích sản phẩm</label>
                 <input type="text" value="{{old('subtitle')}}" class="form-control" id="productSubtitle" name="subtitle"
                     placeholder="Nhập Chú thích sản phẩm" style="height: 52px;" />
-                @error('sku')
+                @error('subtitle')
                 <span class="text-danger">{{$message}}</span>
                 @enderror
             </div>
@@ -168,13 +168,16 @@
                             <div>
                                 <input type="checkbox" class="size-checkbox" id="size{{ $size->id }}" name="size_id[]"
                                     value="{{ $size->size_id }}"
-                                    {{ in_array($size->size_id, old('size_id', [])) ? 'checked' : '' }} required>
+                                    {{ in_array($size->size_id, old('size_id', [])) ? 'checked' : '' }} >
                                 <label for="size{{ $size->id }}">{{ $size->name }}</label>
                             </div>
                             @endforeach
                         </div>
                     </div>
                 </div>
+                @error('size_id')
+                <span class="text-danger">{{$message}}</span>
+                @enderror
             </div>
 
             <!-- Dropdown Màu sắc sản phẩm -->
@@ -199,7 +202,7 @@
                                 <input type="checkbox" class="color-checkbox" id="color{{ $color->color_id }}"
                                     name="color_id[]" value="{{ $color->color_id }}" @if(in_array($color->color_id,
                                 old('color_id', []))) checked
-                                @endif required>
+                                @endif>
                                 <label for="color{{ $color->color_id }}">{{ $color->name }}</label>
                             </div>
                             @endforeach

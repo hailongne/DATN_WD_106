@@ -149,7 +149,7 @@
                 <input type="text" class="form-control" id="productSubtitle" name="subtitle"
                     placeholder="Nhập Chú thích sản phẩm" maxlength="50" style="height: 52px;"
                     value="{{$product->subtitle}}" required />
-                @error('sku')
+                @error('subtitle')
                 <span class="text-danger">{{$message}}</span>
                 @enderror
             </div>
