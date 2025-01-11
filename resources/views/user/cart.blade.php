@@ -25,9 +25,9 @@
             @foreach($cartItems as $item)
             <div class="product-card">
                 @php
-                        $attributeProduct = $item->product->attributeProducts->firstWhere('size_id',
-                        $item->size_id);
-                        @endphp
+                    $attributeProduct = $item->product->attributeProducts->firstWhere('size_id',
+                    $item->size_id);
+                @endphp
             <input type="checkbox" name="product_checkbox[]" value="{{ $item->id }}" class="product-checkbox-item"
             data-price="{{ ($attributeProduct ? $attributeProduct->price : 0) * $item->qty }}"  >
                 <div class="product-image">
@@ -44,9 +44,6 @@
                         $attributeProduct = $item->product->attributeProducts->firstWhere('size_id',
                         $item->size_id);
                         @endphp
-                        <span class="product-price">
-                            {{ number_format($attributeProduct ? $attributeProduct->price : 0, 0, ',', '.') }} đ
-                        </span>
                     </a>
                 </div>
                 <div class="product-attribute">
@@ -56,7 +53,8 @@
                     <span>{{ $item->color->name }}, {{ $item->size->name }}</span>
                     <p class="section-title">Số lượng: {{ $item->qty }}</p>
                 </div>
-                <div class="product-price-quantity">
+                <div class="product-price">
+                            {{ number_format($attributeProduct ? $attributeProduct->price : 0, 0, ',', '.') }} đ
                 </div>
                 <div class="product-total-cart mr-5">
                     <span>
@@ -78,6 +76,7 @@
                             @foreach($item->attributeProducts->unique('size_id') as $attributeProduct)
                             <button class="size-option" data-id="{{ $attributeProduct->size->size_id }}"
                                 data-price="{{ $attributeProduct->price }}"
+                                value=""
                                 onclick="selectSize({{ $item->id }}, '{{ $attributeProduct->size->size_id }}', this)">
                                 {{ $attributeProduct->size->name }}
                             </button>

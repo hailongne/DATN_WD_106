@@ -52,8 +52,8 @@ class HomeController extends Controller
         'products.discount',
         'products.start_date',
         'products.end_date',
-        'products.is_sale',
-        'products.sold_count')  // Nhóm theo sản phẩm
+        'products.is_sale'
+        )  // Nhóm theo sản phẩm
         ->orderByDesc('total_views')  // Sắp xếp theo tổng lượt xem giảm dần
         ->take(4)  // Lấy 4 sản phẩm có lượt xem cao nhất
         ->get();
