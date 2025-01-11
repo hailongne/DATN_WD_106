@@ -71,7 +71,6 @@
   </div>
   <div class="icon-section">
     <a href="/" class="icon bi bi-house" title="Trang chủ" data-bs-toggle="tooltip" data-bs-placement="bottom"></a>
-    <span class="icon bi bi-bell notification-dot"></span>
     <p>Admin</p>
   </div>
 </div>

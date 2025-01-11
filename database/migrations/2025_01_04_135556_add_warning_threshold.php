@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('sizes', function (Blueprint $table) {
+        Schema::table('attribute_products', function (Blueprint $table) {
             //
-            $table->softDeletes();
+            $table->integer('warning_threshold')->default(5); // Ngưỡng cảnh báo tồn kho
         });
     }
 
@@ -22,9 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('sizes', function (Blueprint $table) {
+        Schema::table('attribute_products', function (Blueprint $table) {
             //
-            $table->dropSoftDeletes();
+            $table->dropColumn('warning_threshold');
         });
     }
 };

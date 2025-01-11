@@ -1,4 +1,14 @@
-<div id="carouselExample" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+<style>
+    #carouselExample .carousel-item {
+        transition: transform 1s ease-in-out !important;
+    }
+
+    .carousel-inner {
+        overflow: hidden;
+    }
+</style>
+
+<div id="carouselExample" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="2000">
     <div class="carousel-inner">
         <div class="carousel-item active">
             <img src="{{ asset('imagePro/image/banner/Banner1.png') }}" class="d-block w-100" alt="Banner 1">
@@ -7,13 +17,14 @@
             <img src="{{ asset('imagePro/image/banner/Banner2.png') }}" class="d-block w-100" alt="Banner 2">
         </div>
         <div class="carousel-item">
-            <img src="{{ asset('imagePro/image/banner/Banner3.png') }}" class="d-block w-100" alt="Banner 3">
+            <img src="{{ asset('imagePro/image/banner/Banner1.png') }}" class="d-block w-100" alt="Banner 1">
         </div>
         <div class="carousel-item">
-            <img src="{{ asset('imagePro/image/banner/Banner4.png') }}" class="d-block w-100" alt="Banner 4">
+            <img src="{{ asset('imagePro/image/banner/Banner2.png') }}" class="d-block w-100" alt="Banner 2">
         </div>
     </div>
 </div>
+
 <div class="info-section">
     <div class="info-item">
         <div class="info-icon">

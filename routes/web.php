@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\InventoryController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -202,7 +203,19 @@ Route::group(
                 Route::put('/update-review/{id}', [ReviewController::class, 'updateReview'])->name('update');
             }
         );
-
+    //Quản lí tồn kho
+    Route::group(
+        [
+            'prefix' => 'inventories',
+            'as' => 'inventories.'
+        ],
+        function () {
+            Route::get('/list-product', [InventoryController::class, 'listProduct'])->name('index');
+            Route::get('/detail-product/{id}', [InventoryController::class, 'detailProduct'])->name('detail');
+            Route::get('/edit-quantity/{id}', [InventoryController::class, 'editQuantity'])->name('edit');
+            Route::put('/update-stock/{id}', [InventoryController::class, 'updateStock'])->name('update');
+        }
+    );
 
 
         //Quản lý đơn hàng

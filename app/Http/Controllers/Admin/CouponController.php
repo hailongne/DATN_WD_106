@@ -41,7 +41,6 @@ class CouponController extends Controller
     }
 
     public function createCoupon(Request $request){
-        $users=User::where('name', 'like', '%' . $request->nhap . '%')->get();
         return view('admin.pages.coupon.create',compact('users'));
     }
     public function addCoupon(CouponRequest $request)
@@ -84,7 +83,7 @@ class CouponController extends Controller
     }
     public function editCoupon(Request $request,$id){
         $coupon = Coupon::findOrFail($id);
-        $users=User::where('name', 'like', '%' . $request->nhap . '%')->get();
+        $users=User::where('name', 'like', '%' . $request->input('nhap') . '%')->get();
 
         $userCoupon = CouponUser::where('coupon_id', $id)->get();;
         return view('admin.pages.coupon.edit',

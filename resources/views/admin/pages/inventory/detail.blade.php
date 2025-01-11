@@ -31,6 +31,7 @@
             <th>Màu</th>
             <th>Gíai</th>
             <th>Số lượng</th>
+            <th>Hoạt động</th>
         </tr>
     </thead>
     <tbody>
@@ -42,6 +43,15 @@
             <td>{{$attPro->color->name}}</td>
             <td>{{ number_format($attPro->price, 0, ',', '.') }} đ</td>
             <td>{{$attPro->in_stock}}</td>
+            <td>
+                            <div class="icon-product d-flex justify-content-center gap-2">
+                          
+                                <!-- Sửa -->
+                                <a href="{{ route('admin.inventories.edit', $attPro->attribute_product_id ) }}">
+                                    <button class="action-btn edit"><i class="fas fa-edit"></i></button>
+                                </a>
+                            </div>
+                        </td>
         </tr>
 
         @endforeach
@@ -60,5 +70,4 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     @endpush
-
 @endsection
