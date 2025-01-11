@@ -1,0 +1,166 @@
+
+*:focus {
+    border: 1px solid black;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+button:focus,
+input:focus,
+textarea:focus,
+a:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-smooth: always;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 700;
+}
+
+p {
+    font-weight: 400;
+}
+
+/* Tổng quan cho alert */
+#alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 300px;
+    padding: 15px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.5s ease-out;
+    z-index: 1000;
+}
+
+/* Hiệu ứng trượt vào từ bên phải */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Alert thành công màu xanh lá */
+.alert-success {
+    background-color: #28a745;
+    border: 1px solid #218838;
+}
+
+.alert-fail {
+    background-color: #333;
+    border: 1px solid #222;
+}
+
+.alert {
+    position: relative;
+    z-index: 1200;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background-color: black ;
+    color: white ;
+    padding: 10px 20px;
+    font-size: 14px;
+    text-transform: uppercase ;
+    text-decoration: none ;
+    border: 1px solid black ;
+    border-radius: 5px ;
+    cursor: pointer ;
+    transition: all 0.3s ease ;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: white ;
+    color: black ;
+    outline: 2px solid rgba(0, 0, 0, 0.1);
+    outline-offset: -2px;
+}
+
+
+.btn-primary:active {
+    transform: scale(0.98) ;
+}
+
+.btn-info {
+    background-color: rgb(2, 140, 172) ;
+    color: white ;
+    padding: 10px 20px;
+    font-size: 14px ;
+    text-transform: uppercase ;
+    text-decoration: none ;
+    border: 1px solid rgb(2, 140, 172) ;
+    border-radius: 5px ;
+    cursor: pointer ;
+    transition: all 0.3s ease ;
+}
+
+.btn-info:hover {
+    background-color: rgb(255, 255, 255) ;
+    color: rgb(2, 140, 172) ;
+    outline: 2px solid rgb(2, 140, 172) ;
+    outline-offset: -2px;
+}
+
+.btn-info:active {
+    transform: scale(0.98) ;
+}
+
+.custom-btn {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.custom-btn:hover {
+    background-color: #000000;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
+.custom-buy {
+    background-color: #000000;
+    color: white;
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    box-shadow: 0 0 0 0 transparent;
+}

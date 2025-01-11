@@ -97,7 +97,7 @@ class Product extends Model
     {
         return self::where('is_hot', 1)
             ->where('is_active', 1)  // Kiểm tra sản phẩm có đang hoạt động
-            ->limit(10)  // Giới hạn số lượng sản phẩm hot
+            ->limit(10)  // Giới hạn số lượng Sản phẩm nổi bật
             ->get();
     }
 

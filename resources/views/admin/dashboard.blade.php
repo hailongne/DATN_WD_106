@@ -103,7 +103,42 @@
                 </tbody>
             </table>
         </div>
+        
     </div>
+    <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Top 5 người dùng mua hàng nhiều nhất</h5>
+    </div>
+    <div class="card-body">
+        @if($topUsers->isEmpty())
+            <p class="text-muted">Không có dữ liệu.</p>
+        @else
+            <table class="table table-hover">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Hạng</th>
+                        <th>Tên người dùng</th>
+                        <th>Số đơn hàng</th>
+                        <th>Tổng chi tiêu (VNĐ)</th>
+                        <th>Đơn hàng cao nhất (VNĐ)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($topUsers as $index => $user)
+                    <tr>
+                        <td>#{{ $index + 1 }}</td>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->total_orders }}</td>
+                        <td>{{ number_format($user->total_spent, 0, ',', '.') }}</td>
+                        <td>{{ number_format($user->max_order_value, 0, ',', '.') }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+    </div>
+</div>
+
 
 <!-- Script vẽ biểu đồ -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

@@ -40,12 +40,6 @@ class HomeController extends Controller
         ->orderByDesc('total_views')  // Sắp xếp theo tổng lượt xem giảm dần
         ->take(4)  // Lấy 4 sản phẩm có lượt xem cao nhất
         ->get();
-    
-      
-        
-    
-    
-    
         // Eager load cả 'attributeProducts' từ bảng attribute_products
         // $listProduct = Product::with('attributeProducts')
         //     ->where('is_active', 1)  // Lọc sản phẩm có trạng thái is_active = 1 (sản phẩm đang hoạt động)
