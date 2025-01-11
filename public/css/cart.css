@@ -92,7 +92,13 @@
 .product-card:hover {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-
+.product-image,
+.product-details,
+.product-price,
+.product-attribute,
+.product-price-quantity {
+    flex: 1;  /* Chia đều không gian cho các phần tử */
+}
 /* Phần hình ảnh sản phẩm */
 .product-image {
     display: flex;
