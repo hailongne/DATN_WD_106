@@ -156,7 +156,7 @@
 
     <div class="container-related">
         <div class="button-header">
-            <button>
+            <button> 
                 Sản phẩm liên quan <i class="fa fa-star"></i>
             </button>
         </div>
@@ -257,7 +257,7 @@
             @csrf
             <div class="review-form">
                 <p>Đánh giá của bạn:</p>
-                <div class="stars">
+                <!-- <div class="stars">
                     <input type="radio" id="star1" name="rating" value="1" onclick="selectStar(1)">
                     <label for="star1">★</label>
 
@@ -272,7 +272,19 @@
 
                     <input type="radio" id="star5" name="rating" value="5" onclick="selectStar(5)">
                     <label for="star5">★★★★★</label>
-                </div>
+                </div> -->
+                <div class="stars">
+    <input type="radio" id="star5" name="rating" value="5">
+    <label for="star5">★</label>
+    <input type="radio" id="star4" name="rating" value="4">
+    <label for="star4">★</label>
+    <input type="radio" id="star3" name="rating" value="3">
+    <label for="star3">★</label>
+    <input type="radio" id="star2" name="rating" value="2">
+    <label for="star2">★</label>
+    <input type="radio" id="star1" name="rating" value="1">
+    <label for="star1">★</label>
+</div>
                 <input type="hidden" name="product_id" value="{{$product->product_id}}" id="">
                 <div class="comment-section">
                     <textarea name="comment" class="customReviewTest" id="reviewText"
@@ -306,27 +318,27 @@
                 </div>
             </a>
             <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 5])}}">
-                <div>
+                <div class="one">
                     <p>5 Sao (8)</p>
                 </div>
             </a>
             <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 4])}}">
-                <div>
+                <div class="one">
                     <p>4 Sao (2)</p>
                 </div>
             </a>
             <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 3])}}">
-                <div>
+                <div class="one">
                     <p>3 Sao (0)</p>
                 </div>
             </a>
             <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 2])}}">
-                <div>
+                <div class="one">
                     <p>2 Sao (0)</p>
                 </div>
             </a>
             <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 1])}}">
-                <div>
+                <div class="one">
                     <p>1 Sao (0)</p>
                 </div>
             </a>
