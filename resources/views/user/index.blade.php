@@ -7,7 +7,7 @@
     <title>@yield('title', 'Gentle Manor')</title>
 
     <!-- Favicon -->
-    <link rel="icon" href="{{ asset('imagePro/image/logo/logoremove-white.png') }}" type="image/png">
+    <link rel="icon" href="{{ asset('imagePro/image/logo/logo-remove2.png') }}" type="image/png">
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
