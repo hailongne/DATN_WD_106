@@ -38,52 +38,56 @@
             @endif
         </div>
 
-        <!-- Bộ Áp dụng -->
         <div class="custom-filter-bar d-flex align-items-center">
-            <!-- Form Tìm kiếm -->
-            <form action="" method="get" class="d-flex align-items-center custom-filter-item">
-                <div class="custom-input-group">
-                    <input type="text" class="custom-form-control" name="nhap" placeholder="Tìm kiếm sản phẩm..."
-                        aria-label="Search">
-                    <button class="custom-btn custom-btn-primary" type="submit">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </div>
-            </form>
-
-            <!-- Form Áp dụng danh mục -->
-            <form action="" method="get" class="d-flex align-items-center custom-filter-item">
-                <div class="custom-input-group">
-                    <select class="custom-select custom-form-control" name="filter"
-                        aria-label="Áp dụng sản phẩm theo danh mục">
-                        <option value="">Danh mục...</option>
-                        @foreach ($products as $product)
-                        <option value="{{$product->category->category_id}}">{{$product->category->name}}</option>
-                        @endforeach
-                    </select>
-                    <button class="custom-btn custom-btn-success" type="submit">Áp dụng</button>
-                </div>
-            </form>
-
-            <!-- Form Áp dụng Thương hiệu -->
-            <form action="" method="get" class="d-flex align-items-center custom-filter-item">
-                <div class="custom-input-group">
-                    <select class="custom-select custom-form-control" name="brand"
-                        aria-label="Áp dụng sản phẩm theo thương hiệu">
-                        <option value="">Thương hiệu...</option>
-                        @foreach ($products as $product)
-                        <option value="{{$product->brand->brand_id}}">{{$product->brand->name}}</option>
-                        @endforeach
-                    </select>
-                    <button class="custom-btn custom-btn-success" type="submit">Áp dụng</button>
-                </div>
-            </form>
-            <!-- Button Bỏ Áp dụng -->
-            <a href="{{ route('admin.products.index') }}" class="btn ml-3">
-                <image src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
-            </a>
-
+    <!-- Form Tìm kiếm -->
+    <form action="{{ route('admin.products.index') }}" method="get" class="d-flex align-items-center custom-filter-item">
+        <div class="custom-input-group">
+            <input type="text" class="custom-form-control" name="nhap" placeholder="Tìm kiếm sản phẩm..."
+                value="{{ request('nhap') }}" aria-label="Search">
+            <button class="custom-btn custom-btn-primary" type="submit">
+                <i class="bi bi-search"></i>
+            </button>
         </div>
+    </form>
+
+    <!-- Form Áp dụng danh mục -->
+    <form action="{{ route('admin.products.index') }}" method="get" class="d-flex align-items-center custom-filter-item">
+        <div class="custom-input-group">
+            <select class="custom-select custom-form-control" name="filter" aria-label="Áp dụng sản phẩm theo danh mục">
+                <option value="">Danh mục...</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->category_id }}" 
+                        {{ request('filter') == $category->category_id ? 'selected' : '' }}>
+                        {{ $category->name }}
+                    </option>
+                @endforeach
+            </select>
+            <button class="custom-btn custom-btn-success" type="submit">Áp dụng</button>
+        </div>
+    </form>
+
+    <!-- Form Áp dụng Thương hiệu -->
+    <form action="{{ route('admin.products.index') }}" method="get" class="d-flex align-items-center custom-filter-item">
+        <div class="custom-input-group">
+            <select class="custom-select custom-form-control" name="brand" aria-label="Áp dụng sản phẩm theo thương hiệu">
+                <option value="">Thương hiệu...</option>
+                @foreach ($brands as $brand)
+                    <option value="{{ $brand->brand_id }}" 
+                        {{ request('brand') == $brand->brand_id ? 'selected' : '' }}>
+                        {{ $brand->name }}
+                    </option>
+                @endforeach
+            </select>
+            <button class="custom-btn custom-btn-success" type="submit">Áp dụng</button>
+        </div>
+    </form>
+
+    <!-- Button Bỏ Áp dụng -->
+    <a href="{{ route('admin.products.index') }}" class="btn ml-3">
+        <img src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" alt="Remove Filters" />
+    </a>
+</div>
+
 
         <table class="product-table table table-bordered text-center align-middle mb-5">
             <thead class="thead-dark">

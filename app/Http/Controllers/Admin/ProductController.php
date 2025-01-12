@@ -27,24 +27,30 @@ class ProductController extends Controller
 {
     public function listProduct(Request $request)
     {
+        $categories = Category::select('category_id', 'name')->distinct()->get();
+        $brands = Brand::select('brand_id', 'name')->distinct()->get();
+    
         $products = Product::with('category:category_id,name', 'brand:brand_id,name')
-            ->when($request->input('nhap'), function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->input('nhap') . '%');
-            })
+        ->when($request->input('nhap'), function ($query) use ($request) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('nhap') . '%')
+                  ->orWhere('sku', 'like', '%' . $request->input('nhap') . '%'); // Sử dụng `sku` ở đây
+            });
+        })
             ->when($request->input('filter'), function ($query) use ($request) {
-                $query->orWhereHas('category', function ($q) use ($request) {
-                    $q->where('category_id', 'like', '%' . $request->input('filter') . '%');
+                $query->whereHas('category', function ($q) use ($request) {
+                    $q->where('category_id', $request->input('filter'));
                 });
             })
             ->when($request->input('brand'), function ($query) use ($request) {
-                $query->orWhereHas('brand', function ($q) use ($request) {
-                    $q->where('brand_id', 'like', '%' . $request->input('brand') . '%');
+                $query->whereHas('brand', function ($q) use ($request) {
+                    $q->where('brand_id', $request->input('brand'));
                 });
             })
-
-            ->latest()->paginate(5);
-        return view('admin.pages.product.list')
-            ->with(['products' => $products]);
+            ->latest()
+            ->paginate(10);
+    
+        return view('admin.pages.product.list', compact('products', 'categories', 'brands'));
     }
     public function toggle($id)
     {
