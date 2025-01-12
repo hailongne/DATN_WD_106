@@ -177,7 +177,7 @@ class OrderController extends Controller
         ]);
 
         // Cập nhật trạng thái đơn hàng
-        $order->update(['status' => 'cancelled']);
+        $order->update(['status' => 'cancelled', 'payment_status'=> 'failed']);
 
         Mail::to($order->user->email)->send(new OrderCancelled($order));
 

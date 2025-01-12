@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\AttributeRequest;
 use App\Http\Requests\ProductRequest;
+use App\Models\CartItem;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -59,7 +60,11 @@ class ProductController extends Controller
         // Thay đổi trạng thái is_active
         $product->is_active = !$product->is_active;
         $product->save();
-
+        if (!$product->is_active) {
+            // Xóa sản phẩm khỏi tất cả các giỏ hàng
+            CartItem::where('product_id', $id)->delete();
+        }
+    
         return redirect()->back()->with('success', 'Trạng thái sản phẩm đã được thay đổi!');
     }
     public function toggleHot($id)
