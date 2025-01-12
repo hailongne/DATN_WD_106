@@ -182,7 +182,7 @@ class ProductsController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $newImage = time() . "." . $image->getClientOriginalExtension();
-            $anh = $image->storeAs('/storage/imagePro/images', $newImage, 'public');
+            $anh = $image->storeAs('/storage/imagePro/image_review', $newImage, 'public');
         } else {
             $anh = '';
         }

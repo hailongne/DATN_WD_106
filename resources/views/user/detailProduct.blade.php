@@ -226,6 +226,8 @@
                         <p class="review-text">
                             {{!empty($review->comment) ? $review->comment : 'Bạn không bình luận gì về sản phẩm' }}
                         </p>
+                        
+                        <img src="{{ Storage::url('imagePro/image_review/'.$review->image) }}" alt="Review Image" />
                     </div>
                     @if($review->replies->isNotEmpty())
                         @foreach($review->replies as $reply)
@@ -338,9 +340,7 @@
                 <p class="review-text"> {{ $value->comment }}</p>
                 <div class="review-images">
                     <div class="image-container">
-                    @if(!empty($value->image) && Storage::exists($value->image))
-                        <img src="{{ Storage::url($value->image) }}" alt="Review Image" />
-                    @endif
+                    <img src="{{ Storage::url('imagePro/image_review/'.$value->image) }}" alt="Review Image" />
                         <div class="action-buttons">
                             <form action="{{ route('user.product.like', $value->review_id) }}" method="POST"
                                 style="display:inline;">
