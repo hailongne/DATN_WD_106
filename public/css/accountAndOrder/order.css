@@ -65,7 +65,11 @@
     color: white;
     border-color: black;
 }
-
+.custom-filter-btn.active {
+    background-color: #000; /* Màu nền khi bấm */
+    color: #fff; /* Màu chữ khi bấm */
+    border-color: #000; /* Đổi màu viền khi bấm */
+}
 .custom-filter-btn:focus {
     outline: none;
 }
@@ -109,6 +113,10 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    height: auto; /* Cho phép card tự điều chỉnh chiều cao */
+    box-sizing: border-box;
 }
 
 .card-header {

@@ -154,9 +154,7 @@
             </div>
         </div>
     </div>
-    <div class="pagination-wrapper">
-        {{ $orders->links() }}
-    </div>
+
 </div>
 @endsection
 
