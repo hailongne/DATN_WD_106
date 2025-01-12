@@ -202,109 +202,78 @@
             @endif
         </div>
     </div>
-
-    @if($hasPurchased)
-    <div class="container-review">
-        <h2>Các bạn hãy đánh giá sản phẩm nha!</h2>
-        @if($reviews->isEmpty())
-        <div class="text-center">
-            <h5>Chưa có bình luận nào cho sản phẩm này.</h5>
-            <p>Hãy là người bình luận đầu tiên</p>
-        </div>
+    @if($reviews->isEmpty())
+            <div class="text-center">
+                <h5>Chưa có bình luận nào cho sản phẩm này.</h5>
+                <p>Hãy là người bình luận đầu tiên</p>
+            </div>
         @else
-        <div id="reviewsContainer" class="reviewsContainer">
-            @foreach ($reviews as $review)
-            <div class="review">
-                <span class="review-date">
-                    {{ optional($review->created_at)->format('d-m-Y') ?? 'N/A' }}
-                </span>
-                <span class="review-time">
-                    {{ optional($review->created_at)->format('H:i') ?? 'N/A' }}
-                </span>
-                <div class="rating text-right">
-                    @if ($review->rating == 1)
-                    ★
-                    @elseif ($review->rating == 2)
-                    ★★
-                    @elseif ($review->rating == 3)
-                    ★★★
-                    @elseif ($review->rating == 4)
-                    ★★★★
-                    @elseif ($review->rating == 5)
-                    ★★★★★
+            <div id="reviewsContainer" class="reviewsContainer">
+                @foreach ($reviews as $review)
+                <p>Đánh giá của bạn:</p>
+                    <div class="review">
+                        <span class="review-date">{{ optional($review->created_at)->format('d-m-Y') ?? 'N/A' }}</span>
+                        <span class="review-time">{{ optional($review->created_at)->format('H:i') ?? 'N/A' }}</span>
+                        <div class="rating text-right">
+                            @for ($i = 1; $i <= 5; $i++)
+                                @if ($review->rating >= $i)
+                                    ★
+                                @else
+                                    ☆
+                                @endif
+                            @endfor
+                        </div>
+                        <p class="review-text">
+                            {{!empty($review->comment) ? $review->comment : 'Bạn không bình luận gì về sản phẩm' }}
+                        </p>
+                    </div>
+                    @if($review->replies->isNotEmpty())
+                        @foreach($review->replies as $reply)
+                            <div class="admin-response">
+                                <div class="admin-info mr-2">
+                                    <p>Quản trị viên:</p>
+                                </div>
+                                <p>{{ $reply->content }}</p>
+                            </div>
+                        @endforeach  
                     @endif
-                </div>
-                <p class="review-text">{{ $review->comment }}</p>
+                @endforeach
             </div>
-            <!-- Tin nhắn trả lời của admin -->
-            @if($review->replies->isNotEmpty())
-            @foreach($review->replies as $reply)
-            <div class="admin-response">
-
-                <div class="admin-info mr-2">
-                    <p>Quản trị viên: </p>
-                </div>
-                <p>
-                    {{ $reply->content }}
-                </p>
-            </div>
-            @endforeach
-            @endif
-            @endforeach
-        </div>
         @endif
+        @if($hasPurchased && !$hasReviewed)
+    <div class="container-review">
+        <!-- Form đánh giá -->
         <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="review-form">
                 <p>Đánh giá của bạn:</p>
-                <!-- <div class="stars">
-                    <input type="radio" id="star1" name="rating" value="1" onclick="selectStar(1)">
-                    <label for="star1">★</label>
-
-                    <input type="radio" id="star2" name="rating" value="2" onclick="selectStar(2)">
-                    <label for="star2">★★</label>
-
-                    <input type="radio" id="star3" name="rating" value="3" onclick="selectStar(3)">
-                    <label for="star3">★★★</label>
-
-                    <input type="radio" id="star4" name="rating" value="4" onclick="selectStar(4)">
-                    <label for="star4">★★★★</label>
-
-                    <input type="radio" id="star5" name="rating" value="5" onclick="selectStar(5)">
-                    <label for="star5">★★★★★</label>
-                </div> -->
                 <div class="stars">
-                    <input type="radio" id="star5" name="rating" value="5">
-                    <label for="star5">★</label>
-                    <input type="radio" id="star4" name="rating" value="4">
-                    <label for="star4">★</label>
-                    <input type="radio" id="star3" name="rating" value="3">
-                    <label for="star3">★</label>
-                    <input type="radio" id="star2" name="rating" value="2">
-                    <label for="star2">★</label>
-                    <input type="radio" id="star1" name="rating" value="1">
-                    <label for="star1">★</label>
+                    @for($i = 5; $i >= 1; $i--)
+                        <input type="radio" id="star{{ $i }}" name="rating" value="{{ $i }}">
+                        <label for="star{{ $i }}">★</label>
+                    @endfor
                 </div>
-                <input type="hidden" name="product_id" value="{{$product->product_id}}" id="">
+                <input type="hidden" name="product_id" value="{{ $product->product_id }}">
+
                 <div class="comment-section">
-                    <textarea name="comment" class="customReviewTest" id="reviewText"
-                        placeholder="Bình luận..."></textarea>
-                    <button class="btn" type="submit">
-                        Bình luận
-                    </button>
+                    <textarea name="comment" class="customReviewTest" id="reviewText" placeholder="Bình luận... (Tùy chọn)"></textarea>
                 </div>
             </div>
+
             <label class="upload-button">
                 <i class="fa-solid fa-plus"></i>
-                <!-- Dấu cộng -->
-                <input type="file" name="image" width="100px" height="100px" />
+                <input type="file" name="image" />
             </label>
-            <button class="btn" type="submit">
-                Submit Review
-            </button>
+
+            <button class="btn" type="submit">Submit Review</button>
         </form>
     </div>
-    @endif
+@else
+    <p>Bạn đã đánh giá sản phẩm này rồi.</p>
+@endif
+
+
+
     <div class="container-review">
         <h2>ĐÁNH GIÁ SẢN PHẨM</h2>
         <div class="details">
@@ -348,7 +317,7 @@
             <div class="review1">
                 <div class="review-header">
                     <div class="user-info">
-                        <img src="https://via.placeholder.com/40" alt="User Avatar" />
+
                         <h3>{{$value->user->name}}</h3>
                     </div>
                 </div>
@@ -369,7 +338,9 @@
                 <p class="review-text"> {{ $value->comment }}</p>
                 <div class="review-images">
                     <div class="image-container">
-                        <img src="{{Storage::url($value->image)}}" alt="Review Image" />
+                    @if(!empty($value->image) && Storage::exists($value->image))
+                        <img src="{{ Storage::url($value->image) }}" alt="Review Image" />
+                    @endif
                         <div class="action-buttons">
                             <form action="{{ route('user.product.like', $value->review_id) }}" method="POST"
                                 style="display:inline;">
@@ -396,6 +367,12 @@
     </div>
 
     <script>
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+        if (!document.querySelector('input[name="rating"]:checked')) {
+            e.preventDefault();
+            alert('Vui lòng chọn sao trước khi gửi');
+        }
+    });    
     document.addEventListener('DOMContentLoaded', function() {
         var reviewsContainer = document.getElementById('reviewsContainer');
         reviewsContainer.scrollTop = reviewsContainer.scrollHeight;

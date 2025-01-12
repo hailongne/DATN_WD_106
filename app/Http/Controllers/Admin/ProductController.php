@@ -148,8 +148,7 @@ class ProductController extends Controller
 
         $colors = is_array($request->input('color_id')) ? $request->input('color_id') : explode(',', $request->input('color_id'));
         $sizes = is_array($request->input('size_id')) ? $request->input('size_id') : explode(',', $request->input('size_id'));
-
-
+        
         // Prepare the data for the AttributeProduct table (product-color-size combinations)
         $productColorSizeData = [];
         foreach ($colors as $colorId) {
@@ -186,8 +185,6 @@ class ProductController extends Controller
         return view('admin.pages.product.editAtrPro')
             ->with(['groupedByColor' => $groupedByColor, 'product_id' => $id]);
     }
-
-
 
     public function updateAllAttributeProducts(Request $request)
     {
