@@ -143,9 +143,12 @@ class ProductsController extends Controller
     
         // Kiểm tra xem người dùng đã mua sản phẩm chưa
         $user = Auth::user();
-        $hasPurchased = $user->orders()->whereHas('products', function ($query) use ($productId) {
+        $hasPurchased = $user->orders()
+        ->where('status', 'completed') // Chỉ lấy các đơn hàng có trạng thái completed
+        ->whereHas('products', function ($query) use ($productId) {
             $query->where('order_items.product_id', $productId);
         })->exists();
+    
 
         // Kiểm tra xem người dùng đã đánh giá sản phẩm chưa
         $hasReviewed = Reviews::where('product_id', $productId)

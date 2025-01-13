@@ -381,12 +381,7 @@
     </div>
 
     <script>
-        document.getElementById('reviewForm').addEventListener('submit', function(e) {
-        if (!document.querySelector('input[name="rating"]:checked')) {
-            e.preventDefault();
-            alert('Vui lòng chọn sao trước khi gửi');
-        }
-    });    
+
     document.addEventListener('DOMContentLoaded', function() {
         var reviewsContainer = document.getElementById('reviewsContainer');
         reviewsContainer.scrollTop = reviewsContainer.scrollHeight;
