@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Banner;
 use Carbon\Carbon;
 use App\Models\Category;
 use App\Models\Product;
@@ -22,6 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $banners = Banner::where('is_active', true)->get();
         $listProduct = Product::with([
             'attributeProducts',
             'promPerProducts.promPer' => function ($query) {
@@ -63,6 +65,6 @@ class HomeController extends Controller
         $bestSellers = Product::getBestSellers();
         $hotProducts = Product::getHotProducts();
         return view('user.home', 
-        compact('listProduct', 'hotProducts', 'bestSellers','topProducts'));
+        compact('listProduct', 'hotProducts', 'bestSellers','topProducts','banners'));
     }
 }

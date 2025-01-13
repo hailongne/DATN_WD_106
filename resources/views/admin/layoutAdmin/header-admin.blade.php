@@ -25,7 +25,7 @@
                 <li><a href="{{ route('admin.brands.index') }}"><i class="fa-solid fa-copyright"></i> Thương hiệu</a></li>
                 <li><a href="{{ route('admin.coupons.index') }}"><i class="fa-solid fa-money-bill"></i> Mã giảm giá </a></li>
                 <li><a href="{{ route('admin.inventories.index') }}"><i class="fa-solid fa-money-bill"></i>  Tồn kho </a></li>
-
+                <li><a href="{{ route('admin.banners.index') }}"><i class="fa-solid fa-image"></i> Banner </a></li>
             </ul>
         </li>
         <li>
