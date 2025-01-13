@@ -51,33 +51,48 @@
                 </div>
             </form>
 
-            <!-- Form Áp dụng danh mục -->
-            <form action="" method="get" class="d-flex align-items-center custom-filter-item">
-                <div class="custom-input-group">
-                    <select class="custom-select custom-form-control" name="filter"
-                        aria-label="Áp dụng sản phẩm theo danh mục">
-                        <option value="">Danh mục...</option>
-                        @foreach ($products as $product)
-                        <option value="{{$product->category->category_id}}">{{$product->category->name}}</option>
-                        @endforeach
-                    </select>
-                    <button class="custom-btn custom-btn-success" type="submit">Áp dụng</button>
-                </div>
-            </form>
-
-            <!-- Form Áp dụng Thương hiệu -->
-            <form action="" method="get" class="d-flex align-items-center custom-filter-item">
-                <div class="custom-input-group">
-                    <select class="custom-select custom-form-control" name="brand"
-                        aria-label="Áp dụng sản phẩm theo thương hiệu">
-                        <option value="">Thương hiệu...</option>
-                        @foreach ($products as $product)
-                        <option value="{{$product->brand->brand_id}}">{{$product->brand->name}}</option>
-                        @endforeach
-                    </select>
-                    <button class="custom-btn custom-btn-success" type="submit">Áp dụng</button>
-                </div>
-            </form>
+              <!-- Form Lọc danh mục -->
+        <form action="" method="get" class="d-flex">
+        <div class="input-group">
+        @php
+    $categoryIds = []; // Mảng lưu các category_id đã duyệt
+@endphp
+                <select class="form-select form-control" name="filter" aria-label="Lọc sản phẩm theo danh mục">
+                    <option value="">Lựa chọn danh mục...</option>
+                    @foreach ($products as $index => $product)
+        @if (!in_array($product->category->category_id, $categoryIds)) <!-- Kiểm tra nếu category_id chưa xuất hiện -->
+            @php
+                $categoryIds[] = $product->category->category_id; // Thêm category_id vào mảng
+            @endphp
+            <option value="{{ $product->category->category_id }}">{{ $product->category->name }}</option>
+        @endif
+    @endforeach
+                </select>
+                <button class="btn btn-primary"  type="submit">
+                    Lọc</button>
+            </div>
+        </form>
+        <!-- form lọc thưogn hiệu -->
+        <form action="" method="get" class="d-flex">
+        <div class="input-group">
+        @php
+    $brandIds = []; // Mảng lưu các brand_id đã duyệt
+@endphp
+                <select class="form-select form-control" name="brand" aria-label="Lọc sản phẩm theo danh mục">
+                    <option value="">Lựa chọn thưogn hiệu...</option>
+                    @foreach ($products as $index => $product)
+        @if (!in_array($product->brand->brand_id, $brandIds)) <!-- Kiểm tra nếu brand_id chưa xuất hiện -->
+            @php
+                $brandIds[] = $product->brand->brand_id; // Thêm brand_id vào mảng
+            @endphp
+            <option value="{{ $product->brand->brand_id }}">{{ $product->brand->name }}</option>
+        @endif
+    @endforeach
+                </select>
+                <button class="btn btn-primary"  type="submit">
+                    Lọc</button>
+            </div>
+        </form>
             <!-- Button Bỏ Áp dụng -->
             <a href="{{ route('admin.products.index') }}" class="btn ml-3">
                 <image src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />

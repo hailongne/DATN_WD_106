@@ -273,6 +273,9 @@
                     <input type="radio" id="star5" name="rating" value="5" onclick="selectStar(5)">
                     <label for="star5">★★★★★</label>
                 </div>
+                @error('rating')
+            <span class="text-danger">{{$message}}</span>
+            @enderror
                 <input type="hidden" name="product_id" value="{{$product->product_id}}" id="">
                 <div class="comment-section">
                     <textarea name="comment" class="customReviewTest" id="reviewText"
@@ -280,12 +283,18 @@
                     <button class="btn" type="submit">
                         Bình luận
                     </button>
+                    @error('comment')
+            <span class="text-danger">{{$message}}</span>
+            @enderror
                 </div>
             </div>
             <label class="upload-button">
                 <i class="fa-solid fa-plus"></i>
                 <!-- Dấu cộng -->
                 <input type="file" name="image" width="100px" height="100px" />
+                @error('image')
+            <span class="text-danger">{{$message}}</span>
+            @enderror
             </label>
             <button class="btn" type="submit">
                 Submit Review
@@ -357,7 +366,7 @@
                 <p class="review-text"> {{ $value->comment }}</p>
                 <div class="review-images">
                     <div class="image-container">
-                        <img src="{{Storage::url($value->image)}}" alt="Review Image" />
+                        <img src="{{Storage::url($value->image)}}" width="200px" height="200px" alt="Review Image" />
                         <div class="action-buttons">
                             <form action="{{ route('user.product.like', $value->review_id) }}" method="POST"
                                 style="display:inline;">

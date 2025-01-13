@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StockRequest;
 use App\Mail\LowStockAlert;
 use App\Models\AttributeProduct;
 use Illuminate\Support\Facades\Mail;
@@ -22,13 +23,13 @@ class InventoryController extends Controller
                 $query->orWhereHas('category', function ($q) use ($request) {
                     $q->where('category_id', 'like', '%' . $request->input('filter') . '%');
                 });
-            })
+                
+            }) 
             ->when($request->input('brand'), function ($query) use ($request) {
                 $query->orWhereHas('brand', function ($q) use ($request) {
                     $q->where('brand_id', 'like', '%' . $request->input('brand') . '%');
                 });
             })
-
             ->latest()->paginate(5);
         return view('admin.pages.inventory.list')
             ->with(['products' => $products]);

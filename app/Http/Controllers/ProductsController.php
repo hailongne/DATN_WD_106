@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Requests\ReviewRequest;
 use App\Models\BannedWord;
 use App\Models\Like;
 use App\Models\LoveProduct;
@@ -148,7 +149,7 @@ class ProductsController extends Controller
         return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased'));
 
     }
-    public function addReview(Request $request)
+    public function addReview(ReviewRequest $request)
     {
 
         $bannedWords = BannedWord::pluck('word')->toArray();

@@ -3,6 +3,10 @@
 @push('styles')
 <style>
     /* CSS */
+.table-danger {
+    background-color: #f8d7da;
+    color: #842029;
+}
 .form-container {
     display: flex;
     justify-content: center;
@@ -53,11 +57,19 @@
         <!-- Form Lọc danh mục -->
         <form action="" method="get" class="d-flex">
         <div class="input-group">
+        @php
+    $categoryIds = []; // Mảng lưu các category_id đã duyệt
+@endphp
                 <select class="form-select form-control" name="filter" aria-label="Lọc sản phẩm theo danh mục">
                     <option value="">Lựa chọn danh mục...</option>
                     @foreach ($products as $index => $product)
-                        <option value="{{$product->category->category_id}}">{{$product->category->name}}</option>
-                    @endforeach
+        @if (!in_array($product->category->category_id, $categoryIds)) <!-- Kiểm tra nếu category_id chưa xuất hiện -->
+            @php
+                $categoryIds[] = $product->category->category_id; // Thêm category_id vào mảng
+            @endphp
+            <option value="{{ $product->category->category_id }}">{{ $product->category->name }}</option>
+        @endif
+    @endforeach
                 </select>
                 <button class="btn btn-primary"  type="submit">
                     Lọc</button>
@@ -66,11 +78,19 @@
         <!-- form lọc thưogn hiệu -->
         <form action="" method="get" class="d-flex">
         <div class="input-group">
+        @php
+    $brandIds = []; // Mảng lưu các brand_id đã duyệt
+@endphp
                 <select class="form-select form-control" name="brand" aria-label="Lọc sản phẩm theo danh mục">
                     <option value="">Lựa chọn thưogn hiệu...</option>
                     @foreach ($products as $index => $product)
-                        <option value="{{$product->brand->brand_id}}">{{$product->brand->name}}</option>
-                    @endforeach
+        @if (!in_array($product->brand->brand_id, $brandIds)) <!-- Kiểm tra nếu brand_id chưa xuất hiện -->
+            @php
+                $brandIds[] = $product->brand->brand_id; // Thêm brand_id vào mảng
+            @endphp
+            <option value="{{ $product->brand->brand_id }}">{{ $product->brand->name }}</option>
+        @endif
+    @endforeach
                 </select>
                 <button class="btn btn-primary"  type="submit">
                     Lọc</button>
@@ -98,6 +118,7 @@
                 </thead>
                 <tbody>
                     @foreach ($products as $index => $product)
+               
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>

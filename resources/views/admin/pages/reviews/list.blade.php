@@ -93,6 +93,11 @@
             @endforeach
         </tbody>
     </table>
+    <nav>
+            <ul class="pagination">
+                {{ $reviews->links() }}
+            </ul>
+        </nav>
 </div>
 <script>
 $(document).ready(function() {
