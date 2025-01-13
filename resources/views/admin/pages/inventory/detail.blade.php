@@ -3,6 +3,10 @@
 @push('styles')
 <style>
     /* CSS */
+    .table-danger {
+    background-color: #f8d7da;
+    color: #842029;
+}
 .form-container {
     display: flex;
     justify-content: center;
@@ -36,7 +40,7 @@
     </thead>
     <tbody>
         @foreach ($attPros as $attPro )
-        <tr>
+        <tr class="{{ $attPro->in_stock < $attPro->warning_threshold ? 'table-danger' : '' }}">
             <td>{{$attPro->product->sku}}</td>
             <td>{{$attPro->product->name}}</td>
             <td>{{$attPro->size->name}}</td>

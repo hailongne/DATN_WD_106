@@ -36,14 +36,14 @@ class Product extends Model
     public function colors()
     {
         return $this->belongsToMany(Color::class, 'attribute_products', 'product_id', 'color_id')
-            ->withPivot('size_id', 'price', 'in_stock');
+            ->withPivot('size_id', 'price', 'in_stock',);
     }
 
     // Mối quan hệ với bảng sizes thông qua bảng pivot
     public function sizes()
     {
         return $this->belongsToMany(Size::class, 'attribute_products', 'product_id', 'size_id')
-            ->withPivot('color_id', 'price', 'in_stock');
+            ->withPivot('color_id', 'price', 'in_stock','warning_threshold');
     }
     public function category()
     {
@@ -64,8 +64,10 @@ class Product extends Model
     }
     public function attributes()
     {
-        return $this->belongsToMany(AttributeProduct::class, 'attribute_products', 'product_id', 'attribute_id');
+        return $this->belongsToMany(AttributeProduct::class, 'attribute_products', 'product_id', 'attribute_product_id')
+                  ;
     }
+    
 
     public function orders()
     {

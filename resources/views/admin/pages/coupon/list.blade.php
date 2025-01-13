@@ -17,6 +17,28 @@
             {{ session('success') }}
         </div>
         @endif
+        <form action="" method="get" class="d-flex align-items-center custom-filter-item">
+                <div class="custom-input-group">
+                    <input type="text" class="custom-form-control" name="nhap" placeholder="Tìm kiếm sản phẩm..."
+                        aria-label="Search">
+                    <button class="custom-btn custom-btn-primary" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+            <form method="GET">
+    <div class="row">
+        <div class="col-md-6">
+            <label for="start_date">Ngày bắt đầu:</label>
+            <input type="date" id="start_date" name="start_date" class="form-control" value="{{ request('start_date') }}">
+        </div>
+        <div class="col-md-6">
+            <label for="end_date">Ngày kết thúc:</label>
+            <input type="date" id="end_date" name="end_date" class="form-control" value="{{ request('end_date') }}">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Lọc</button>
+</form>
 
         <div class="button-header mb-3">
             <button>Danh sách phiếu giảm giá <i class="fa fa-star"></i></button>
@@ -96,6 +118,12 @@
 
             </tbody>
         </table>
+           <!-- Phân trang -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            {{ $coupons->links() }}
+        </ul>
+    </nav>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

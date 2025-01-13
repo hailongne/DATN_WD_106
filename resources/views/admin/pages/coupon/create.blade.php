@@ -12,7 +12,7 @@
             <div class="custom-btn-action d-flex p2">
                 <a href="{{ route('admin.coupons.index') }}" class="btn btn-info btn-sm mr-1"
                     style="height: 30px; line-height: 30px; width: auto; font-size: 12px; padding: 0 10px;">Hủy</a>
-                <button type="submit" id="submit" class="btn btn-primary btn-sm"
+                <button type="submit" name="action" value="add_coupon" class="btn btn-primary btn-sm"
                     style="height: 30px; line-height: 30px; width: auto; font-size: 12px; padding: 0 10px;">Tiếp
                     tục</button>
             </div>
@@ -106,11 +106,11 @@
         <div class="row gx-2 mb-3">
             <label>Chọn kiểu <span class="text-danger">*</span></label>
             <div class="form-check">
-                <input type="radio" name="is_public" id="public" value="1" class="form-check-input" checked>
+                <input type="radio" name="is_public" id="public" value="0" class="form-check-input" checked>
                 <label for="public" class="form-check-label">Public</label>
             </div>
             <div class="form-check">
-                <input type="radio" name="is_public" id="private" value="0" class="form-check-input">
+                <input type="radio" name="is_public" id="private" value="1" class="form-check-input">
                 <label for="private" class="form-check-label">Private</label>
             </div>
         </div>
@@ -128,7 +128,7 @@
             </div>
             <div class="search-group mb-3">
                 <input type="text" placeholder="Tìm kiếm khách hàng" name="nhap" class="form-control" />
-                <button class="btn btn-primary" id="search-user" type="button">Tìm</button>
+                <button class="btn btn-primary" name="action" value="search_user" type="submit">Tìm</button>
             </div>
             <table class="product-table table table-bordered text-center align-middle">
                 <thead class="thead-dark">
@@ -141,18 +141,8 @@
                     </tr>
                 </thead>
                 <tbody class="table-scrollable">
-                    @foreach ($users as $user)
-                        @if($user->user_id != Auth::user()->user_id && $user->role != 1)
-                            <tr>
-                                <td><input type="checkbox" name="user_id[]" value="{{ $user->user_id }}" /></td>
-                                <td>{{ $user->name}}</td>
-                                <td>{{ $user->phone }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->address }}</td>
-                            </tr>
-                        @endif
-                    @endforeach
-                </tbody>
+        <!-- Kết quả tìm kiếm sẽ được thêm vào đây bằng AJAX -->
+    </tbody>
             </table>
         </div>
     </form>
@@ -189,12 +179,73 @@
         public.addEventListener('click', function () {
             customer.style.display = "none";
         });
-        submit = document.getElementById('submit');
-        search = document.getElementById('search-user');
-        search.addEventListener('click', function (e) {
+    
 
-            e.preventDefault();  // Ngăn chặn form submit
+        //danh sách người dùng
+        document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.querySelector("input[name='nhap']");
+    const searchButton = document.querySelector("button[name='action'][value='search_user']");
+    const tableBody = document.querySelector("tbody.table-scrollable");
+
+    let usersData = []; // Biến toàn cục lưu toàn bộ dữ liệu người dùng
+
+    // Bước 1: Lấy toàn bộ danh sách người dùng khi trang load
+    console.log(`{{ route('admin.coupons.search') }}`);
+    fetch(`{{ route('admin.coupons.search') }}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                usersData = data.data; // Lưu toàn bộ người dùng
+                console.log(usersData);
+                displayUsers(usersData); // Hiển thị tất cả người dùng
+            } else {
+                console.error("Không thể tải dữ liệu người dùng!");
+            }
         })
+        .catch(error => console.error("Lỗi khi tải dữ liệu:", error));
+
+    // Bước 2: Hàm hiển thị danh sách người dùng
+    function displayUsers(users) {
+        tableBody.innerHTML = ""; // Xóa dữ liệu cũ
+        users.forEach(user => {
+            const row = `
+                <tr>
+                    <td><input type="checkbox" name="user_id[]" value="${user.user_id}" /></td>
+                    <td>${user.name}</td>
+                    <td>${user.phone || "N/A"}</td>
+                    <td>${user.email || "N/A"}</td>
+                    <td>${user.address || "N/A"}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // Bước 3: Thêm sự kiện click cho nút "Tìm kiếm"
+    searchButton.addEventListener("click", function (event) {
+        event.preventDefault(); // Ngăn form gửi đi
+        const query = searchInput.value.trim();
+
+        if (query === "") {
+            alert("Vui lòng nhập từ khóa tìm kiếm!");
+            return;
+        }
+
+        // Lọc dữ liệu từ mảng `usersData`
+        const filteredUsers = usersData.filter(user =>
+            user.name.toLowerCase().includes(query.toLowerCase())
+        );
+
+        // Hiển thị kết quả tìm kiếm
+        if (filteredUsers.length > 0) {
+            displayUsers(filteredUsers);
+        } else {
+            alert("Không tìm thấy kết quả!");
+            tableBody.innerHTML = ""; // Xóa bảng nếu không tìm thấy
+        }
+    });
+});
+
     </script>
 
 @endpush

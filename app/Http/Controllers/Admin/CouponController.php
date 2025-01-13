@@ -16,18 +16,32 @@ class CouponController extends Controller
     public function listCoupon(Request $request)
     {
         $coupons = Coupon::with('users')
-        ->where('code', 'like', '%' . $request->nhap . '%')
-        ->when(request('start_date') && request('end_date'), function ($query) {
-            $query->whereBetween('start_date', [request('start_date'), request('end_date')]);
-        })
-        ->when(request('start_date') && !request('end_date'), function ($query) {
-            $query->where('start_date', '>=', request('start_date'));
-        })
-        ->when(request('end_date') && !request('start_date'), function ($query) {
-            $query->where('start_date', '<=', request('end_date'));
-        })
-            ->latest()->paginate(5);
-            return view('admin.pages.coupon.list',compact('coupons'));
+    ->where(function($query) use ($request) {
+        $query->where('code', 'like', '%' . $request->nhap . '%')
+              ->orWhere('quantity', 'like', '%' . $request->nhap . '%')
+              ->orWhere('min_order_value', 'like', '%' . $request->nhap . '%')
+              ->orWhere('max_order_value', 'like', '%' . $request->nhap . '%');
+    })
+    ->when(request('start_date') && request('end_date'), function ($query) {
+        // Lọc theo cả start_date và end_date
+        $query->whereBetween('start_date', [request('start_date'), request('end_date')]);
+    })
+    ->when(request('start_date') && !request('end_date'), function ($query) {
+        // Lọc theo start_date mà không cần end_date
+        $query->where('start_date', '>=', request('start_date'));
+    })
+    ->when(!request('start_date') && request('end_date'), function ($query) {
+        // Lọc theo end_date mà không cần start_date
+        $query->where('end_date', '<=', request('end_date'));
+    })
+    ->latest()
+    ->paginate(5);
+
+return view('admin.pages.coupon.list', compact('coupons'));
+
+    
+    
+    
     }
     public function toggle($id)
     {
@@ -39,11 +53,27 @@ class CouponController extends Controller
 
         return redirect()->back()->with('success', 'Trạng thái phiếu giảm giá đã được thay đổi!');
     }
-
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $authUserId = auth()->id(); // ID của user hiện tại
+    
+        $users = User::where('name', 'like', '%' . $query . '%')
+            ->where('user_id', '!=', $authUserId) // Loại bỏ user đang đăng nhập
+            ->where('role', '!=', 1) // Loại bỏ user có role = 1 (admin)
+            ->get();
+        return response()->json([
+            'success' => true,
+            'data' => $users,
+        ]);
+    }
+    
     public function createCoupon(Request $request){
+        
         $users=User::where('name', 'like', '%' . $request->input('nhap') . '%')->get();
         return view('admin.pages.coupon.create',compact('users'));
-    }
+
+}
     public function addCoupon(CouponRequest $request)
     {
         $coupon = Coupon::create([
@@ -71,6 +101,8 @@ class CouponController extends Controller
             Mail::to(User::find($userId)->email)->send(new CouponCreated($coupon));
             }
         }
+    
+
         return redirect()->route('admin.coupons.index')->with([
             'coupon' => $coupon,
             'couponUsers' => $couponUsers,
@@ -82,12 +114,32 @@ class CouponController extends Controller
         $coupon = Coupon::findOrFail($id);
         return view('admin.pages.coupon.detail',compact('coupon'));
     }
+    // UserController.php
+    public function searchId(Request $request, $id)
+{
+    $authUserId = auth()->id(); // ID của user hiện tại
+    $coupon = Coupon::findOrFail($id);
+    $query = $request->input('query');
+    // Lấy danh sách tất cả người dùng
+    $users = User::where('name', 'like', '%' . $query . '%')->where('user_id', '!=', $authUserId) // Loại bỏ user đang đăng nhập
+    ->where('role', '!=', 1)->get(); // Loại bỏ user có role = 1 (admin);
+
+    // Lấy danh sách user_id đã sử dụng coupon này
+    $userCouponIds = CouponUser::where('coupon_id', $id)->pluck('user_id')->toArray(); // Mảng ID người dùng đã dùng coupon
+
+    // Trả về dữ liệu dưới dạng JSON
+    return response()->json([
+        'users' => $users,
+        'userCouponIds' => $userCouponIds,
+    ]);
+}
     public function editCoupon(Request $request,$id){
         $coupon = Coupon::findOrFail($id);
         $users=User::where('name', 'like', '%' . $request->input('nhap') . '%')->get();
 
-        $userCoupon = CouponUser::where('coupon_id', $id)->get();;
-        return view('admin.pages.coupon.edit',
+        $userCoupon = CouponUser::where('coupon_id', $id)->get();
+
+        return view('admin.pages.coupon.edit',[  'couponId' => $id], // Truyền couponId vào view],
         compact('coupon','userCoupon','users'));
     }
     public function updateCoupon(CouponRequest $request, $id)

@@ -25,7 +25,7 @@
         <div class="col-md-6">
             <label class="custom-label" for="in_stock">Cập nhật số lượng</label>
             <input type="text" class="form-control" id="in_stock" name="in_stock" placeholder="Cập nhật số lượng"
-                required maxlength="50" value="{{$attPro->in_stock}}" />
+                 maxlength="50" value="{{$attPro->in_stock}}" />
                 @error('in_stock')
                     <span class="text-danger">{{$message}}</span>
                 @enderror

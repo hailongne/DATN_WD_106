@@ -166,6 +166,9 @@ Route::group(
                 Route::get('/edit-coupon/{id}', [CouponController::class, 'editCoupon'])->name('edit');
                 Route::delete('/destroy-coupon/{id}', [CouponController::class, 'destroyCoupon'])->name('delete');
                 Route::put('/update-coupon/{id}', [CouponController::class, 'updateCoupon'])->name(name: 'update');
+                Route::get('/admin/users/search', [CouponController::class, 'search'])->name('search');
+                Route::get('/admin/users/search/{id}', [CouponController::class, 'searchId'])->name('searchId');
+
             }
         );
         // CRUD COUPON

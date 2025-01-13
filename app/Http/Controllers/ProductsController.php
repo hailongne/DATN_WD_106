@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Requests\ReviewRequest;
 use App\Models\BannedWord;
 use App\Models\Like;
 use App\Models\LoveProduct;
@@ -150,6 +151,7 @@ class ProductsController extends Controller
         ->whereHas('products', function ($query) use ($productId) {
             $query->where('order_items.product_id', $productId);
         })->exists();
+    
 
         // Kiểm tra xem người dùng đã đánh giá sản phẩm chưa
         $hasReviewed = Reviews::where('product_id', $productId)
@@ -158,12 +160,14 @@ class ProductsController extends Controller
         // Thêm thông báo vào session
         session()->flash('alert', 'Bạn đang vào trang chi tiết sản phẩm');
 
+
         // Trả về view với các biến cần thiết, bao gồm số lượt xem
         return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount'));
 
         }
 
     public function addReview(Request $request)
+
     {
         $bannedWords = BannedWord::pluck('word')->toArray();
         $comment = $request->input('comment');

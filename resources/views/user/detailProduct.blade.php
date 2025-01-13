@@ -545,7 +545,9 @@
         </div>
     </div>
 
+
     <script>
+
     document.addEventListener('DOMContentLoaded', function() {
         var reviewsContainer = document.getElementById('reviewsContainer');
         reviewsContainer.scrollTop = reviewsContainer.scrollHeight;
