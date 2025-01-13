@@ -10,7 +10,7 @@
             <p id="loading-text">Đang tải giỏ hàng...</p>
         </div>
 
-        <div class="custom-cart-footer">
+        <div class="custom-cart-footer" id="cart-footer">
             <p class="custom-total-amount" id="total-amount">Tổng tiền: 0đ</p>
             <div class="custom-cart-actions">
                 <a href="{{ route('user.cart.index') }}" class="custom-add-cart-popup">Xem giỏ hàng</a>
@@ -20,16 +20,19 @@
 </div>
 
 <script>
-function fetchCartItems() {
+ function fetchCartItems() {
     fetch('/cart/cart-popup')
         .then(response => response.json())
         .then(data => {
+            const cartFooter = document.getElementById('cart-footer');
+            const cartItemsList = document.getElementById('cart-items-list');
+            const totalAmountElement = document.getElementById('total-amount');
+            
             if (data.cartItems && data.cartItems.length > 0) {
                 let cartItemsHtml = '';
                 let totalAmount = 0;
 
                 data.cartItems.forEach(item => {
-                    // Lấy thông tin màu sắc và kích thước từ attribute_products
                     const attributeProduct = item.product.attribute_products.find(attr =>
                         attr.size_id === item.size_id && attr.color_id === item.color_id);
                     const price = attributeProduct ? attributeProduct.price : 0;
@@ -67,15 +70,16 @@ function fetchCartItems() {
                     totalAmount += price * item.qty;
                 });
 
-                document.getElementById('cart-items-list').innerHTML = cartItemsHtml;
-                document.getElementById('total-amount').innerText = `Tổng tiền: ${totalAmount.toLocaleString()}đ`;
-                document.getElementById('total-amount-hidden').value = totalAmount;
+                cartItemsList.innerHTML = cartItemsHtml;
+                totalAmountElement.innerText = `Tổng tiền: ${totalAmount.toLocaleString()}đ`;
+                cartFooter.style.display = 'block'; // Hiển thị phần footer khi có sản phẩm
             } else {
-                document.getElementById('cart-items-list').innerHTML = `
+                cartItemsList.innerHTML = `
                 <div class="cart-empty-gm">
                     <div class="cart-icon-gm">🛒</div>
                     <p class="cart-message-gm">Giỏ hàng của bạn đang trống.</p>
                 </div>`;
+                cartFooter.style.display = 'none'; // Ẩn phần footer khi giỏ hàng trống
             }
 
             document.getElementById('loading-text').style.display = 'none';
@@ -85,4 +89,5 @@ function fetchCartItems() {
             document.getElementById('loading-text').innerText = 'Không thể tải giỏ hàng.';
         });
 }
+
 </script>
