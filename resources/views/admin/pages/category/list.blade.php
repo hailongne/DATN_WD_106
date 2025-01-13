@@ -48,11 +48,11 @@
     <table class="product-table table table-bordered text-center align-middle mb-5">
         <thead class="thead-dark">
             <tr>
-                <th style="width: 10%;">STT</th>
-                <th style="width: 20%;">Tên Danh mục</th>
-                <th style="width: 20%;">Hình ảnh</th>
-                <th style="width: 20%;">Trạng thái</th>
-                <th style="width: 20%;">Hành động</th>
+                <th>STT</th>
+                <th>Tên Danh mục</th>
+                <th>Hình ảnh</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
             </tr>
         </thead>
         <tbody>
@@ -76,9 +76,9 @@
                 <td>
                     <div class="icon-product d-flex justify-content-center gap-2">
                         <!-- Xem -->
-                        <a href="{{ route('admin.categories.detail', $category->category_id) }}">
+                        <!-- <a href="{{ route('admin.categories.detail', $category->category_id) }}">
                             <button class="action-btn eye"><i class="fas fa-eye"></i></button>
-                        </a>
+                        </a> -->
                         <!-- Sửa -->
                         <a href="{{ route('admin.categories.edit', $category->category_id) }}">
                             <button class="action-btn edit"><i class="fas fa-edit"></i></button>

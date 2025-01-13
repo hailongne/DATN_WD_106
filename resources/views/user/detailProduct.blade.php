@@ -1,28 +1,50 @@
 @extends("user.index")
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('css/detailProduct.css') }}">
-@endpush
-
 @section("content")
 
-<div class="body">
+<style>
+.container-detail-web {
+    background: white;
+    padding: 16px 0;
+    border-radius: 8px;
+    max-width: 1000px;
+    margin: 0px auto;
+}
+</style>
+
+<div class="container-detail-web">
     <div class="container-product">
         <div>
             <img src="{{ asset('storage/' . $product->main_image_url) }}" alt="{{ $product->name }}"
                 class="product-image-detail"
                 onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
+            <div class="action-container d-flex">
+                <!-- Nút yêu thích -->
+                <div class="like-container mr-2">
+                    <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">
+                        @csrf
+                        <button type="submit" class="love-icon-detail">
+                            <i class="fa-solid fa-heart"></i> Yêu thích
+                        </button>
+                    </form>
+                </div>
+                <div class="view-container">
+                    <button type="submit" class="view-icon-detail">
+                        <i class="fa-solid fa-eye"></i>{{$viewCount}} Lượt xem
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="contai">
             <div class="options">
                 <h1 class="product-name">{{ $product->name }}</h1>
                 <p class="text-muted">{{ $product->subtitle }}</p>
-                <div class="product-meta">
+                <!-- <div class="product-meta">
                     <span class="rating">★★★★☆</span>
                     <span class="comments">| 120 bình luận</span>
                     <span class="sales">| 500 đã bán</span>
-                </div>
+                </div> -->
                 <p class="price" id="product-price">
                     @php
                     $prices = $product->attributeProducts->pluck('price');
@@ -66,9 +88,9 @@
                 <input type="number" name="display-qty" id="quantity" class="custom-quantity-input" min="1" value="1"
                     onchange="updateQuantity(this.value)">
                 <div class="custom-quantity" onclick="changeQuantity(1)">+</div>
-                <p class="product-stock">
+                <div class="product-stock">
                     Còn lại: <span id="product-stock">{{ $product->attributeProducts->first()->in_stock }}</span>
-                </p>
+                </div>
                 <p id="error-message" style="color: red; display: none;">Số lượng không thể vượt quá số lượng có
                     sẵn!</p>
             </div>
@@ -100,63 +122,335 @@
         </div>
     </div>
 
-    <!-- Chi tiết sản phẩm -->
-    <div class="container-details">
-        <div class="button-header mb-3">
-            <button>
-                Chi tiết sản phẩm <i class="fa fa-star"></i>
-            </button>
+    <!-- accordion -->
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseOne">
+                    Chi tiết sản phẩm
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    <div class="button-header mb-3 ml-2">
+                        <button>
+                            Chi tiết sản phẩm: <strong>{{ $product->name }}</strong> <i class="fa fa-star"></i>
+                        </button>
+                    </div>
+                    <div class="detail-content ">
+                        <div class="detail-section">
+                            <h3>Danh Mục:</h3>
+                            <p> {{ $product->category->name ?? 'Chưa cập nhật' }}</p>
+                        </div>
+                        <div class="detail-section">
+                            <h3>Màu sắc:</h3>
+                            <p>
+                                @php
+                                $colors =
+                                $product->attributeProducts->unique('color_id')->pluck('color.name')->toArray();
+                                @endphp
+                                {{ implode(', ', $colors) }}
+                            </p>
+                        </div>
+
+                        <div class="detail-section mb-2">
+                            <h3>Size:</h3>
+                            <p>
+                                @php
+                                $sizes = $product->attributeProducts->unique('size_id')->pluck('size.name')->toArray();
+                                @endphp
+                                {{ implode(', ', $sizes) }}
+                            </p>
+                        </div>
+                        <div class="product-description">
+                            <div class="description-header">
+                                <h3>Mô tả sản phẩm:</h3>
+                            </div>
+                            <div class="description-content-detail">
+                                @php
+                                $description = $product->description
+                                ? $product->description
+                                : 'Mô tả sản phẩm đang được cập nhật...';
+
+                                // Xử lý Markdown thủ công
+                                $description = nl2br(e($description));
+                                $description = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $description);
+                                $description = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $description);
+                                @endphp
+
+                                {!! $description !!}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="detail-content">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseTwo">
+                    Đánh giá
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    @if($reviews->isEmpty())
+                    <div class="text-center">
+                        <p>Chưa có đánh giá nào về sản phẩm này.</p>
+                    </div>
+                    @else
+                    <div id="reviewsContainer" class="reviewsContainer">
+                        @foreach ($reviews as $review)
+                        <p>Đánh giá của bạn:</p>
+                        <div class="review-admin-user">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span
+                                        class="review-date">{{ optional($review->created_at)->format('d-m-Y') ?? 'N/A' }}</span>
+                                    <span
+                                        class="review-time">{{ optional($review->created_at)->format('H:i') ?? 'N/A' }}</span>
+                                </div>
+                                <div class="rating text-right">
+                                    <!-- PHP/Blade Logic -->
+                                    @for ($i = 1; $i <= 5; $i++) @if ($review->rating >= $i)
+                                        ★
+                                        @else
+                                        ☆
+                                        @endif
+                                        @endfor
+                                        <span class="rating-text">
+                                            @switch($review->rating)
+                                            @case(1)
+                                            Tệ
+                                            @break
+                                            @case(2)
+                                            Không hài lòng
+                                            @break
+                                            @case(3)
+                                            Bình thường
+                                            @break
+                                            @case(4)
+                                            Hài lòng
+                                            @break
+                                            @case(5)
+                                            Tuyệt vời
+                                            @break
+                                            @default
+                                            Chưa đánh giá
+                                            @endswitch
+                                        </span>
+                                </div>
+                            </div>
+                            <p class="review-text">
+                                {{!empty($review->comment) ? $review->comment : 'Bạn không bình luận gì về sản phẩm'}}
+                            </p>
+                            <img src="{{ asset('storage/' . $review->image) }}" class="image-review-product">
+                            @if($review->replies->isNotEmpty())
+                            @foreach($review->replies as $reply)
+                            <div class="admin-response">
+                                <div class="admin-info mr-2">
+                                    <p><strong>Phản hồi của người bán</strong></p>
+                                </div>
+                                <p>{{ $reply->content }}</p>
+                            </div>
+                            @endforeach
+                            @endif
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
 
-            <div class="detail-section">
-                <h3>Danh Mục:</h3>
-                <p> {{ $product->category->name ?? 'Chưa cập nhật' }}</p>
-            </div>
-            <div class="detail-section">
-                <h3>Màu sắc:</h3>
-                <p>
-                    @php
-                    $colors = $product->attributeProducts->unique('color_id')->pluck('color.name')->toArray();
-                    @endphp
-                    {{ implode(', ', $colors) }}
-                </p>
-            </div>
+                    @if($hasPurchased && !$hasReviewed)
+                    <!-- Form đánh giá -->
+                    <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="review-form">
+                            <p>Đánh giá của bạn:</p>
+                            <div class="form-start-detail-select">
+                                <label class="text-muted mr-3">Chất lượng sản phẩm</label>
+                                <div class="stars">
+                                    <input type="radio" id="star5" name="rating" value="5">
+                                    <label for="star5" data-text="Tuyệt vời">★</label>
 
-            <div class="detail-section mb-2">
-                <h3>Size:</h3>
-                <p>
-                    @php
-                    $sizes = $product->attributeProducts->unique('size_id')->pluck('size.name')->toArray();
-                    @endphp
-                    {{ implode(', ', $sizes) }}
-                </p>
-            </div>
-            <div class="product-description">
-                <div class="description-header">
-                    <h3>Mô tả sản phẩm:</h3>
+                                    <input type="radio" id="star4" name="rating" value="4">
+                                    <label for="star4" data-text="Hài lòng">★</label>
+
+                                    <input type="radio" id="star3" name="rating" value="3">
+                                    <label for="star3" data-text="Bình thường">★</label>
+
+                                    <input type="radio" id="star2" name="rating" value="2">
+                                    <label for="star2" data-text="Không hài lòng">★</label>
+
+                                    <input type="radio" id="star1" name="rating" value="1">
+                                    <label for="star1" data-text="Tệ">★</label>
+                                </div>
+                            </div>
+                            <input type="hidden" name="product_id" value="{{ $product->product_id }}">
+                            <div class="comment-section">
+                                <textarea name="comment" class="customReviewTest" id="reviewText"
+                                    placeholder="Bình luận... (Tùy chọn)"></textarea>
+                            </div>
+                        </div>
+                        <div class="comment-upload-section">
+                            <label class="upload-button">
+                                <i class="fa-solid fa-upload"></i>
+                                <input type="file" name="image" />
+                            </label>
+                            <button class="btn btn-primary" type="submit">Bình luận</button>
+                        </div>
+                    </form>
+
+                    @elseif($hasReviewed)
+                    <p class="text-center">Bạn đã đánh giá sản phẩm này rồi.</p>
+                    @else
+                    <p class="text-center">Hãy mua hàng và cho chúng tôi đánh giá để cải thiện dịch vụ nha!!!</p>
+                    @endif
                 </div>
-                <div class="description-content-detail">
-                    @php
-                    $description = $product->description
-                    ? $product->description
-                    : 'Mô tả sản phẩm đang được cập nhật...';
-
-                    // Xử lý Markdown thủ công
-                    $description = nl2br(e($description)); // Chuyển đổi xuống dòng
-                    $description = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $description); // In đậm
-                    $description = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $description); // In nghiêng
-                    @endphp
-
-                    {!! $description !!}
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="true"
+                    aria-controls="panelsStayOpen-collapseThree">
+                    Tất Cả Đánh Giá
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    <div class="button-header ml-2">
+                        <button>
+                            Đánh giá sản phẩm: <strong>{{ $product->name }}</strong> <i class="fa fa-star"></i>
+                        </button>
+                    </div>
                 </div>
+                @php
+                $totalReviews = $reviewAll->count();
+                $totalStars = $reviewAll->sum('rating');
+                $averageRating = $totalReviews > 0 ? round($totalStars / $totalReviews, 1) : 0;
+
+                // Tạo chuỗi sao
+                $stars = str_repeat('★', floor($averageRating));
+                if ($averageRating - floor($averageRating) >= 0.5) {
+                $stars .= '☆';
+                }
+                @endphp
+                <div class="header-reting-and-filer align-items-center">
+                    <div class="rating-summary">
+                        <h2>{{ $averageRating }} trên 5</h2>
+                        <div class="stars">{{ $stars }}</div>
+                    </div>
+
+                    <div class="review-filter">
+                        <button>
+                            <a href="{{route('user.product.detail', ['id' => $product->product_id])}}">
+                                <div class="total-reviews">
+                                    <p> Tất cả đánh Giá</p>
+                                </div>
+                            </a>
+                        </button>
+                        <button>
+                            <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 5])}}">
+                                <div class="one">
+                                    <p>5 sao</p>
+                                </div>
+                            </a>
+                        </button>
+                        <button>
+                            <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 4])}}">
+                                <div class="one">
+                                    <p>4 sao</p>
+                                </div>
+                            </a>
+                        </button>
+                        <button>
+                            <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 3])}}">
+                                <div class="one">
+                                    <p>3 sao</p>
+                                </div>
+                            </a>
+                        </button>
+                        <button>
+                            <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 2])}}">
+                                <div class="one">
+                                    <p>2 sao</p>
+                                </div>
+                            </a>
+                        </button>
+                        <button>
+                            <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 1])}}">
+                                <div class="one">
+                                    <p>1 sao</p>
+                                </div>
+                            </a>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reviews -->
+                @foreach ($reviewAll as $value)
+                <div class="review ">
+
+                    <h5>{{$value->user->name}}</h5>
+                    <div class="text-start">
+                        <div class="rating-all-reviews">
+                            @if ($value->rating == 1)
+                            ★
+                            @elseif ($value->rating == 2)
+                            ★★
+                            @elseif ($value->rating == 3)
+                            ★★★
+                            @elseif ($value->rating == 4)
+                            ★★★★
+                            @elseif ($value->rating == 5)
+                            ★★★★★
+                            @endif
+                        </div>
+                        <div class="review-header">
+                            <span
+                                class="review-date">{{ optional($value->created_at)->format('d-m-Y H:i') ?? 'N/A' }}</span>
+                        </div>
+                    </div>
+                    <p class="review-text"> {{ $value->comment }}</p>
+                    <div class="review-images">
+                        <img src="{{ asset('storage/' . $value->image) }}" class="image-review-product">
+                    </div>
+                    @if($value->replies->isNotEmpty())
+                    @foreach($value->replies as $reply)
+                    <div class="admin-response">
+                        <div class="admin-info mr-2">
+                            <p><strong>Phản hồi của người bán</strong></p>
+                        </div>
+                        <p>{{ $reply->content }}</p>
+                    </div>
+                    @endforeach
+                    @endif
+                    <div class="action-buttons">
+                        <form action="{{ route('user.product.like', $value->review_id) }}" method="POST"
+                            style="display:inline;">
+                            @csrf
+                            <button type="submit" class="custom-btn-active-admin status-btn-active">
+                                <i class="fas fa-thumbs-up "></i>{{$value->likes->count()}}
+                            </button>
+                        </form>
+                        <form action="{{ route('user.product.report', $value->review_id) }}" method="POST"
+                            style="display:inline;">
+                            @csrf
+                            <button><i class="fas fa-flag"></i> {{$value->reports->count()}}</button>
+                        </form>
+                    </div>
+                </div>
+                @endforeach
             </div>
         </div>
     </div>
 
     <div class="container-related">
         <div class="button-header">
-            <button> 
+            <button>
                 Sản phẩm liên quan <i class="fa fa-star"></i>
             </button>
         </div>
@@ -166,219 +460,91 @@
             @else
             <div class="product-slide">
                 @foreach($relatedProducts as $relatedProduct)
-                <div class="product-item">
-                    <a href="{{ route('user.product.detail', $relatedProduct->product_id) }}" class="product-card-link">
-                        <div class="card">
-                            <img src="{{ asset('storage/' . $relatedProduct->main_image_url) }}"
-                                alt="{{ $relatedProduct->name }}" class="product-image"
-                                onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ $relatedProduct->name }}</h5>
-                                @php
-                                $prices = $relatedProduct->attributeProducts->pluck('price');
-                                $minPrice = $prices->min();
-                                $maxPrice = $prices->max();
-                                @endphp
-                                <div class="product-info">
+                <div class="product-container">
+                    <form action="{{route('user.product.love', ['id' => $relatedProduct->product_id])}}" method="POST">
+                        @csrf
+                        <button type="submit" class="cart-icon love-icon">
+                            <i class="fa-solid fa-heart"></i>
+                        </button>
+                    </form>
+                    <div class="product-item">
+                        <a href="{{ route('user.product.detail', $relatedProduct->product_id) }}"
+                            class="product-card-link">
+                            <div class="card">
+                                <img src="{{ asset('storage/' . $relatedProduct->main_image_url) }}"
+                                    alt="{{ $relatedProduct->name }}" class="product-image"
+                                    onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
+                                <div class="card-body">
+                                    @php
+                                    // Lấy danh sách giá từ các thuộc tính
+                                    $prices = $relatedProduct->attributeProducts->pluck('price');
+                                    $originalMinPrice = $prices->min() ?? 0;
+                                    $originalMaxPrice = $prices->max() ?? 0;
+
+                                    // Khởi tạo giá hiển thị
+                                    $minPrice = $originalMinPrice;
+                                    $maxPrice = $originalMaxPrice;
+
+                                    // Kiểm tra xem sản phẩm có giảm giá không
+                                    $promotion = $relatedProduct->promPerProducts
+                                    ->sortByDesc('created_at') // Sắp xếp giảm dần theo ngày tạo
+                                    ->first()?->promPer; // Lấy khuyến mãi mới nhất
+
+                                    if ($promotion) {
+                                    if ($promotion->discount_amount) {
+                                    $minPrice = max(0, $originalMinPrice - $promotion->discount_amount);
+                                    $maxPrice = max(0, $originalMaxPrice - $promotion->discount_amount);
+                                    } elseif ($promotion->discount_percentage) {
+                                    $minPrice = max(0, $originalMinPrice * (1 - $promotion->discount_percentage / 100));
+                                    $maxPrice = max(0, $originalMaxPrice * (1 - $promotion->discount_percentage / 100));
+                                    }
+                                    }
+                                    @endphp
                                     <span class="product-price">
-                                        @if ($minPrice == $maxPrice)
-                                        {{ number_format($minPrice, 0, ',', '.') }} VND
+                                        @if ($promotion)
+                                        <!-- Hiển thị giá khuyến mãi -->
+                                        @if ($minPrice === $maxPrice)
+                                        <!-- Giá trị khuyến mãi chỉ hiển thị một giá -->
+                                        <strong>{{ number_format($originalMinPrice, 0, ',', '.') }}</strong> ₫<br>
+                                        <strong>{{ number_format($minPrice, 0, ',', '.') }}</strong> ₫
                                         @else
-                                        {{ number_format($minPrice, 0, ',', '.') }} -
-                                        {{ number_format($maxPrice, 0, ',', '.') }} VND
+                                        <!-- Hiển thị giá gốc và giá khuyến mãi (phạm vi) -->
+                                        <strong>{{ number_format($originalMinPrice, 0, ',', '.') }} -
+                                            {{ number_format($originalMaxPrice, 0, ',', '.') }}</strong> ₫<br>
+                                        <strong>{{ number_format($minPrice, 0, ',', '.') }} -
+                                            {{ number_format($maxPrice, 0, ',', '.') }}</strong> ₫
+                                        @endif
+                                        @else
+                                        <!-- Không có khuyến mãi -->
+                                        @if ($originalMinPrice === $originalMaxPrice)
+                                        <!-- Hiển thị một giá duy nhất -->
+                                        {{ number_format($originalMinPrice, 0, ',', '.') }} ₫
+                                        @else
+                                        <!-- Hiển thị phạm vi giá -->
+                                        {{ number_format($originalMinPrice, 0, ',', '.') }} -
+                                        {{ number_format($originalMaxPrice, 0, ',', '.') }} ₫
+                                        @endif
                                         @endif
                                     </span>
-                                    <a href="{{ route('user.product.detail', $relatedProduct->product_id) }}"
-                                        class="cart-icon">
-                                        <i class="fa fa-info-circle"></i>
-                                    </a>
+                                    <h5 class="classname-special-title">{{ $relatedProduct->name }}</h5>
+                                    <p class="classname-special-subtitle">{{ $relatedProduct->subtitle }}</p>
+                                    @php
+                                    $createdAt = \Carbon\Carbon::parse($relatedProduct->created_at);
+                                    $now = \Carbon\Carbon::now();
+                                    $isNewProduct = $createdAt->diffInDays($now) <= 7; @endphp @if ($isNewProduct) <p
+                                        class="classname-special-button-new">Mới</p>
+                                        @endif
                                 </div>
                             </div>
-                        </div>
-                    </a>
+                        </a>
+                    </div>
                 </div>
                 @endforeach
             </div>
             @endif
         </div>
     </div>
-    @if($reviews->isEmpty())
-            <div class="text-center">
-                <h5>Chưa có bình luận nào cho sản phẩm này.</h5>
-                <p>Hãy là người bình luận đầu tiên</p>
-            </div>
-        @else
-            <div id="reviewsContainer" class="reviewsContainer">
-                @foreach ($reviews as $review)
-                <p>Đánh giá của bạn:</p>
-                    <div class="review">
-                        <span class="review-date">{{ optional($review->created_at)->format('d-m-Y') ?? 'N/A' }}</span>
-                        <span class="review-time">{{ optional($review->created_at)->format('H:i') ?? 'N/A' }}</span>
-                        <div class="rating text-right">
-                            @for ($i = 1; $i <= 5; $i++)
-                                @if ($review->rating >= $i)
-                                    ★
-                                @else
-                                    ☆
-                                @endif
-                            @endfor
-                        </div>
-                        <p class="review-text">
-                            {{!empty($review->comment) ? $review->comment : 'Bạn không bình luận gì về sản phẩm' }}
-                        </p>
-                        
-                        <img src="{{ Storage::url('imagePro/image_review/'.$review->image) }}" alt="Review Image" />
-                    </div>
-                    @if($review->replies->isNotEmpty())
-                        @foreach($review->replies as $reply)
-                            <div class="admin-response">
-                                <div class="admin-info mr-2">
-                                    <p>Quản trị viên:</p>
-                                </div>
-                                <p>{{ $reply->content }}</p>
-                            </div>
-                        @endforeach  
-                    @endif
-                @endforeach
-            </div>
-        @endif
-        @if($hasPurchased && !$hasReviewed)
-    <div class="container-review">
-        <!-- Form đánh giá -->
-        <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="review-form">
-                <p>Đánh giá của bạn:</p>
-                <div class="stars">
-                    @for($i = 5; $i >= 1; $i--)
-                        <input type="radio" id="star{{ $i }}" name="rating" value="{{ $i }}">
-                        <label for="star{{ $i }}">★</label>
-                    @endfor
-                </div>
-                @error('rating')
-            <span class="text-danger">{{$message}}</span>
-            @enderror
-                <input type="hidden" name="product_id" value="{{$product->product_id}}" id="">
-                <div class="comment-section">
-                    <textarea name="comment" class="customReviewTest" id="reviewText"
-                        placeholder="Bình luận..."></textarea>
-                    <button class="btn" type="submit">
-                        Bình luận
-                    </button>
-                    @error('comment')
-            <span class="text-danger">{{$message}}</span>
-            @enderror
-                </div>
-            </div>
 
-            <label class="upload-button">
-                <i class="fa-solid fa-plus"></i>
-                <!-- Dấu cộng -->
-                <input type="file" name="image" width="100px" height="100px" />
-                @error('image')
-            <span class="text-danger">{{$message}}</span>
-            @enderror
-            </label>
-
-            <button class="btn" type="submit">Submit Review</button>
-        </form>
-    </div>
-@else
-    <p>Bạn đã đánh giá sản phẩm này rồi.</p>
-@endif
-
-
-
-    <div class="container-review">
-        <h2>ĐÁNH GIÁ SẢN PHẨM</h2>
-        <div class="details">
-            <div class="rating-info">
-                <h2>4.9</h2>
-                <div class="stars">★★★★★</div>
-            </div>
-            <a href="{{route('user.product.detail', ['id' => $product->product_id])}}">
-                <div class="total-reviews">
-                    <p> Tất cả đánh Giá</p>
-                </div>
-            </a>
-            <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 5])}}">
-                <div class="one">
-                    <p>5 Sao (8)</p>
-                </div>
-            </a>
-            <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 4])}}">
-                <div class="one">
-                    <p>4 Sao (2)</p>
-                </div>
-            </a>
-            <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 3])}}">
-                <div class="one">
-                    <p>3 Sao (0)</p>
-                </div>
-            </a>
-            <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 2])}}">
-                <div class="one">
-                    <p>2 Sao (0)</p>
-                </div>
-            </a>
-            <a href="{{route('user.product.detail', ['id' => $product->product_id, 'rating' => 1])}}">
-                <div class="one">
-                    <p>1 Sao (0)</p>
-                </div>
-            </a>
-        </div>
-        <div id="reviewsContainer">
-            @foreach ($reviewAll as $value)
-            <div class="review1">
-                <div class="review-header">
-                    <div class="user-info">
-
-                        <h3>{{$value->user->name}}</h3>
-                    </div>
-                </div>
-                <span class="review-date">{{ optional($value->created_at)->format('d-m-Y H:i') ?? 'N/A' }}</span>
-                <div class="rating">
-                    @if ($value->rating == 1)
-                    ★
-                    @elseif ($value->rating == 2)
-                    ★★
-                    @elseif ($value->rating == 3)
-                    ★★★
-                    @elseif ($value->rating == 4)
-                    ★★★★
-                    @elseif ($value->rating == 5)
-                    ★★★★★
-                    @endif
-                </div>
-                <p class="review-text"> {{ $value->comment }}</p>
-                <div class="review-images">
-                    <div class="image-container">
-                        <img src="{{Storage::url($value->image)}}" width="200px" height="200px" alt="Review Image" />
-
-                        <div class="action-buttons">
-                            <form action="{{ route('user.product.like', $value->review_id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                <button type="submit" class="custom-btn-active-admin status-btn-active">
-                                    <i class="fas fa-thumbs-up ">{{$value->likes->count()}}</i>
-                                </button>
-                            </form>
-                            <form action="{{ route('user.product.report', $value->review_id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                <button type="submit" class="custom-btn-active-admin status-btn-active">
-                                    <i class="fas fa-flag">{{$value->reports->count()}}</i>
-                                </button>
-                            </form>
-
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-        </div>
-    </div>
 
     <script>
 
@@ -605,5 +771,24 @@
             uploadedImagesDiv.appendChild(imgContainer);
         });
     }
+
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+        if (!document.querySelector('input[name="rating"]:checked')) {
+            e.preventDefault();
+            alert('Vui lòng chọn sao trước khi gửi');
+        }
+    });
+    const stars = document.querySelectorAll('.stars input[type="radio"]');
+    const description = document.getElementById('rating-description');
+
+    stars.forEach(star => {
+        star.addEventListener('change', () => {
+            const label = document.querySelector(`label[for="star${star.value}"]`);
+            description.textContent = label.getAttribute('data-text');
+        });
+    });
     </script>
-    @endsection
+</div>
+
+
+@endsection

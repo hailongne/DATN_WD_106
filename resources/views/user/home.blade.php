@@ -131,9 +131,7 @@ alert("{{ session('error') }}");
                             <i class="fa-solid fa-heart"></i>
                         </button>
                     </form>
-                    <a href="{{ route('user.product.detail', $product->product_id) }}" class="cart-icon detail-icon">
-                        <i class="fa fa-info-circle"></i>
-                    </a>
+
                     <div class="product-item">
                         <a href="{{ route('user.product.detail', $product->product_id) }}" class="product-card-link">
                             <div class="card">
@@ -230,9 +228,6 @@ alert("{{ session('error') }}");
                         <i class="fa-solid fa-heart"></i>
                     </button>
                 </form>
-                <a href="{{ route('user.product.detail', $product->product_id) }}" class="cart-icon detail-icon">
-                    <i class="fa fa-info-circle"></i>
-                </a>
                 <div class="product-item">
                     <a href="{{ route('user.product.detail', $soldProduct->product_id) }}" class="product-card-link">
                         <div class="card">
@@ -291,9 +286,9 @@ alert("{{ session('error') }}");
                         <i class="fa-solid fa-heart"></i>
                     </button>
                 </form>
-                <a href="{{ route('user.product.detail', $product->product_id) }}" class="cart-icon detail-icon">
+                <!-- <a href="{{ route('user.product.detail', $product->product_id) }}" class="cart-icon detail-icon">
                     <i class="fa fa-info-circle"></i>
-                </a>
+                </a> -->
                 <div class="product-item">
                     <a href="{{ route('user.product.detail', $hotProduct->product_id) }}" class="product-card-link">
                         <div class="card">

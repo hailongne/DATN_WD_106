@@ -57,6 +57,7 @@
 .love-icon {
     top: 30px;
     left: 25px;
+    color: #e63946;
     font-size: 20px;
 }
 
@@ -148,8 +149,8 @@
 }
 
 .classname-special-title {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 800;
   color: #333;
   margin: 0px 5px;
   white-space: nowrap;

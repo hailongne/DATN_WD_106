@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CategoryRequest extends FormRequest
 {
@@ -31,24 +32,26 @@ class CategoryRequest extends FormRequest
                 'required',
                 'alpha_dash',
                 'min:3',
-                'unique:categories,slug',  // Slug must be unique
+                'max:2048',
+                // Kiểm tra duy nhất khi thêm mới (POST)
+                $this->isMethod('post') ? 'unique:categories,slug' : Rule::unique('categories', 'slug')->ignore($categoryId, 'category_id'),
                 function ($attribute, $value, $fail) {
-                    // Remove spaces from both name and slug to compare them in the same format
-                    $slugWithoutSpace = str_replace(' ', '-', $this->input('name'));  // Replace spaces with dashes
-                    if ($value !== $slugWithoutSpace) {
-                        $fail('Slug phải giống với Name, và phải thay thế các dấu cách bằng dấu gạch ngang.');
+                    // Remove spaces from the URL to compare it in the same format
+                    $urlWithoutSpace = str_replace(' ', '-', $value);  // Thay dấu cách bằng dấu gạch ngang trong URL
+                    if ($value !== $urlWithoutSpace) {
+                        $fail('URL phải thay thế các dấu cách bằng dấu gạch ngang.');
                     }
-                }
+                },
             ],
             'parent_id' => 'nullable',  // Kiểm tra nếu có thì phải tồn tại trong bảng categories
         ];
     }
-    
+
     public function messages(): array
     {
         return [
             'name.required' => 'Yêu cầu không để trống',
-            'name.unique' => 'Tên thương hiệu đã tồn tại.',  // Thông báo lỗi khi tên bị trùng
+            'name.unique' => 'Tên thương hiệu đã tồn tại.',
             'description.required' => 'Yêu cầu không để trống',
             'image.required' => 'Yêu cầu không để trống',
             'image.image' => 'Tệp tải lên phải là hình ảnh.',
@@ -61,5 +64,5 @@ class CategoryRequest extends FormRequest
             'slug.min' => 'Slug phải có ít nhất 3 ký tự',
         ];
     }
-    
+
 }

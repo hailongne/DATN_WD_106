@@ -11,15 +11,7 @@
     @endif
     <div class="product-list">
         <div class="filter-container">
-            <div class="filter-product-new">
-                <a href="#" class="custom-btn-product-new">Áo</a>
-            </div>
-            <div class="filter-product-new">
-                <a href="#" class="custom-btn-product-new">Quần</a>
-            </div>
-            <div class="filter-product-new">
-                <a href="#" class="custom-btn-product-new">Set Quần Áo</a>
-            </div>
+            <label class="mr-2 text-align-center"> tìm kiếm sản phẩm: </label>
             <div class="filter-group">
                 <select class="form-select filter-select" id="filterCategory">
                     <option value="">Mới Nhất</option>
@@ -32,6 +24,7 @@
                 </select>
             </div>
         </div>
+        <hr class="line-filter-product"/>
         <div class="product-items">
             @if(isset($listProduct) && $listProduct->isNotEmpty())
             @foreach($listProduct->sortByDesc('created_at') as $product)
@@ -42,9 +35,6 @@
                         <i class="fa-solid fa-heart"></i>
                     </button>
                 </form>
-                <a href="{{ route('user.product.detail', $product->product_id) }}" class="cart-icon detail-icon">
-                    <i class="fa fa-info-circle"></i>
-                </a>
                 <div class="product-item">
                     <a href="{{ route('user.product.detail', $product->product_id) }}" class="product-card-link">
                         <div class="card">

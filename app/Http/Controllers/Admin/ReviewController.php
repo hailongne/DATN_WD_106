@@ -10,7 +10,10 @@ class ReviewController extends Controller
     //
     public function listReview()
 {
-    $reviews = Reviews::with(['product:product_id,name', 'user:user_id,email,name'])->get(); // Lấy tất cả bình luận với sản phẩm và người dùng liên quan
+    $reviews = Reviews::with(['product:product_id,name', 'user:user_id,email,name'])
+        ->orderBy('created_at', 'desc') // Sắp xếp theo created_at giảm dần
+        ->get();;
+
     return view('admin.pages.reviews.list', compact('reviews'));
 }
 public function toggle($id)
@@ -37,20 +40,33 @@ public function reply($id)
 // */
 public function storeReply(Request $request, $id)
 {
-   $review = Reviews::findOrFail($id);
+   $review = Reviews::find($id);
+
+   if (!$review) {
+       return back()->with('error', 'Bình luận không tồn tại.');
+   }
 
    // Kiểm tra quyền admin
-   if (auth()->user()->role== 1) {
-       $reply = new ReviewsReply([
-           'review_id' => $review->review_id,
-           'user_id' => auth()->id(),
-           'content' => $request->input('content'),
-           'product_id' => $review->product_id, // Lưu product_id của review
-       ]);
-       $reply->save();
+   if (auth()->user()->role != 1) {
+       return redirect()->route('admin.reviews.index')->with('error', 'Bạn không có quyền trả lời bình luận.');
    }
+
+   $content = $request->input('content');
+   if (empty($content)) {
+       return back()->with('error', 'Nội dung không thể để trống.');
+   }
+
+   // Lưu trả lời bình luận
+   ReviewsReply::create([
+       'review_id' => $review->review_id,
+       'user_id' => auth()->id(),
+       'content' => $content,
+       'product_id' => $review->product_id,
+   ]);
+
    return redirect()->route('admin.reviews.index')->with('success', 'Đã trả lời bình luận.');
 }
+
 
 
 public function editReview($id)
