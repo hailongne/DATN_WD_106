@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\AttributeRequest;
 use App\Http\Requests\ProductRequest;
+use App\Models\CartItem;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -27,24 +28,30 @@ class ProductController extends Controller
 {
     public function listProduct(Request $request)
     {
+        $categories = Category::select('category_id', 'name')->distinct()->get();
+        $brands = Brand::select('brand_id', 'name')->distinct()->get();
+    
         $products = Product::with('category:category_id,name', 'brand:brand_id,name')
-            ->when($request->input('nhap'), function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->input('nhap') . '%');
-            })
+        ->when($request->input('nhap'), function ($query) use ($request) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->input('nhap') . '%')
+                  ->orWhere('sku', 'like', '%' . $request->input('nhap') . '%'); // Sử dụng `sku` ở đây
+            });
+        })
             ->when($request->input('filter'), function ($query) use ($request) {
-                $query->orWhereHas('category', function ($q) use ($request) {
-                    $q->where('category_id', 'like', '%' . $request->input('filter') . '%');
+                $query->whereHas('category', function ($q) use ($request) {
+                    $q->where('category_id', $request->input('filter'));
                 });
             })
             ->when($request->input('brand'), function ($query) use ($request) {
-                $query->orWhereHas('brand', function ($q) use ($request) {
-                    $q->where('brand_id', 'like', '%' . $request->input('brand') . '%');
+                $query->whereHas('brand', function ($q) use ($request) {
+                    $q->where('brand_id', $request->input('brand'));
                 });
             })
-
-            ->latest()->paginate(5);
-        return view('admin.pages.product.list')
-            ->with(['products' => $products]);
+            ->latest()
+            ->paginate(10);
+    
+        return view('admin.pages.product.list', compact('products', 'categories', 'brands'));
     }
     public function toggle($id)
     {
@@ -53,7 +60,11 @@ class ProductController extends Controller
         // Thay đổi trạng thái is_active
         $product->is_active = !$product->is_active;
         $product->save();
-
+        if (!$product->is_active) {
+            // Xóa sản phẩm khỏi tất cả các giỏ hàng
+            CartItem::where('product_id', $id)->delete();
+        }
+    
         return redirect()->back()->with('success', 'Trạng thái sản phẩm đã được thay đổi!');
     }
     public function toggleHot($id)
@@ -142,8 +153,7 @@ class ProductController extends Controller
 
         $colors = is_array($request->input('color_id')) ? $request->input('color_id') : explode(',', $request->input('color_id'));
         $sizes = is_array($request->input('size_id')) ? $request->input('size_id') : explode(',', $request->input('size_id'));
-
-
+        
         // Prepare the data for the AttributeProduct table (product-color-size combinations)
         $productColorSizeData = [];
         foreach ($colors as $colorId) {
@@ -180,8 +190,6 @@ class ProductController extends Controller
         return view('admin.pages.product.editAtrPro')
             ->with(['groupedByColor' => $groupedByColor, 'product_id' => $id]);
     }
-
-
 
     public function updateAllAttributeProducts(Request $request)
     {
