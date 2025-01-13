@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{{ asset('css/slide.css') }}">
     <link rel="stylesheet" href="{{ asset('css/productList.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styleWeb.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/detailProduct.css') }}">
     @stack('styles')
 
 </head>

@@ -158,37 +158,37 @@ $(document).ready(function() {
     // });
 
     // Lặp qua tất cả các input có class 'in-stock'
-    Array.from(inStockInputs).forEach((inStockInput, index) => {
-        inStockInput.addEventListener('change', function(event) {
-            const value = event.target.value;
-            // Kiểm tra giá trị input in_stock
-            if (value.trim() === '') {
-                inStockErrors[index].textContent = 'Số lượng không được để trống';
-                isFormValid = false;
-            } else if (value <= 5) { // Kiểm tra nếu giá trị là số 0
-                inStockErrors[index].textContent = 'Số lượng phải lớn hơn 5 vì 5 là ngưỡng tồn kho';
-                isFormValid = false; // Form không hợp lệ
-            } else if (isNaN(value)) {
-                inStockErrors[index].textContent =
-                    'Số lượng phải là số và lớn hơn hoặc bằng 1';
-                isFormValid = false;
+    // Array.from(inStockInputs).forEach((inStockInput, index) => {
+    //     inStockInput.addEventListener('change', function(event) {
+    //         const value = event.target.value;
+    //         // Kiểm tra giá trị input in_stock
+    //         if (value.trim() === '') {
+    //             inStockErrors[index].textContent = 'Số lượng không được để trống';
+    //             isFormValid = false;
+    //         } else if (value <= 5) { // Kiểm tra nếu giá trị là số 0
+    //             inStockErrors[index].textContent = 'Số lượng phải lớn hơn 5 vì 5 là ngưỡng tồn kho';
+    //             isFormValid = false; // Form không hợp lệ
+    //         } else if (isNaN(value)) {
+    //             inStockErrors[index].textContent =
+    //                 'Số lượng phải là số và lớn hơn hoặc bằng 1';
+    //             isFormValid = false;
 
-            } else if (!Number.isInteger(Number(value))) {
-                inStockErrors[index].textContent = 'Số lượng phải là số nguyên';
-                isFormValid = false;
+    //         } else if (!Number.isInteger(Number(value))) {
+    //             inStockErrors[index].textContent = 'Số lượng phải là số nguyên';
+    //             isFormValid = false;
 
-            } else if (value == 0) { // Kiểm tra nếu giá trị là số 0
-                inStockErrors[index].textContent = 'Số lượng phải lớn hơn 0';
-                isFormValid = false; // Form không hợp lệ
-            } else {
-                inStockErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
-                isFormValid = true;
-            }
-        });
-    });
+    //         } else if (value == 0) { // Kiểm tra nếu giá trị là số 0
+    //             inStockErrors[index].textContent = 'Số lượng phải lớn hơn 0';
+    //             isFormValid = false; // Form không hợp lệ
+    //         } else {
+    //             inStockErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
+    //             isFormValid = true;
+    //         }
+    //     });
+    // });
 
     //lặp qua tất cả class url
-   
+
     // Thêm sự kiện khi click vào nút submit
     $('#submitForm').click(function(event) {
 
