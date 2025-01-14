@@ -473,3 +473,10 @@ input[type="number"] {
     color: #000000;
     background-color: #ffffff;
 }
+#select-all-label-text {
+    color: black; /* Màu mặc định */
+}
+
+#select-all-label-text.warning {
+    color: red; /* Màu đỏ cho thông báo khi có sản phẩm vượt quá số lượng kho */
+}

@@ -76,35 +76,36 @@
             </div>        </div>
     </div>
     <div class="card mb-4">
-        <div class="card-header">Thống kê sản phẩm trong kho</div>
-        <div class="card-body">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">Mã sản phẩm</th>
-                        <th scope="col">Tên sản phẩm</th>
-                        <th scope="col">Kích thước</th>
-                        <th scope="col">Màu sắc</th>
-                        <th scope="col">Số lượng tồn kho</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($inventoryStats as $product)
+    <div class="card-header">Thống kê sản phẩm trong kho</div>
+    <div class="card-body">
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Tìm kiếm sản phẩm...">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col" data-sort="product_id">Mã sản phẩm</th>
+                    <th scope="col" data-sort="name">Tên sản phẩm</th>
+                    <th scope="col" data-sort="size">Kích thước</th>
+                    <th scope="col" data-sort="color">Màu sắc</th>
+                    <th scope="col" data-sort="stock">Số lượng tồn kho</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                @foreach ($inventoryStats as $product)
                     @foreach ($product->attributeProducts as $attribute)
-                    <tr>
-                        <td>{{ $product->product_id }}</td>
-                        <td>{{ $product->name }}</td>
-                        <td>{{ $attribute->size->name ?? 'Không xác định' }}</td>
-                        <td>{{ $attribute->color->name ?? 'Không xác định' }}</td>
-                        <td>{{ $attribute->in_stock }}</td>
-                    </tr>
+                        <tr>
+                            <td data-column="product_id">{{ $product->product_id }}</td>
+                            <td data-column="name">{{ $product->name }}</td>
+                            <td data-column="size">{{ $attribute->size->name ?? 'Không xác định' }}</td>
+                            <td data-column="color">{{ $attribute->color->name ?? 'Không xác định' }}</td>
+                            <td data-column="stock">{{ $attribute->in_stock }}</td>
+                        </tr>
                     @endforeach
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        
+                @endforeach
+            </tbody>
+        </table>
     </div>
+</div>
+
     <div class="card mb-4">
     <div class="card-header bg-primary text-white">
         <h5 class="mb-0">Top 5 người dùng mua hàng nhiều nhất</h5>
@@ -143,6 +144,81 @@
 <!-- Script vẽ biểu đồ -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const headers = document.querySelectorAll('th[data-sort]');
+    
+    headers.forEach(header => {
+        header.addEventListener('click', function () {
+            const column = header.getAttribute('data-sort');
+            const rows = Array.from(document.querySelectorAll('#productTableBody tr'));
+            const isAscending = header.classList.contains('asc');
+            
+            // Sắp xếp các dòng bảng theo cột được bấm
+            rows.sort((a, b) => {
+                const aText = a.querySelector(`td[data-column="${column}"]`).textContent.trim();
+                const bText = b.querySelector(`td[data-column="${column}"]`).textContent.trim();
+
+                // Kiểm tra nếu là cột số (Số lượng tồn kho)
+                if (column === 'stock') {
+                    return isAscending ? aText - bText : bText - aText;
+                }
+                // So sánh theo chữ (Tên sản phẩm, Màu sắc, Kích thước, Mã sản phẩm)
+                return isAscending ? aText.localeCompare(bText) : bText.localeCompare(aText);
+            });
+
+            // Gắn lại các dòng đã sắp xếp vào bảng
+            rows.forEach(row => document.querySelector('#productTableBody').appendChild(row));
+
+            // Cập nhật các lớp CSS để thay đổi biểu tượng sắp xếp
+            headers.forEach(h => h.classList.remove('asc', 'desc'));
+            header.classList.add(isAscending ? 'desc' : 'asc');
+        });
+    });
+    // Lọc theo ngày Doanh thu
+    const startDateRevenue = document.getElementById('start_date');
+    const endDateRevenue = document.getElementById('end_date');
+
+    startDateRevenue.addEventListener('change', function() {
+        if (endDateRevenue.value && new Date(startDateRevenue.value) > new Date(endDateRevenue.value)) {
+            alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu ');
+            endDateRevenue.value = ''; // Reset giá trị
+        }
+    });
+
+    endDateRevenue.addEventListener('change', function() {
+        if (startDateRevenue.value && new Date(startDateRevenue.value) > new Date(endDateRevenue.value)) {
+            alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu ');
+            endDateRevenue.value = ''; // Reset giá trị
+        }
+    });
+
+    // Tìm kiếm sản phẩm
+    const searchInput = document.getElementById('searchInput');
+    const productTableBody = document.getElementById('productTableBody');
+
+    searchInput.addEventListener('input', function() {
+        const searchValue = searchInput.value.toLowerCase(); // Lấy giá trị tìm kiếm và chuyển thành chữ thường
+        const rows = productTableBody.getElementsByTagName('tr'); // Lấy tất cả các dòng trong bảng
+
+        Array.from(rows).forEach(row => {
+            const cells = row.getElementsByTagName('td'); // Lấy tất cả các ô trong mỗi dòng
+            let match = false;
+
+            // Duyệt qua các ô trong mỗi dòng và kiểm tra xem có khớp với từ khóa tìm kiếm không
+            Array.from(cells).forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(searchValue)) {
+                    match = true;
+                }
+            });
+
+            // Hiển thị hoặc ẩn dòng tùy thuộc vào việc có tìm thấy kết quả hay không
+            row.style.display = match ? '' : 'none';
+        });
+    });
+    
+});
+
+
     // Biểu đồ doanh thu theo ngày
     const dailyRevenueCtx = document.getElementById('dailyRevenueChart').getContext('2d');
     const dailyRevenueChart = new Chart(dailyRevenueCtx, {
@@ -253,43 +329,6 @@
                 }
             }
         }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        // Doanh thu
-        const startDateRevenue = document.getElementById('start_date_revenue');
-        const endDateRevenue = document.getElementById('end_date_revenue');
-
-        startDateRevenue.addEventListener('change', function() {
-            if (endDateRevenue.value && new Date(startDateRevenue.value) > new Date(endDateRevenue.value)) {
-                alert('Ngày bắt đầu không được lớn hơn ngày kết thúc (Doanh thu).');
-                startDateRevenue.value = ''; // Reset giá trị
-            }
-        });
-
-        endDateRevenue.addEventListener('change', function() {
-            if (startDateRevenue.value && new Date(startDateRevenue.value) > new Date(endDateRevenue.value)) {
-                alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu (Doanh thu).');
-                endDateRevenue.value = ''; // Reset giá trị
-            }
-        });
-
-        // Đơn hàng
-        const startDateOrders = document.getElementById('start_date_orders');
-        const endDateOrders = document.getElementById('end_date_orders');
-
-        startDateOrders.addEventListener('change', function() {
-            if (endDateOrders.value && new Date(startDateOrders.value) > new Date(endDateOrders.value)) {
-                alert('Ngày bắt đầu không được lớn hơn ngày kết thúc (Đơn hàng).');
-                startDateOrders.value = ''; // Reset giá trị
-            }
-        });
-
-        endDateOrders.addEventListener('change', function() {
-            if (startDateOrders.value && new Date(startDateOrders.value) > new Date(endDateOrders.value)) {
-                alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu (Đơn hàng).');
-                endDateOrders.value = ''; // Reset giá trị
-            }
-        });
     });
 </script>
 @endsection
