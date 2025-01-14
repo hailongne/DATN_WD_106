@@ -78,6 +78,7 @@
     <div class="card mb-4">
         <div class="card-header">Thống kê sản phẩm trong kho</div>
         <div class="card-body">
+        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Tìm kiếm sản phẩm...">
             <table class="table">
                 <thead>
                     <tr>
@@ -88,7 +89,7 @@
                         <th scope="col">Số lượng tồn kho</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="productTableBody">
                     @foreach ($inventoryStats as $product)
                     @foreach ($product->attributeProducts as $attribute)
                     <tr>
@@ -143,6 +144,51 @@
 <!-- Script vẽ biểu đồ -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Lọc theo ngày Doanh thu
+    const startDateRevenue = document.getElementById('start_date');
+    const endDateRevenue = document.getElementById('end_date');
+
+    startDateRevenue.addEventListener('change', function() {
+        if (endDateRevenue.value && new Date(startDateRevenue.value) > new Date(endDateRevenue.value)) {
+            alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu ');
+            endDateRevenue.value = ''; // Reset giá trị
+        }
+    });
+
+    endDateRevenue.addEventListener('change', function() {
+        if (startDateRevenue.value && new Date(startDateRevenue.value) > new Date(endDateRevenue.value)) {
+            alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu ');
+            endDateRevenue.value = ''; // Reset giá trị
+        }
+    });
+
+    // Tìm kiếm sản phẩm
+    const searchInput = document.getElementById('searchInput');
+    const productTableBody = document.getElementById('productTableBody');
+
+    searchInput.addEventListener('input', function() {
+        const searchValue = searchInput.value.toLowerCase(); // Lấy giá trị tìm kiếm và chuyển thành chữ thường
+        const rows = productTableBody.getElementsByTagName('tr'); // Lấy tất cả các dòng trong bảng
+
+        Array.from(rows).forEach(row => {
+            const cells = row.getElementsByTagName('td'); // Lấy tất cả các ô trong mỗi dòng
+            let match = false;
+
+            // Duyệt qua các ô trong mỗi dòng và kiểm tra xem có khớp với từ khóa tìm kiếm không
+            Array.from(cells).forEach(cell => {
+                if (cell.textContent.toLowerCase().includes(searchValue)) {
+                    match = true;
+                }
+            });
+
+            // Hiển thị hoặc ẩn dòng tùy thuộc vào việc có tìm thấy kết quả hay không
+            row.style.display = match ? '' : 'none';
+        });
+    });
+});
+
+
     // Biểu đồ doanh thu theo ngày
     const dailyRevenueCtx = document.getElementById('dailyRevenueChart').getContext('2d');
     const dailyRevenueChart = new Chart(dailyRevenueCtx, {
@@ -253,43 +299,6 @@
                 }
             }
         }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
-        // Doanh thu
-        const startDateRevenue = document.getElementById('start_date_revenue');
-        const endDateRevenue = document.getElementById('end_date_revenue');
-
-        startDateRevenue.addEventListener('change', function() {
-            if (endDateRevenue.value && new Date(startDateRevenue.value) > new Date(endDateRevenue.value)) {
-                alert('Ngày bắt đầu không được lớn hơn ngày kết thúc (Doanh thu).');
-                startDateRevenue.value = ''; // Reset giá trị
-            }
-        });
-
-        endDateRevenue.addEventListener('change', function() {
-            if (startDateRevenue.value && new Date(startDateRevenue.value) > new Date(endDateRevenue.value)) {
-                alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu (Doanh thu).');
-                endDateRevenue.value = ''; // Reset giá trị
-            }
-        });
-
-        // Đơn hàng
-        const startDateOrders = document.getElementById('start_date_orders');
-        const endDateOrders = document.getElementById('end_date_orders');
-
-        startDateOrders.addEventListener('change', function() {
-            if (endDateOrders.value && new Date(startDateOrders.value) > new Date(endDateOrders.value)) {
-                alert('Ngày bắt đầu không được lớn hơn ngày kết thúc (Đơn hàng).');
-                startDateOrders.value = ''; // Reset giá trị
-            }
-        });
-
-        endDateOrders.addEventListener('change', function() {
-            if (startDateOrders.value && new Date(startDateOrders.value) > new Date(endDateOrders.value)) {
-                alert('Ngày kết thúc không được nhỏ hơn ngày bắt đầu (Đơn hàng).');
-                endDateOrders.value = ''; // Reset giá trị
-            }
-        });
     });
 </script>
 @endsection
