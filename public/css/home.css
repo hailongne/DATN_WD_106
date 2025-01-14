@@ -160,7 +160,7 @@
 }
 
 .classname-special-subtitle{
-  font-size: 10px;
+  font-size: 12px;
   margin: 0px 5px;
   color:#a2a2a2;
   white-space: nowrap;
@@ -170,20 +170,20 @@
 }
 
 .classname-special-button-new{
-  font-size: 10px;
+  font-size: 12px;
   margin: 5px;
   color:#000000;
   border: 1px solid #000000;
-  width: 35px;
+  width: 45px;
   text-align: center;
 }
 
 .product-price {
   display: flex;
-  margin: 5px;
+  margin-left: 5px;
   justify-content: space-between;
   align-items: center;
   color: #000000;
   font-weight: 800;
-  font-size: 12px;
+  font-size: 14px;
 }

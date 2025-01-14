@@ -11,8 +11,16 @@
     @endif
     <div class="product-list">
         <div class="filter-container">
-            <label class="mr-2 text-align-center"> tìm kiếm sản phẩm: </label>
+            <h2 class="text-title-prodict-list text-start">Khám phá sản phẩm</h2>
             <div class="filter-group">
+             <label class="mr-2 text-align-center"> Lọc theo danh mục: </label>
+                <select class="form-select filter-select mr-4" id="filterCategory">
+                    <option value="">Tất cả</option>
+                    @foreach ($categories as $category)
+                    <option value="$category->category_id">{{ $category->name }}</option>
+                    @endforeach
+                </select>
+                <label class="mr-2 text-align-center"> Sắp xếp: </label>
                 <select class="form-select filter-select" id="filterCategory">
                     <option value="">Mới Nhất</option>
                     <option value="">Giá: Tăng dần</option>
@@ -27,7 +35,7 @@
         <hr class="line-filter-product"/>
         <div class="product-items">
             @if(isset($listProduct) && $listProduct->isNotEmpty())
-            @foreach($listProduct->sortByDesc('created_at') as $product)
+            @foreach ($listProduct as $product)
             <div class="product-container">
                 <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">
                     @csrf
@@ -106,9 +114,9 @@
                     </a>
                 </div>
             </div>
-            @endforeach
+             @endforeach
             @elseif(isset($products) && $products->isNotEmpty())
-            @foreach($listProduct as $product)
+            @foreach ($products as $product)
             <div class="product-container">
                 <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">
                     @csrf

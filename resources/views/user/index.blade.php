@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="{{ asset('css/productList.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styleWeb.css') }}">
     <link rel="stylesheet" href="{{ asset('css/detailProduct.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cart.css') }}">
     @stack('styles')
 
 </head>

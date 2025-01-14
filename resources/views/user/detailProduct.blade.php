@@ -16,7 +16,6 @@
     <div class="container-product">
         <div>
             <img src="{{ asset('storage/' . $product->main_image_url) }}" alt="{{ $product->name }}"
-                class="product-image-detail"
                 onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
             <div class="action-container d-flex">
                 <!-- Nút yêu thích -->
@@ -38,7 +37,7 @@
 
         <div class="contai">
             <div class="options">
-                <h1 class="product-name">{{ $product->name }}</h1>
+                <h1 class="text-title-prodict-list">{{ $product->name }}</h1>
                 <p class="text-muted">{{ $product->subtitle }}</p>
                 <!-- <div class="product-meta">
                     <span class="rating">★★★★☆</span>

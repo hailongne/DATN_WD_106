@@ -14,7 +14,7 @@
         <div class="col-8" style="padding-left: 15px; padding-right: 15px; width: 90%">
             <div class="row">
                 <!-- Hàng ngang 1 - Thanh tìm kiếm -->
-                <div class="col-12 mb-1 pt-4 form-search">
+                <div class="col-12 pt-4 form-search">
                     <form class="d-flex justify-content-center" action="{{ route('user.product.search') }}"
                         method="GET">
                         <input type="search" name="search" placeholder="Tìm kiếm sản phẩm"
@@ -28,7 +28,7 @@
             <div class="row">
                 <!-- Hàng ngang 2 - Danh mục -->
                 <div class="col">
-                    <div class="header-nav align-items-center mt-2">
+                    <div class="header-nav align-items-center">
                         <ul class="d-flex">
                             <li class="dropdown-item-menu">
                                 <a href="{{ route('user.product.list') }}">Sản Phẩm</a>
@@ -79,10 +79,11 @@
                                 @endif
                             </a>
                             <div class="dropdown-menu">
+                                @if(Auth::check())
                                 <a href="{{route('user.profiles.showUserInfo')}}" class="dropdown-item">Tài khoản của
                                     tôi</a>
 
-                                @if(Auth::check())
+
                                 <a href="{{route('user.product.listLove', ['id' => Auth::user()->user_id])}}"
                                     class="dropdown-item">
                                     Sản phẩm yêu thích
@@ -103,13 +104,21 @@
                                 @endif
                             </div>
                         </div>
-
+                        @if(Auth::check())
                         <a href="javascript:void(0);" data-bs-toggle="tooltip" title="Giỏ hàng" class="nav-link ml-3"
                             onclick="toggleCartPopup()">
                             <i class="fas fa-shopping-cart"></i>
                             <span class="custom-cart-count" id="cart-count">{{ $cartCount }}</span>
                             <!-- Hiển thị số lượng giỏ hàng -->
                         </a>
+                        @else
+                        <a href="javascript:void(0);" data-bs-toggle="tooltip" title="Giỏ hàng" class="nav-link ml-3"
+                            onclick="toggleCartPopup()" style="pointer-events: none;  opacity: 0.7;">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="custom-cart-count" id="cart-count">0</span>
+                            <!-- Hiển thị số lượng giỏ hàng -->
+                        </a>
+                        @endif
                     </nav>
                 </div>
             </div>
