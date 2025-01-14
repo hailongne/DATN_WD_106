@@ -15,11 +15,11 @@
     <div class="cart-items-section">
         <div class="cart-header">
         <label class="select-all-label">
-            <input type="checkbox" id="select-all-checkbox"> 
+            <input type="checkbox" id="select-all-checkbox">
             <span id="select-all-label-text">Chọn tất cả</span>
         </label>
 
-            
+
             <hr class="divider-line">
             <span class="cart-title">{{ count($cartItems) }} sản phẩm</span>
 
@@ -45,23 +45,26 @@
                 </div>
                 <div class="product-details-cart">
                     <a href="{{ route('user.product.detail', $item->product_id) }}" class="product-card-link">
-                        <p class="product-name mb-1">{{ $item->product->name }}</p>
+                        <p class="product-name-cart mb-1">{{ $item->product->name }}</p>
+                            <span style="font-size: 12px;color: #555;">{{ $item->color->name }}, {{ $item->size->name }}</span>
+                        <span style="font-size: 12px;color: #555;">Số lượng x {{ $item->qty }}</span>
                     </a>
                 </div>
-                <div class="product-attribute">
-                    <div class="attribute" onclick="openPopup('{{ $item->id }}')">
-                        <span>Phân loại hàng: ▼</span>
-                    </div>
-                    <span>{{ $item->color->name }}, {{ $item->size->name }}</span>
-                    <p class="section-title">Số lượng: {{ $item->qty }}</p>
-                </div>
                 <div class="product-price-cart">
-                    <strong>{{ number_format($attributeProduct ? $attributeProduct->price : 0, 0, ',', '.') }}₫</strong> x {{ $item->qty }}
+                    <strong>{{ number_format($attributeProduct ? $attributeProduct->price : 0, 0, ',', '.') }}₫</strong>
                 </div>
-                <div class="quantity-stock">
-                      <!-- Số lượng trong kho -->
-                      <p class="section-title">Còn lại: {{ $inStock }}</p> 
-                    
+                <div class="attribute">
+                    <!-- Số lượng trong kho -->
+                    <div class="quantity-container-cart d-flex">
+                        <div class="custom-quantity" onclick="changeQuantity({{ $item->id }}, -1)">-</div>
+                        <input type="number" id="quantity{{ $item->id }}" name="display-qty" class="custom-quantity-input" min="1"
+                                value="{{ $item->qty }}" onchange="updateQuantity({{ $item->id }}, this.value)">
+                        <div class="custom-quantity" onclick="changeQuantity({{ $item->id }}, 1)">+</div>
+                        <div class="product-stock">
+                            Còn lại: <span style="font-size: 12px;color: #555;">{{ $inStock }}</span>
+                        </div>
+                    </div>
+
                     <!-- Thông báo nếu số lượng giỏ hàng vượt quá tồn kho -->
                     @if($item->qty > $inStock)
                         <p class="section-title" style="color: red;">Số lượng trong giỏ hàng vượt quá số lượng trong kho, vui lòng chỉnh sửa số lượng.</p>
@@ -84,8 +87,6 @@
             </div>
             @endforeach
         </div>
-
-
 
         @if($cartItems->isEmpty())
         @else
@@ -119,13 +120,6 @@
 </div>
 
 <script>
-function openPopup(itemId) {
-    document.getElementById('popupOverlay' + itemId).style.display = 'block';
-}
-
-function closePopup(itemId) {
-    document.getElementById('popupOverlay' + itemId).style.display = 'none';
-}
 document.addEventListener('DOMContentLoaded', function() {
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
 
@@ -160,27 +154,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-function confirmSelection(itemId) {
-    const colorId = selectedColor[itemId] || "{{ $item->color->color_id ?? ''}}"; // Dùng giá trị cũ nếu không chọn màu mới
-    const sizeId = selectedSize[itemId] || "{{ $item->size->size_id ?? ''}}"; // Dùng giá trị cũ nếu không chọn size mới
-    const quantity = document.getElementById('quantity' + itemId).value || 1;
+function confirmSelection(itemId, quantity) {
+    const colorId = "{{ $item->color->color_id ?? ''}}"; // Sử dụng màu cũ
+    const sizeId = "{{ $item->size->size_id ?? ''}}"; // Sử dụng kích thước cũ
+    const finalQuantity = quantity || document.getElementById('quantity' + itemId).value || 1;
 
-    if (!colorId || !sizeId || quantity < 1) {
-        let message = '';
-        if (!colorId) {
-            message += 'Vui lòng chọn màu sắc.\n';
-        }
-        if (!sizeId) {
-            message += 'Vui lòng chọn kích thước.\n';
-        }
-        if (quantity < 1) {
-            message += 'Vui lòng chọn số lượng hợp lệ.\n';
-        }
-        alert(message);
+    if (finalQuantity < 1) {
+        alert('Vui lòng chọn số lượng hợp lệ.');
         return;
     }
 
-    fetch('{{ route('user.cart.cupdate', ['id' => ':itemId']) }}'.replace(':itemId', itemId), {
+    fetch('{{ route('user.cart.update', ['id' => ':itemId']) }}'.replace(':itemId', itemId), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -189,7 +173,7 @@ function confirmSelection(itemId) {
         body: JSON.stringify({
             color_id: colorId,
             size_id: sizeId,
-            quantity: quantity
+            quantity: finalQuantity
         })
     })
     .then(response => response.json())
@@ -204,10 +188,45 @@ function confirmSelection(itemId) {
     .catch(error => {
         alert('Có lỗi xảy ra khi cập nhật giỏ hàng.');
     });
-
-    closePopup(itemId);
 }
 
+function updateQuantity(itemId, quantity) {
+    // Kiểm tra số lượng nhập vào có hợp lệ không
+    if (quantity < 1) {
+        alert("Số lượng phải lớn hơn hoặc bằng 1.");
+        return;
+    }
+
+    // Gọi hàm xác nhận để xử lý cập nhật dữ liệu giỏ hàng
+    confirmSelection(itemId, quantity);
+}
+
+
+function changeQuantity(itemId, change) {
+    const quantityInput = document.getElementById('quantity' + itemId);
+    let newQuantity = parseInt(quantityInput.value) + change;
+
+    // Đảm bảo số lượng luôn lớn hơn hoặc bằng 1
+    if (newQuantity < 1) {
+        newQuantity = 1;
+    }
+
+    // Cập nhật số lượng
+    quantityInput.value = newQuantity;
+
+    // Kiểm tra xem phần tử có tồn tại không trước khi truy cập thuộc tính data-price
+    const priceElement = document.querySelector(`[data-price="${itemId}"]`);
+    if (priceElement) {
+        const pricePerUnit = parseFloat(priceElement.getAttribute('data-price')) / newQuantity;
+        const totalPriceElement = document.querySelector(`#total-price-${itemId}`);
+        const totalPrice = pricePerUnit * newQuantity;
+        totalPriceElement.textContent = numberWithCommas(totalPrice) + '₫';  // Cập nhật giá mới
+    }
+
+    updateQuantity(itemId, newQuantity);
+    // Gọi hàm xác nhận để xử lý cập nhật dữ liệu giỏ hàng
+    confirmSelection(itemId, newQuantity);
+}
 
 let selectedColor = {};
 let selectedSize = {};
@@ -232,26 +251,6 @@ function changeColor(itemId, colorId, element) {
     updatePrice(itemId);
 }
 
-function changeQuantity(itemId, change) {
-    const quantityInput = document.getElementById('quantity' + itemId);
-    let newQuantity = parseInt(quantityInput.value) + change;
-
-    // Đảm bảo số lượng luôn lớn hơn hoặc bằng 1
-    if (newQuantity < 1) {
-        newQuantity = 1;
-    }
-
-    quantityInput.value = newQuantity;
-    updateQuantity(itemId, newQuantity);
-}
-
-function confirmRemove(itemId) {
-    if (confirm('Bạn có muốn xóa sản phẩm này hay không ?')) {
-        // Nếu người dùng xác nhận, gửi form để xóa sản phẩm
-        document.getElementById('remove-item-form-' + itemId).submit();
-    }
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
     const productCheckboxes = document.querySelectorAll('.product-checkbox-item');
@@ -265,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 disableSelectAll = true; // Nếu có sản phẩm nào bị disable thì disable nút "Chọn tất cả"
             }
         });
-        
+
         // Disable hoặc enable checkbox "Chọn tất cả"
         selectAllCheckbox.disabled = disableSelectAll;
 
@@ -312,6 +311,13 @@ document.addEventListener('DOMContentLoaded', function() {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 });
+
+function confirmRemove(itemId) {
+    if (confirm('Bạn có muốn xóa sản phẩm này hay không ?')) {
+        // Nếu người dùng xác nhận, gửi form để xóa sản phẩm
+        document.getElementById('remove-item-form-' + itemId).submit();
+    }
+}
 </script>
 
 @endsection

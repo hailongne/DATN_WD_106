@@ -353,7 +353,7 @@ Route::group(
                 Route::get('/cart-list', [CartController::class, 'viewCart'])->name('index');
                 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('add');
                 Route::post('cart/buy-now', [CartController::class, 'buyNow'])->name('buy');
-                Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cupdate');
+                Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('update');
                 Route::delete('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('remove');
                 Route::get('/cart-popup', [CartController::class, 'viewCartPopup'])->name('popup');
             }
