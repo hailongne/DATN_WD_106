@@ -19,13 +19,14 @@
             </a>
             <ul id="managementSubmenu" class="submenu">
                 <li><a href="{{ route('admin.products.index') }}"><i class="fa-solid fa-shirt"></i>Sản phẩm</a></li>
-                <li><a href="{{ route('admin.categories.index') }}"><i class="fa-solid fa-layer-group"></i> Danh mục</a></li>
+                <li><a href="{{ route('admin.categories.index') }}"><i class="fa-solid fa-layer-group"></i> Danh mục</a>
+                </li>
                 <li><a href="{{ route('admin.sizes.index') }}"><i class="fa-solid fa-maximize"></i> Size</a></li>
                 <li><a href="{{ route('admin.colors.index') }}"><i class="fa-solid fa-droplet"></i> Màu</a></li>
-                <li><a href="{{ route('admin.brands.index') }}"><i class="fa-solid fa-copyright"></i> Thương hiệu</a></li>
-                <li><a href="{{ route('admin.coupons.index') }}"><i class="fa-solid fa-money-bill"></i> Mã giảm giá </a></li>
-                <li><a href="{{ route('admin.inventories.index') }}"><i class="fa-solid fa-money-bill"></i>  Tồn kho </a></li>
-
+                <li><a href="{{ route('admin.brands.index') }}"><i class="fa-solid fa-copyright"></i> Thương hiệu</a>
+                </li>
+                <li><a href="{{ route('admin.inventories.index') }}"><i class="fa-solid fa-money-bill"></i> Tồn kho </a>
+                </li>
             </ul>
         </li>
         <li>
@@ -43,5 +44,10 @@
                 <i class="fa-solid fa-user"></i> Tài khoản
             </a>
         </li>
+
+        <li><a href="{{ route('admin.coupons.index') }}"><i class="fa-solid fa-money-bill"></i> Mã giảm giá </a>
+        </li>
+        <li><a href="{{ route('admin.banners.index') }}"><i class="fa-solid fa-image"></i> Banner </a></li>
+
     </ul>
 </div>
