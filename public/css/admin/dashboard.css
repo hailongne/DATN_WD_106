@@ -142,3 +142,10 @@ canvas {
 #searchInput {
     padding-left: 30px; /* Thêm khoảng cách bên trái để không chạm biểu tượng */
 }
+th.asc::after {
+    content: " ▲";
+}
+
+th.desc::after {
+    content: " ▼";
+}
