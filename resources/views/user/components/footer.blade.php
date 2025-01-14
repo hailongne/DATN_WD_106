@@ -8,7 +8,7 @@
             </div>
             <div class="custom-description">
                 <p style="font-size: 14px; color: #666;">
-                    GENTLEMANOR Thay đổi từ thời trang đến phong cách sống
+                    GENTLEMANOR - Thay đổi từ thời trang đến phong cách sống
                 </p>
             </div>
         </div>
