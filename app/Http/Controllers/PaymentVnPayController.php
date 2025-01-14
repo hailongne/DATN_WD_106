@@ -205,13 +205,13 @@ public function handleVNPayCallback(Request $request)
     $secureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
 
     // Log chuỗi hash và secureHash
-    Log::info('HashData: ' . $hashData);
-    Log::info('Generated SecureHash: ' . $secureHash);
-    Log::info('VNPAY SecureHash: ' . $vnp_SecureHash);
+    // Log::info('HashData: ' . $hashData);
+    // Log::info('Generated SecureHash: ' . $secureHash);
+    // Log::info('VNPAY SecureHash: ' . $vnp_SecureHash);
 
     // Kiểm tra chữ ký
     if ($secureHash !== $vnp_SecureHash) {
-        Log::error('Chữ ký số không hợp lệ.');
+        // Log::error('Chữ ký số không hợp lệ.');
         return redirect()->route('users.cart')->with('error', 'Chữ ký số không hợp lệ.');
     }
 
@@ -221,7 +221,7 @@ public function handleVNPayCallback(Request $request)
         $order = Order::find($data['vnp_TxnRef']);
 
         if (!$order) {
-            Log::error('Không tìm thấy đơn hàng với mã giao dịch: ' . $data['vnp_TxnRef']);
+            // Log::error('Không tìm thấy đơn hàng với mã giao dịch: ' . $data['vnp_TxnRef']);
             return redirect()->route('users.cart')->with('error', 'Không tìm thấy đơn hàng.');
         }
 
@@ -298,15 +298,15 @@ public function handleVNPayCallback(Request $request)
 
         // Thông báo kết quả giao dịch
         if ($paymentStatus == 'paid') {
-            Log::info('Thanh toán thành công cho đơn hàng: ' . $order->order_id);
+            // Log::info('Thanh toán thành công cho đơn hàng: ' . $order->order_id);
             return redirect()->route('user.order.order-cod')->with('success', 'Thanh toán thành công!');
         } else {
-            Log::info('Thanh toán thất bại cho đơn hàng: ' . $order->order_id);
+            // Log::info('Thanh toán thất bại cho đơn hàng: ' . $order->order_id);
             return redirect()->route('user.cart.index')->with('error', 'Thanh toán thất bại.');
         }
     } catch (\Exception $e) {
         // Log lỗi nếu có
-        Log::error('VNPAY Callback Error: ' . $e->getMessage());
+        // Log::error('VNPAY Callback Error: ' . $e->getMessage());
         return redirect()->route('user.cart.index')->with('error', 'Đã xảy ra lỗi trong quá trình xử lý.');
     }
 

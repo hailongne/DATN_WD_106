@@ -264,6 +264,7 @@ class OrderController extends Controller
         return view('user.orders.orderConfirm', [
             'user' => $user,
             'productDetails' => $productDetails,
+            'totalWithoutShipping' => $totalWithoutShipping,
             'total' => $total,
             'shippingFee' => $shippingFee
         ]);
@@ -327,6 +328,7 @@ class OrderController extends Controller
         return view('user.orders.orderConfirmVNPay', [
             'user' => $user,
             'productDetails' => $productDetails,
+            'totalWithoutShipping' => $totalWithoutShipping,
             'total' => $total,
             'shippingFee' => $shippingFee
         ]);

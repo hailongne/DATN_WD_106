@@ -115,9 +115,9 @@
                                 </td>
                                 <td>{{ $item->color ? $item->color->name : 'Không có thông tin' }}</td>
                                 <td>{{ $item->size ? $item->size->name : 'Không có thông tin' }}</td>
-                                <td>{{ $item->product ? number_format($item->price, 0, ',', '.') . ' VND' : 'Không có thông tin' }}</td>
+                                <td>{{ $item->product ? number_format($item->price, 0, ',', '.') . ' đ' : 'Không có thông tin' }}</td>
                                 <td>{{ $item->quantity }}</td>
-                                <td>{{ $item->product ? number_format($item->price * $item->quantity, 0, ',', '.') . ' VND' : 'Không có thông tin' }}</td>
+                                <td>{{ $item->product ? number_format($item->price * $item->quantity, 0, ',', '.') . ' đ' : 'Không có thông tin' }}</td>
                             </tr>
                             @endforeach
                             @if ($order->statusHistories->isNotEmpty())
@@ -138,11 +138,11 @@
                             <tr>
                                 <td colspan="7">Tổng giá trị đơn hàng:</td>
                                 <td>{{ number_format($order->orderItems->sum(function($item) { return $item->price * $item->quantity; }), 0, ',', '.') }}
-                                    VND</td>
+                                    đ</td>
                             </tr>
                             <tr>
                                 <td colspan="7">Phí Ship:</td>
-                                <td>40,000 VND</td>
+                                <td>40,000 đ</td>
                             </tr>
                             <tr>
                                 <!-- Dòng hiển thị giảm giá -->
