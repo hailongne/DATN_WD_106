@@ -585,6 +585,7 @@
             'in_stock' => $attribute->in_stock
         ];
     }));
+    
     function checkStockAvailability() {
     const color = document.getElementById('selected-color').value;
     const size = document.getElementById('selected-size').value;
@@ -734,28 +735,34 @@ function selectSize(sizeId, element) {
 
         // Gửi yêu cầu AJAX đến server
         const formData = new FormData();
-        formData.append('product_id', document.querySelector('[name="product_id"]').value);
-        formData.append('color_id', color);
-        formData.append('size_id', size);
-        formData.append('qty', qty);
-        formData.append('_token', document.querySelector('[name="_token"]').value);
+formData.append('product_id', document.querySelector('[name="product_id"]').value);
+formData.append('color_id', color);
+formData.append('size_id', size);
+formData.append('qty', qty);
+formData.append('_token', document.querySelector('[name="_token"]').value);
 
-        fetch("{{ route('user.cart.add') }}", {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Sản phẩm đã được thêm vào giỏ hàng.');
-                    location.reload();
-                } else {
-                    alert('Có lỗi xảy ra, vui lòng thử lại.');
-                }
-            })
-            .catch(error => {
-                alert('Lỗi kết nối, vui lòng thử lại.');
-            });
+fetch("{{ route('user.cart.add') }}", {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Kiểm tra nếu có dữ liệu thành công
+        if (data.success) {
+            alert('Sản phẩm đã được thêm vào giỏ hàng.');
+            location.reload();  // Làm mới trang nếu thêm vào giỏ thành công
+        } 
+        // Kiểm tra nếu có thông báo lỗi
+        else if (data.error) {
+            alert(data.error);  // Hiển thị thông báo lỗi từ server
+        } else {
+            alert('Có lỗi xảy ra, vui lòng thử lại.'); // Nếu không có key error hoặc success
+        }
+    })
+    .catch(error => {
+        alert('Lỗi kết nối, vui lòng thử lại.');
+    });
+
     }
 
     function showToast(message) {

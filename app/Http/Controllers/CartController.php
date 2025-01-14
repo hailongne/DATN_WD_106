@@ -22,43 +22,68 @@ class CartController extends Controller
             // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập với thông báo
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.');
         }
+    
         $product = Product::findOrFail($request->product_id);
-
+    
         // Kiểm tra nếu có lựa chọn màu sắc và kích thước
         $color = $request->color_id ? Color::find($request->color_id) : null;
         $size = $request->size_id ? Size::find($request->size_id) : null;
-
-
+    
+        // Lấy số lượng trong kho của sản phẩm theo màu sắc và kích thước
+        $productAttribute = $product->attributeProducts()
+            ->where('color_id', $color ? $color->color_id : null)
+            ->where('size_id', $size ? $size->size_id : null)
+            ->first();
+    
+        if (!$productAttribute) {
+            return response()->json(['error' => 'Không tìm thấy sản phẩm với màu sắc và kích thước đã chọn.'], 400);
+        }
+    
+        $instock = $productAttribute->in_stock;
+    
         // Tìm hoặc tạo giỏ hàng cho người dùng
         $cart = ShoppingCart::firstOrCreate([
-            'user_id' => auth()->id() // Người dùng phải đăng nhập
+            'user_id' => auth()->id()
         ]);
-
+    
         // Kiểm tra nếu sản phẩm đã tồn tại trong giỏ hàng với màu sắc và kích thước đã chọn
         $cartItem = CartItem::where('shopping_cart_id', $cart->id)
             ->where('product_id', $product->product_id)
-            ->where('color_id', $color ? $color->color_id : null) // Nếu có màu sắc
-            ->where('size_id', $size ? $size->size_id : null)   // Nếu có kích thước
+            ->where('color_id', $color ? $color->color_id : null)
+            ->where('size_id', $size ? $size->size_id : null)
             ->first();
-
+    
+        // Tính tổng số lượng sản phẩm hiện tại trong giỏ hàng
+        $currentQtyInCart = $cartItem ? $cartItem->qty : 0;
+        $newQty = $request->qty;
+    
+        // Kiểm tra nếu số lượng muốn thêm cộng với số lượng hiện tại trong giỏ hàng vượt quá số lượng trong kho
+        if ($currentQtyInCart + $newQty > $instock) {
+            $maxQty = $instock - $currentQtyInCart;  // Tính số lượng tối đa có thể thêm vào giỏ hàng
+            return response()->json([
+                'error' => 'Bạn chỉ có thể thêm tối đa ' . $maxQty . ' sản phẩm vào giỏ hàng.'
+            ], 400);  // Trả về mã lỗi 400
+        }
+    
         if ($cartItem) {
-            // Nếu sản phẩm đã tồn tại, tăng số lượng
-            $cartItem->qty += $request->qty;
+            // Nếu sản phẩm đã tồn tại trong giỏ hàng, cập nhật số lượng
+            $cartItem->qty += $newQty;
             $cartItem->save();
         } else {
-            // Thêm sản phẩm mới vào giỏ hàng
+            // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
             CartItem::create([
                 'shopping_cart_id' => $cart->id,
                 'product_id' => $product->product_id,
-                'color_id' => $request->color_id,   // Nếu có màu sắc
-                'size_id' => $request->size_id,       // Nếu có kích thước
-                'qty' => $request->qty,
-                // 'price' => $product->price,
+                'color_id' => $request->color_id,
+                'size_id' => $request->size_id,
+                'qty' => $newQty,
             ]);
         }
-        // Trả về thông báo và điều hướng về trang giỏ hàng
+    
+        // Trả về thông báo thành công
         return response()->json(['success' => 'Sản phẩm đã được thêm vào giỏ hàng.']);
     }
+    
     public function buyNow(Request $request)
     {
         if (!auth()->check()) {
