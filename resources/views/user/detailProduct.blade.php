@@ -95,17 +95,24 @@
             </div>
 
             <div class="d-flex">
-                <button type="button" class="custom-btn" onclick="addToCart()">Thêm vào giỏ hàng</button>
+                @if ($product->is_active)
+                    <!-- Sản phẩm đang hoạt động -->
+                    <button type="button" class="custom-btn" onclick="addToCart()">Thêm vào giỏ hàng</button>
 
-                <form id="add-to-cart-form" action="{{ route('user.cart.buy') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="product_id" value="{{ $product->product_id }}">
-                    <input type="hidden" name="color_id" id="selected-color" value="">
-                    <input type="hidden" name="size_id" id="selected-size" value="">
-                    <input type="hidden" name="qty" id="qty-hidden" min="1" value="1">
-                    <button type="submit" class="custom-buy">Mua ngay</button>
-                </form>
+                    <form id="add-to-cart-form" action="{{ route('user.cart.buy') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="product_id" value="{{ $product->product_id }}">
+                        <input type="hidden" name="color_id" id="selected-color" value="">
+                        <input type="hidden" name="size_id" id="selected-size" value="">
+                        <input type="hidden" name="qty" id="qty-hidden" min="1" value="1">
+                        <button type="submit" class="custom-buy">Mua ngay</button>
+                    </form>
+                @else
+                    <!-- Sản phẩm không hoạt động -->
+                    <button type="button" class="custom-btn" disabled>Hết hàng</button>
+                @endif
             </div>
+
         </div>
     </div>
 
