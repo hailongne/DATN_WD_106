@@ -181,12 +181,12 @@ class ProductsController extends Controller
 
 
         $purchaseCount = DB::table('orders')
-        ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+        ->join('order_items', 'orders.order_id', '=', 'order_items.order_id')
         ->where('order_items.product_id', $productId)
         ->where('orders.user_id', Auth::id()) // Lọc theo user_id
         ->where('orders.status', 'completed') // Đảm bảo chỉ tính những đơn hàng đã hoàn thành
         ->count();
-    
+
         $hasReviewed = $purchaseCount > 0;
         // Thêm thông báo vào session
         session()->flash('alert', 'Bạn đang vào trang chi tiết sản phẩm');
