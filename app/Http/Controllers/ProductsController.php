@@ -56,6 +56,32 @@ class ProductsController extends Controller
     //         'data' => $products
     //     ]);
     // }
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('search');
+
+        if ($searchTerm) {
+            $products = Product::where('is_active', true)
+                ->where(function ($query) use ($searchTerm) {
+                    $query->where('name', 'LIKE', '%' . $searchTerm . '%')
+                        ->orWhere('sku', 'LIKE', '%' . $searchTerm . '%')
+                        ->orWhere('slug', 'LIKE', '%' . $searchTerm . '%');
+                        // ->orWhere('description', 'LIKE', '%' . $searchTerm . '%');
+                })
+                ->get();
+        } else {
+            $products = Product::where('is_active', true)
+                ->where(function ($query) use ($searchTerm) {
+            $query->where('name', 'LIKE', '%' . $searchTerm . '%')
+                ->orWhere('sku', 'LIKE', '%' . $searchTerm . '%');
+                // ->orWhere('description', 'LIKE', '%' . $searchTerm . '%');
+        })
+        ->get();
+
+         }
+
+        return view('user.product', compact('products'));
+    }
 
 
     // API để lấy danh sách sản phẩm
@@ -79,7 +105,7 @@ class ProductsController extends Controller
         $hotProducts = Product::getHotProducts();
         // Trả về view với dữ liệu
         return view('user.product',
-        compact('listProduct', 'hotProducts', 'bestSellers',))->with('alert', 'Bạn đang vào trang sản phẩm');
+        compact('listProduct', 'hotProducts', 'bestSellers',));
     }
 
 
@@ -114,7 +140,7 @@ class ProductsController extends Controller
         $relatedProducts = Product::where('product_category_id', $product->product_category_id)
             ->where('product_id', '!=', $product->product_id) // Loại trừ sản phẩm hiện tại
             ->where('is_active', 1) // Chỉ lấy sản phẩm đang hoạt động
-            ->take(4) // Giới hạn 4 sản phẩm
+            // ->take(4) // Giới hạn 4 sản phẩm
             ->get();
 
         // Lấy comment của sản phẩm từ người dùng hiện tại
@@ -151,7 +177,7 @@ class ProductsController extends Controller
         ->whereHas('products', function ($query) use ($productId) {
             $query->where('order_items.product_id', $productId);
         })->exists();
-    
+
 
         // Kiểm tra xem người dùng đã đánh giá sản phẩm chưa
         $hasReviewed = Reviews::where('product_id', $productId)

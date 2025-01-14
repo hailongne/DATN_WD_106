@@ -215,8 +215,8 @@
 }
 
 .custom-product-name {
-    max-width: 260px;
-    min-width: 260px;
+    max-width: 250px;
+    min-width: 250px;
     font-size: 14px;
     font-weight: 300;
     margin: 0 20px 8px 0;
@@ -231,7 +231,7 @@
 .custom-product-price {
     font-size: 16px;
     font-weight: 500;
-    color: #2a9d8f;
+    color: #ff3700;
     margin: 0 0 8px ;
 }
 
@@ -244,15 +244,12 @@
 /* button popup */
 
 .custom-cart-footer {
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    font-family: Arial, sans-serif;
+    justify-content: end;
 }
 
 .custom-total-amount {
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 800;
     color: #333;
 }
 
@@ -260,43 +257,6 @@
     justify-content: space-between;
     display: flex;
     gap: 10px;
-}
-
-.custom-add-cart-popup {
-    width: 190px;
-    background-color: black;
-    border: 1px solid #000;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 4px;
-    border: none;
-    text-decoration: none;
-    cursor: pointer;
-    margin-bottom: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.custom-add-cart-popup:hover {
-    background-color: #333;
-    text-decoration: none;
-    color: #ffffff;
-}
-
-.custom-btn-checkout-popup {
-    width: 190px;
-    background-color: #fff;
-    color: #000;
-    border: 1px solid #000;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.custom-btn-checkout-popup:hover {
-    background-color: #000;
-    color: #fff;
 }
 
 .custom-cart-count {

@@ -12,7 +12,7 @@ class ReviewController extends Controller
 {
     $reviews = Reviews::with(['product:product_id,name', 'user:user_id,email,name'])
         ->orderBy('created_at', 'desc') // Sắp xếp theo created_at giảm dần
-        ->get();;
+        ->paginate(10);
 
     return view('admin.pages.reviews.list', compact('reviews'));
 }

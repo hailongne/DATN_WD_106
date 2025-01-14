@@ -25,7 +25,7 @@ class HomeController extends Controller
         $listProduct = Product::with([
             'attributeProducts',
             'promPerProducts.promPer' => function ($query) {
-                $query->where('is_active', 1);// 
+                $query->where('is_active', 1);//
             }
         ])
         ->where('is_active', 1) // Lọc sản phẩm đang hoạt động
@@ -36,7 +36,7 @@ class HomeController extends Controller
         ->where('product_views.user_id', Auth::id())  // Lọc theo người dùng hiện tại
         ->groupBy('products.product_id',
          'products.brand_id',
-          'products.product_category_id', 
+          'products.product_category_id',
         'products.name','products.main_image_url',
         'products.view_count',
         'products.description',
@@ -62,7 +62,7 @@ class HomeController extends Controller
         //     ->get();
         $bestSellers = Product::getBestSellers();
         $hotProducts = Product::getHotProducts();
-        return view('user.home', 
+        return view('user.home',
         compact('listProduct', 'hotProducts', 'bestSellers','topProducts'));
     }
 }
