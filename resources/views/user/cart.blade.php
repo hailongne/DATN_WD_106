@@ -14,25 +14,31 @@
 <div class="cart-container">
     <div class="cart-items-section">
         <div class="cart-header">
-            <label class="select-all-label">
-                <input type="checkbox" id="select-all-checkbox"> Chọn tất cả
-            </label>
+        <label class="select-all-label">
+            <input type="checkbox" id="select-all-checkbox"> 
+            <span id="select-all-label-text">Chọn tất cả</span>
+        </label>
+
+            
             <hr class="divider-line">
             <span class="cart-title">{{ count($cartItems) }} sản phẩm</span>
 
         </div>
         <div class="cart-items-container">
             @foreach($cartItems as $item)
+            @php
+                $attributeProduct = $item->product->attributeProducts->firstWhere('size_id', $item->size_id);
+                $inStock = $attributeProduct ? $attributeProduct->in_stock : 0;
+                $isDisabled = $item->qty > $inStock; // Kiểm tra nếu số lượng giỏ hàng lớn hơn in_stock
+            @endphp
             <div class="product-card-class-special">
-                @php
-                $attributeProduct = $item->product->attributeProducts->firstWhere('size_id',
-                $item->size_id);
-                @endphp
                 <input type="checkbox" name="product_checkbox[]" value="{{ $item->id }}" class="product-checkbox-item mr-5"
-                    data-price="{{ ($attributeProduct ? $attributeProduct->price : 0) * $item->qty }}">
+                    data-price="{{ ($attributeProduct ? $attributeProduct->price : 0) * $item->qty }}"
+                    {{ $isDisabled ? 'disabled' : '' }}>
+
                 <div class="product-image-cart">
                     <a href="{{ route('user.product.detail', $item->product_id) }}" class="product-card-link">
-                        <img src="/storage/{{ $item->product->main_image_url }}" alt="{{ $item->product->name }}"
+                        <img src="/storage/{{ $item->product->main_image_url }}" alt="{{ $item->product->name }} "
                             class="product-image-detail"
                             onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
                     </a>
@@ -40,10 +46,6 @@
                 <div class="product-details-cart">
                     <a href="{{ route('user.product.detail', $item->product_id) }}" class="product-card-link">
                         <p class="product-name mb-1">{{ $item->product->name }}</p>
-                        @php
-                        $attributeProduct = $item->product->attributeProducts->firstWhere('size_id',
-                        $item->size_id);
-                        @endphp
                     </a>
                 </div>
                 <div class="product-attribute">
@@ -56,59 +58,22 @@
                 <div class="product-price-cart">
                     <strong>{{ number_format($attributeProduct ? $attributeProduct->price : 0, 0, ',', '.') }}₫</strong> x {{ $item->qty }}
                 </div>
+                <div class="quantity-stock">
+                      <!-- Số lượng trong kho -->
+                      <p class="section-title">Còn lại: {{ $inStock }}</p> 
+                    
+                    <!-- Thông báo nếu số lượng giỏ hàng vượt quá tồn kho -->
+                    @if($item->qty > $inStock)
+                        <p class="section-title" style="color: red;">Số lượng trong giỏ hàng vượt quá số lượng trong kho, vui lòng chỉnh sửa số lượng.</p>
+                    @endif
+                </div>
                 <div class="product-total-cart mr-5">
                     <span>
                         {{ number_format(($attributeProduct ? $attributeProduct->price : 0) * $item->qty, 0, ',', '.') }}₫
                     </span>
                 </div>
-                <div class="popup-overlay" id="popupOverlay{{ $item->id }}" onclick="closePopup({{ $item->id }})">
-                    <div class="popup-content" onclick="event.stopPropagation()">
-                        <p>Màu sắc: </p>
-                        <div class="color-options">
-                            @foreach($item->attributeProducts->unique('color_id') as $attributeProduct)
-                            <div class="color-option
-                                    @if(old('color-' . $item->id, $item->color_id) == $attributeProduct->color->color_id)
-                                        active
-                                    @endif" style="background-color: {{ $attributeProduct->color->color_code }};"
-                                onclick="changeColor({{ $item->id }}, '{{ $attributeProduct->color->color_id }}', this)">
-                            </div>
-                            @endforeach
-                        </div>
-
-                        <p class="section-title">Size:</p>
-                        <div class="size-options">
-                            @foreach($item->attributeProducts->unique('size_id') as $attributeProduct)
-                            <button class="size-option
-                                    @if(old('size-' . $item->id, $item->size_id) == $attributeProduct->size->size_id)
-                                        selected
-                                    @endif" data-id="{{ $attributeProduct->size->size_id }}"
-                                data-price="{{ $attributeProduct->price }}"
-                                onclick="selectSize({{ $item->id }}, '{{ $attributeProduct->size->size_id }}', this)">
-                                {{ $attributeProduct->size->name }}
-                            </button>
-                            @endforeach
-                        </div>
-
-                        <p class="section-title">Số lượng:</p>
-                        <div class="quantity-container d-flex">
-                            <div class="custom-quantity" onclick="changeQuantity({{ $item->id }}, -1)">-</div>
-                            <input type="number" id="quantity{{ $item->id }}" name="display-qty"
-                                class="custom-quantity-input" min="1"
-                                value="{{ old('quantity-' . $item->id, $item->qty) }}"
-                                onchange="updateQuantity({{ $item->id }}, this.value)">
-                            <div class="custom-quantity" onclick="changeQuantity({{ $item->id }}, 1)">+</div>
-                        </div>
-
-                        <div class="popup-buttons text-end">
-                            <button onclick="confirmSelection({{ $item->id }})">Xác nhận</button>
-                            <button onclick="closePopup({{ $item->id }})">Hủy</button>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="remove-btn">
-                    <form id="remove-item-form-{{ $item->id }}" action="{{ route('user.cart.remove', $item->id) }}"
-                        method="POST">
+                    <form id="remove-item-form-{{ $item->id }}" action="{{ route('user.cart.remove', $item->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <button type="button" class="btn-remove" onclick="confirmRemove({{ $item->id }})">
@@ -119,6 +84,8 @@
             </div>
             @endforeach
         </div>
+
+
 
         @if($cartItems->isEmpty())
         @else
@@ -287,19 +254,50 @@ function confirmRemove(itemId) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
+    const productCheckboxes = document.querySelectorAll('.product-checkbox-item');
+    const selectAllLabelText = document.getElementById('select-all-label-text');
+
+    // Kiểm tra nếu có sản phẩm nào vượt quá số lượng trong kho
+    function checkStockAndDisableSelectAll() {
+        let disableSelectAll = false;
+        productCheckboxes.forEach(function(checkbox) {
+            if (checkbox.disabled) {
+                disableSelectAll = true; // Nếu có sản phẩm nào bị disable thì disable nút "Chọn tất cả"
+            }
+        });
+        
+        // Disable hoặc enable checkbox "Chọn tất cả"
+        selectAllCheckbox.disabled = disableSelectAll;
+
+        // Thay đổi văn bản trong label và thêm lớp màu đỏ nếu cần
+        if (disableSelectAll) {
+            selectAllLabelText.textContent = 'Một số sản phẩm trong giỏ hàng vượt quá số lượng trong kho và không thể chọn tất cả.';
+            selectAllLabelText.classList.add('warning'); // Thêm lớp warning
+        } else {
+            selectAllLabelText.textContent = 'Chọn tất cả';
+            selectAllLabelText.classList.remove('warning'); // Gỡ bỏ lớp warning
+        }
+    }
 
     selectAllCheckbox.addEventListener('change', function() {
-        const productCheckboxes = document.querySelectorAll('.product-checkbox-item');
         productCheckboxes.forEach(function(checkbox) {
-            checkbox.checked = selectAllCheckbox.checked;
+            if (!checkbox.disabled) {  // Chỉ chọn những sản phẩm không bị disable
+                checkbox.checked = selectAllCheckbox.checked;
+            }
         });
         updateTotalPrice(); // Cập nhật giá khi chọn tất cả
     });
 
     // Lắng nghe sự kiện thay đổi cho từng checkbox sản phẩm
-    document.querySelectorAll('.product-checkbox-item').forEach(function(checkbox) {
-        checkbox.addEventListener('change', updateTotalPrice);
+    productCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            updateTotalPrice();
+            checkStockAndDisableSelectAll();  // Kiểm tra lại sau mỗi lần thay đổi
+        });
     });
+
+    // Kiểm tra trạng thái sản phẩm và disable "Chọn tất cả" khi tải trang
+    checkStockAndDisableSelectAll();
 
     function updateTotalPrice() {
         let total = 0;

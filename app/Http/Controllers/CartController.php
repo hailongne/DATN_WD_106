@@ -132,17 +132,17 @@ class CartController extends Controller
     {
         // Lấy ID người dùng đã đăng nhập
         $userId = Auth::id();
-
+    
         // Nếu người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
         if (!$userId) {
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để xem giỏ hàng.');
         }
-
+    
         // Lấy giỏ hàng của người dùng
         $shoppingCart = ShoppingCart::where('user_id', $userId)
             ->with(['cartItems.product.attributeProducts.color', 'cartItems.product.attributeProducts.size']) // Eager load sản phẩm và thuộc tính màu sắc, kích thước
             ->first();
-
+    
         // Nếu không tìm thấy giỏ hàng, trả về view với giỏ hàng rỗng
         if (!$shoppingCart) {
             return view('user.cart', [
@@ -153,10 +153,10 @@ class CartController extends Controller
                 'finalTotal' => 40000, // Tổng cộng bao gồm phí ship
             ])->with('alert', 'Đây là trang giỏ hàng');
         }
-
+    
         // Tính tổng tiền giỏ hàng
         $totalAmount = $shoppingCart->cartItems->sum(function ($item) {
-            // Lấy giá của thuộc tính sản phẩm dựa trên color_id và size_id của sản phẩm trong giỏ hàng
+            // Lấy giá của thuộc tính sản phẩm dựa trên size_id và color_id
             $attributeProduct = $item->product->attributeProducts
                 ->where('size_id', $item->size_id)   // Lọc theo size_id
                 ->first();
@@ -164,12 +164,10 @@ class CartController extends Controller
             // Tính tổng tiền: số lượng * giá của thuộc tính sản phẩm
             return $item->qty * ($attributeProduct ? $attributeProduct->price : 0);
         });
-
+    
         // Kiểm tra mã giảm giá nếu có
         $discount = 0;
         $couponCode = session('coupon_code'); // Lấy mã giảm giá từ session (nếu có)
-        // Lấy giỏ hàng của người dùng
-        $order = Order::where('user_id', auth()->id())->latest()->first();
         if ($couponCode) {
             // Áp dụng mã giảm giá nếu có
             $coupon = Coupon::where('code', $couponCode)->first();
@@ -182,16 +180,27 @@ class CartController extends Controller
                 }
             }
         }
-
+    
         // Tổng tiền sau khi áp dụng giảm giá
         $totalAfterDiscount = $totalAmount - $discount;
-
+    
         // Phí ship
         $shippingFee = 40000;
-
+    
         // Tổng cộng sau khi cộng phí ship
         $finalTotal = $totalAfterDiscount + $shippingFee;
-
+    
+        // Kiểm tra số lượng tồn kho và truyền vào view
+        foreach ($shoppingCart->cartItems as $item) {
+            $product = $item->product;
+            // Lấy số lượng tồn kho của sản phẩm
+            $instock = $product->instock;
+    
+            // Thêm thông tin về số lượng tồn kho vào mỗi sản phẩm trong giỏ
+            $item->instock = $instock;
+            $item->canCheck = $item->qty <= $instock; // Kiểm tra xem số lượng trong giỏ có vượt quá tồn kho hay không
+        }
+    
         // Trả về dữ liệu giỏ hàng
         return view('user.cart', [
             'cartItems' => $shoppingCart->cartItems,
@@ -200,9 +209,10 @@ class CartController extends Controller
             'shippingFee' => $shippingFee,
             'finalTotal' => $finalTotal,
             'couponCode' => $couponCode,
-            'order' => $order
+            'order' => $shoppingCart->latestOrder, // Giả sử bạn muốn truyền đơn hàng mới nhất của người dùng
         ]);
     }
+    
 
 
 
