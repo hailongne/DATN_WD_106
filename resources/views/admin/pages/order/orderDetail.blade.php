@@ -159,15 +159,20 @@
                         <td colspan="6" class="text-end">Phí Ship</td>
                         <td class="text-end">40,000đ</td>
                     </tr>
+                    
                     <tr>
-                        <td colspan="6" class="text-end">Thành tiền</td>
-                        <td class="text-end text-danger"><strong>
-                                {{ number_format($order->orderItems->sum(function($item) { return $item->price * $item->quantity; }) + 40000, 0, ',', '.') }}</strong>đ
+                        <td colspan="6" class="text-end">Giảm giá</td>
+                        <td class="text-end">
+                        {{ number_format(
+                                        ($order->orderItems->sum(function($item) { return $item->price * $item->quantity; }) + 40000) - $order->total
+                                        , 0, ',', '.') }} đ
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="6" class="text-end">Phương thức thanh toán</td>
-                        <td class="text-end">{{ $orderItem->payment_method }}</td>
+                        <td colspan="6" class="text-end">Thành tiền</td>
+                        <td class="text-end text-danger"><strong>
+                        {{ number_format($order->total, 0, ',', '.') }} đ</strong>đ
+                        </td>
                     </tr>
                 </tfoot>
             </table>
