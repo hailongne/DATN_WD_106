@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\BannerController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -36,7 +37,15 @@ Route::group(
     ],
     function () {
         Route::get('/dashBoard', [StatsController::class, 'Stats'])->name('dashboard');
-
+        Route::resource('/banners', BannerController::class)->names([
+            'index' => 'banners.index',
+            'create' => 'banners.create',
+            'store' => 'banners.store',
+            'show' => 'banners.show',
+            'edit' => 'banners.edit',
+            'update' => 'banners.update',
+            'destroy' => 'banners.destroy',
+        ]);
         // CRUD CATEGORY - Manager chỉ được xem danh mục
         Route::group(
             [

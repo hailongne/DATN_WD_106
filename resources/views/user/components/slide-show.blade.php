@@ -1,29 +1,26 @@
 <style>
-    #carouselExample .carousel-item {
-        transition: transform 1s ease-in-out !important;
-    }
+#carouselExample .carousel-item {
+    transition: transform 1s ease-in-out !important;
+}
 
-    .carousel-inner {
-        overflow: hidden;
-    }
+.carousel-inner {
+    overflow: hidden;
+}
 </style>
 
 <div id="carouselExample" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="2000">
     <div class="carousel-inner">
+        @foreach($banners as $banner)
         <div class="carousel-item active">
-            <img src="{{ asset('imagePro/image/banner/Banner1.png') }}" class="d-block w-100" alt="Banner 1">
+            <a href="">
+                <img src="{{ asset('storage/' . $banner->image_url) }}" class="d-block w-100" alt="Banner 1">
+            </a>
         </div>
-        <div class="carousel-item">
-            <img src="{{ asset('imagePro/image/banner/Banner2.png') }}" class="d-block w-100" alt="Banner 2">
-        </div>
-        <div class="carousel-item">
-            <img src="{{ asset('imagePro/image/banner/Banner1.png') }}" class="d-block w-100" alt="Banner 1">
-        </div>
-        <div class="carousel-item">
-            <img src="{{ asset('imagePro/image/banner/Banner2.png') }}" class="d-block w-100" alt="Banner 2">
-        </div>
+        @endforeach
     </div>
 </div>
+
+
 
 <div class="info-section">
     <div class="info-item">

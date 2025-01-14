@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{ asset('css/order-user/orderConfirm.css') }}">
 
 @section('content')
-
+<div class="container">
 <!-- Thông Tin Người Nhận -->
 <div class="container-form-order-confirm">
     <!-- Phần điền thông tin -->
@@ -42,8 +42,7 @@
             <!-- Nút xác nhận -->
             <div class="text-center mt-4 d-flex ">
                 <input type="hidden" name="amount" value="{{ $total }}">
-                <a href="{{ route('user.cart.index') }}" class="custom-text-back-home"><i class="fas fa-arrow-left"></i>
-                    Quay về giỏ hàng</a>
+                <a href="{{ route('user.cart.index') }}" class="custom-text-back-home">Giỏ Hàng</a>
                 <div>
                     <button type="submit" class="custom-btn-order-cod">Thanh toán COD</button>
                     <button name="redirect" type="button" id="btnVnPay" class="custom-btn-order-vnpay">
@@ -84,30 +83,28 @@
         </div>
         <div class="total-order-confirm mt-3">
             <div class="order-item">
+                <span class="order-label">Phí vận chuyển:</span>
+                <span class="order-value">40.000 đ</span>
+            </div>
+            <div class="order-item">
                 <span class="order-label">Tạm tính:</span>
                 <span class="order-value">
-                    {{ number_format($total -40000, 0, ',', '.') }}₫</span>
+                {{ number_format($total, 0, ',', '.') }} đ</span>
             </div>
 
             <div class="order-item">
-                <span class="order-label">Phí vận chuyển:</span>
-                <span class="order-value">40.000₫</span>
-            </div>
-
-            <div class="order-item">
-                <input type="text" name="discount_code" id="discountCode" placeholder="Nhập mã giảm giá"
-                    class="form-control">
+                <input type="text" name="discount_code" id="discountCode" placeholder="Nhập mã giảm giá" class="form-control">
                 <button type="button" id="applyDiscount" class="custom-btn-apply-order">Áp dụng</button>
             </div>
             <div class="order-item">
-                <span class="order-label">Giảm giá: </span>
-                <span class="order-value" id="discountAmount">0₫</span>
+            <span class="order-label">Giảm giá: </span>
+            <span class="order-value" id="discountAmount">0 đ</span>
 
             </div>
             <hr class="order-divider">
             <div class="order-item total">
                 <span class="order-label">Tổng cộng:</span>
-                <span class="order-value-total" id="total">{{ number_format($total, 0, ',', '.') }}₫</span>
+                <span class="order-value" id="total">{{ number_format($total, 0, ',', '.') }} đ</span>
             </div>
         </div>
     </section>
@@ -120,14 +117,14 @@
             </div>
         </div>
     </div>
-
 </div>
+
 
 
 <!-- Form ẩn cho VNPay -->
 <form id="vnpayForm" action="{{ route('checkout.vnpay') }}" method="POST" style="display: none;">
     @csrf
-    <input type="hidden" name="amount" id="vnpayAmount" value="{{ $total }}">
+   <input type="hidden" name="amount" id="vnpayAmount" value="{{ $total }}">
     <input type="hidden" name="recipient_name" id="vnpayName" value="{{ old('name', $user->name ?? '') }}">
     <input type="hidden" name="phone" id="vnpayPhone" value="{{ old('phone', $user->phone ?? '') }}">
     <input type="hidden" name="shipping_address" id="vnpayAddress"
@@ -218,6 +215,15 @@
         }
     });
 });
+
+function openImageModal(imageSrc) {
+    // Cập nhật ảnh trong modal
+    document.getElementById('modalImage').src = imageSrc;
+
+    // Mở modal
+    var myModal = new bootstrap.Modal(document.getElementById('imageModal'));
+    myModal.show();
+}
 </script>
 
 <script>
@@ -242,14 +248,5 @@ document.getElementById('btnVnPay').addEventListener('click', function () {
     // Gửi form VNPay
     document.getElementById('vnpayForm').submit();
 });
-
-function openImageModal(imageSrc) {
-    // Cập nhật ảnh trong modal
-    document.getElementById('modalImage').src = imageSrc;
-
-    // Mở modal
-    var myModal = new bootstrap.Modal(document.getElementById('imageModal'));
-    myModal.show();
-}
 </script>
 @endsection
