@@ -13,6 +13,7 @@ use App\Models\Attribute;
 use App\Models\AttributeProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
 {
@@ -179,10 +180,14 @@ class ProductsController extends Controller
         })->exists();
 
 
-        // Kiểm tra xem người dùng đã đánh giá sản phẩm chưa
-        $hasReviewed = Reviews::where('product_id', $productId)
-        ->where('user_id', Auth::id()) // Sử dụng Auth::id() để lấy đúng user_id
-        ->exists();
+        $purchaseCount = DB::table('orders')
+        ->join('order_items', 'orders.id', '=', 'order_items.order_id')
+        ->where('order_items.product_id', $productId)
+        ->where('orders.user_id', Auth::id()) // Lọc theo user_id
+        ->where('orders.status', 'completed') // Đảm bảo chỉ tính những đơn hàng đã hoàn thành
+        ->count();
+    
+        $hasReviewed = $purchaseCount > 0;
         // Thêm thông báo vào session
         session()->flash('alert', 'Bạn đang vào trang chi tiết sản phẩm');
 
