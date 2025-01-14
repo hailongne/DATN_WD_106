@@ -88,7 +88,9 @@
                                     class="dropdown-item">
                                     Sản phẩm yêu thích
                                 </a>
-
+                                <a href="{{ route('user.coupons.list') }}" class="dropdown-item">
+                                    Mã giảm giá của bạn
+                                </a>
                                 <a href="{{route('user.order.history')}}" class="dropdown-item">Đơn mua</a>
 
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST"

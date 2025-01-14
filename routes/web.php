@@ -28,7 +28,7 @@ use App\Http\Controllers\PaymentVnPayController;
 use App\Http\Controllers\OrderController as OrderUserController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\UserController as ProfileController;
-
+use App\Http\Controllers\CouponController as UserCouponController;
 Route::group(
     [
         'prefix' => 'admin',
@@ -368,6 +368,16 @@ Route::group(
                 Route::get('/profiles', [ProfileController::class, 'showUserInfo'])->name('showUserInfo');
                 Route::get('/profiles/{id}/edit', [ProfileController::class, 'edit'])->name('edit-profile');
                 Route::post('/profiles/{id}/update', [ProfileController::class, 'updateUser'])->name('update-profile');
+            }
+        );
+        Route::group(
+            [
+                'prefix' => 'coupons',
+                'as' => 'coupons.',
+
+            ],
+            function () {
+                Route::get('/coupons', [UserCouponController::class, 'listCoupon'])->name('list');
             }
         );
     }
