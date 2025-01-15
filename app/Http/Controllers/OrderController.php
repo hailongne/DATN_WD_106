@@ -248,10 +248,7 @@ class OrderController extends Controller
                     'size_id' => $item->size_id    // Lưu size_id
                 ];
     
-                // Cập nhật số lượng tồn kho sau khi thanh toán
-                $attributeProduct->update([
-                    'in_stock' => $attributeProduct->in_stock - $item->qty,
-                ]);
+
             }
 
 

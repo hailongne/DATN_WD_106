@@ -100,9 +100,10 @@ class PaymentController extends Controller
             'recipient_name' => $recipients_name
         ]);
     
-        // Thêm các sản phẩm vào đơn hàng
+        // Thêm các sản phẩm vào đơn hàng và cập nhật số lượng trong kho
         foreach ($productDetails as $product) {
-            OrderItem::create([
+            // Thêm sản phẩm vào bảng OrderItem
+            $orderItem = OrderItem::create([
                 'order_id' => $order->order_id,
                 'product_id' => $product['product_id'],
                 'product_name' => $product['name'],
@@ -112,6 +113,17 @@ class PaymentController extends Controller
                 'price' => $product['price'],
                 'subtotal' => $product['subtotal'],
             ]);
+    
+            // Cập nhật số lượng tồn kho sau khi đặt hàng
+            $attributeProduct = $dbProduct->attributeProducts()
+                ->where('color_id', $product['color_id'])
+                ->where('size_id', $product['size_id'])
+                ->first();
+    
+            if ($attributeProduct) {
+                $attributeProduct->in_stock -= $product['quantity'];
+                $attributeProduct->save(); // Lưu thay đổi
+            }
         }
     
         // Lưu lại lịch sử trạng thái đơn hàng
@@ -139,6 +151,7 @@ class PaymentController extends Controller
             ->with('alert', 'Đơn hàng của bạn đã được thanh toán thành công. Cảm ơn bạn!')
             ->with(['discountAmount' => $discountAmount]);
     }
+    
     
 
 
