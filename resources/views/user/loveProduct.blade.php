@@ -4,12 +4,9 @@
 @endpush
 @section('content')
 <div class="container">
-
-      <!-- Danh sách sản phẩm -->
-      <div class="button-header mt-5">
-        <button>
-            Gentle Manor - Danh sách sản phẩm <i class="fa fa-star"></i>
-        </button>
+    @if(session('alert'))
+    <div class="alert alert-info" id="alert-message">
+        {{ session('alert') }}
     </div>
     <div class="row">
 <div class="product-carousel">
@@ -40,6 +37,7 @@
                                     $prices = $product->attributeProducts->pluck('price');
                                     $originalMinPrice = $prices->min() ?? 0;
                                     $originalMaxPrice = $prices->max() ?? 0;
+
 
                                     // Khởi tạo giá hiển thị
                                     $minPrice = $originalMinPrice;
@@ -98,21 +96,14 @@
                             </div>
                         </a>
                     </div>
+
                 </div>
-            @endforeach
+                @endif
+            </div>
         </div>
-    @endif
-</div>
-
-
-
     </div>
-
-
-
-
 </div>
-        @push('scripts')
-  <script src="{{asset('script/chat.js')}}"></script>
-        @endpush
+@push('scripts')
+<script src="{{asset('script/chat.js')}}"></script>
+@endpush
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CategoryRequest extends FormRequest
 {
@@ -39,18 +40,19 @@ class CategoryRequest extends FormRequest
                     
                     if (strtolower($value) !== strtolower($normalizedSlug)) {
                         $fail('Slug phải giống với Name (sau khi thay thế các dấu cách bằng dấu gạch ngang và loại bỏ dấu).');
+
                     }
                 },
             ],
             'parent_id' => 'nullable',  // Kiểm tra nếu có thì phải tồn tại trong bảng categories
         ];
     }
-    
+
     public function messages(): array
     {
         return [
             'name.required' => 'Yêu cầu không để trống',
-            'name.unique' => 'Tên thương hiệu đã tồn tại.',  // Thông báo lỗi khi tên bị trùng
+            'name.unique' => 'Tên thương hiệu đã tồn tại.',
             'description.required' => 'Yêu cầu không để trống',
             'image.required' => 'Yêu cầu không để trống',
             'image.image' => 'Tệp tải lên phải là hình ảnh.',
@@ -69,3 +71,5 @@ class CategoryRequest extends FormRequest
         return Str::slug($string);
     }
 }
+
+

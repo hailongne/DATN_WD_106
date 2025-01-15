@@ -102,3 +102,50 @@ canvas {
         margin-bottom: 20px;
     }
 }
+/* Tạo viền rõ ràng và màu nền nhẹ cho ô tìm kiếm */
+#searchInput {
+    border: 2px solid #007bff; /* Màu viền xanh dương */
+    background-color: #f9f9f9; /* Màu nền sáng */
+    padding: 10px; /* Thêm khoảng cách trong */
+    font-size: 16px; /* Cỡ chữ dễ đọc */
+    border-radius: 25px; /* Bo tròn góc */
+    width: 100%; /* Đảm bảo ô tìm kiếm rộng vừa đủ */
+    transition: all 0.3s ease-in-out; /* Hiệu ứng chuyển động khi thay đổi trạng thái */
+}
+
+/* Hiệu ứng khi focus vào ô tìm kiếm */
+#searchInput:focus {
+    outline: none; /* Loại bỏ viền mặc định */
+    border-color: #0056b3; /* Đổi màu viền khi focus */
+    background-color: #e7f3ff; /* Màu nền thay đổi khi focus */
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3); /* Thêm hiệu ứng đổ bóng */
+}
+
+/* Hiệu ứng khi hover (di chuột vào ô tìm kiếm) */
+#searchInput:hover {
+    border-color: #0056b3; /* Đổi màu viền khi hover */
+    background-color: #f1f8ff; /* Màu nền nhẹ khi hover */
+}
+
+/* Thêm biểu tượng tìm kiếm bên trong ô tìm kiếm */
+#searchInput::before {
+    content: "\1F50D"; /* Biểu tượng kính lúp */
+    position: absolute;
+    left: 10px; /* Đặt biểu tượng ở bên trái */
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #007bff; /* Màu biểu tượng */
+}
+
+/* Đảm bảo ô tìm kiếm có khoảng cách với các phần tử xung quanh */
+#searchInput {
+    padding-left: 30px; /* Thêm khoảng cách bên trái để không chạm biểu tượng */
+}
+th.asc::after {
+    content: " ▲";
+}
+
+th.desc::after {
+    content: " ▼";
+}

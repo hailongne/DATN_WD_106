@@ -14,6 +14,7 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Coupon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -33,6 +34,7 @@ class PaymentController extends Controller
         }
 
         // Lấy thông tin địa chỉ giao hàng và số điện thoại từ form
+        $amount = $request->input('amount');
         $shippingAddress = $request->input('shipping_address');
         $phone = $request->input('phone');
         $recipients_name = $request->input('recipient_name');
@@ -42,9 +44,9 @@ class PaymentController extends Controller
         foreach ($productDetails as $product) {
             $totalWithoutShipping += $product['price'] * $product['quantity'];
         }
-
         $discountAmount = 0;
         $discountCode = $request->input('discount_code'); // Lấy mã giảm giá từ form
+        $coupon = Coupon::where('code', $discountCode)->first();
         if ($discountCode) {
             $coupon = Coupon::where('code', $discountCode)->first();
             if ($coupon && $coupon->is_active && $coupon->is_public) {
@@ -57,7 +59,7 @@ class PaymentController extends Controller
 
         // Thêm phí vận chuyển
         $shippingFee = 40000;
-        $total = $totalWithoutShipping + $shippingFee - $discountAmount;
+        $total = $request->input('amount');
 
         // Tạo đơn hàng mới
         $order = Order::create([
@@ -91,6 +93,7 @@ class PaymentController extends Controller
             'status_change_date' => now(),
             'updated_by' => $user->user_id
         ]);
+        
         //Gửi email xác nhận đơn hàng
         $emailData = [
             'user' => $user,
@@ -129,45 +132,30 @@ class PaymentController extends Controller
         $code = $request->input('discount_code');
         $amount = $request->input('amount');
         $discountAmount = 0;
-        $coupon = Coupon::where('code', $code)->first();
-        if ($coupon && $coupon->is_active && $coupon->is_public) {
-            // Tính toán số tiền được giảm
-            $discountAmount = $amount * ($coupon->discount_percentage / 100); // Giảm giá theo %
-            $newTotal = $amount - $discountAmount; // Tổng tiền sau giảm giá
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Áp dụng mã giảm giá thành công!',
-                'discountAmount' => $discountAmount,
-                'newTotal' => $newTotal,
-            ]);
-        }
-        // Nếu không có mã giảm giá, trả về tổng không thay đổi
-        if (!$code) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Không áp dụng mã giảm giá.',
-                'newTotal' => $amount,  // Trả về tổng ban đầu nếu không có mã giảm giá
-            ]);
-        }
-
-        // Tìm mã giảm giá trong database
-        $coupon = DB::table('coupons')
-            ->where('code', $code)
+        // Tìm mã giảm giá và kiểm tra tất cả các điều kiện
+        $coupon = Coupon::where('code', $code)
             ->where('is_active', true)
+            ->where('is_public', true)
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
             ->first();
 
-        // Kiểm tra mã giảm giá có hợp lệ không
         if (!$coupon) {
             return response()->json([
                 'success' => false,
                 'message' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn.',
             ]);
         }
+        // nếu hết mã giảm giá
+        if ($coupon->quantity <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mã giảm giá này đã được sử dụng hết.',
+            ]);
+        }
 
-        // Kiểm tra giá trị đơn hàng có đủ điều kiện áp dụng mã giảm giá không
+        // Kiểm tra giá trị đơn hàng có hợp lệ với mã giảm giá không
         if ($amount < $coupon->min_order_value || $amount > $coupon->max_order_value) {
             return response()->json([
                 'success' => false,
@@ -178,25 +166,34 @@ class PaymentController extends Controller
         }
 
         // Tính giá trị giảm giá
-        $discount = $coupon->discount_amount ? $coupon->discount_amount : ($amount * $coupon->discount_percentage / 100);
-
-        // Cập nhật số lượng mã giảm giá nếu có
-        if ($coupon->quantity > 0) {
-            DB::table('coupons')
-                ->where('coupon_id', $coupon->coupon_id)
-                ->decrement('quantity');
+        if ($coupon->discount_amount > 0) {
+        // Nếu có giá trị giảm giá cố định
+            $discountAmount = $coupon->discount_amount;
+        } else {
+            // Nếu không, tính giảm giá theo tỷ lệ phần trăm
+            $discountAmount = $amount * $coupon->discount_percentage / 100;
         }
+        if ($discountAmount > $amount) {
+            $discountAmount = $amount;
+        }
+        session(['discount_code' => $code]);
+        // $coupon->decrement('quantity');
+        // Cập nhật số lượng mã giảm giá nếu có 
+        // if ($coupon->quantity > 0) {
+        //     $coupon->decrement('quantity');
+        // }
 
         // Tính tổng mới sau khi áp dụng mã giảm giá
-        $newTotal = $amount - $discount;
+        $newTotal = $amount - $discountAmount;
 
         return response()->json([
             'success' => true,
             'message' => 'Mã giảm giá đã được áp dụng thành công!',
-            'discount' => $discount,
+            'discount' => $discountAmount,
             'newTotal' => $newTotal,
         ]);
     }
+
 
 
     public function orderSuccess()
@@ -223,6 +220,13 @@ class PaymentController extends Controller
                     $cartItem->delete();
                     // Xóa sản phẩm trùng khớp trong giỏ hàng
                 }
+            }
+        }
+        $discountCode = session('discount_code');
+        if ($discountCode) {
+            $coupon = Coupon::where('code', $discountCode)->first();
+            if ($coupon && $coupon->quantity > 0) {
+                $coupon->decrement('quantity');  // Giảm số lượng mã giảm giá
             }
         }
         // Lấy thông tin tên người dùng từ session

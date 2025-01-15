@@ -37,10 +37,13 @@
             <image src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
         </a>
     </div>
+    @php
+    $index = 1; // Bắt đầu đếm từ 1
+    @endphp
     <table class="product-table table table-bordered text-center align-middle mb-5">
         <thead class="thead-dark">
             <tr>
-                <th>STT</th>
+                <th></th>
                 <th>Tên Thương Hiệu</th>
                 <th>Mô Tả</th>
               
@@ -50,7 +53,7 @@
         <tbody>
             @foreach ($brands as $brand)
             <tr>
-                <td>{{ $brand->brand_id }}</td>
+                <td>{{ $index++ }}</td>
                 <td>{{ $brand->name }}</td>
                 <td>{{ $brand->description }}</td>
                 <td>

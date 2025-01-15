@@ -11,16 +11,16 @@
     @endif
     <div class="product-list">
         <div class="filter-container">
-            <div class="filter-product-new">
-                <a href="#" class="custom-btn-product-new">Áo</a>
-            </div>
-            <div class="filter-product-new">
-                <a href="#" class="custom-btn-product-new">Quần</a>
-            </div>
-            <div class="filter-product-new">
-                <a href="#" class="custom-btn-product-new">Set Quần Áo</a>
-            </div>
+            <h2 class="text-title-prodict-list text-start">Khám phá sản phẩm</h2>
             <div class="filter-group">
+             <label class="mr-2 text-align-center"> Lọc theo danh mục: </label>
+                <select class="form-select filter-select mr-4" id="filterCategory">
+                    <option value="">Tất cả</option>
+                    @foreach ($categories as $category)
+                    <option value="$category->category_id">{{ $category->name }}</option>
+                    @endforeach
+                </select>
+                <label class="mr-2 text-align-center"> Sắp xếp: </label>
                 <select class="form-select filter-select" id="filterCategory">
                     <option value="">Mới Nhất</option>
                     <option value="">Giá: Tăng dần</option>
@@ -32,9 +32,10 @@
                 </select>
             </div>
         </div>
+        <hr class="line-filter-product"/>
         <div class="product-items">
             @if(isset($listProduct) && $listProduct->isNotEmpty())
-            @foreach($listProduct->sortByDesc('created_at') as $product)
+            @foreach ($listProduct as $product)
             <div class="product-container">
                 <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">
                     @csrf
@@ -42,9 +43,6 @@
                         <i class="fa-solid fa-heart"></i>
                     </button>
                 </form>
-                <a href="{{ route('user.product.detail', $product->product_id) }}" class="cart-icon detail-icon">
-                    <i class="fa fa-info-circle"></i>
-                </a>
                 <div class="product-item">
                     <a href="{{ route('user.product.detail', $product->product_id) }}" class="product-card-link">
                         <div class="card">
@@ -116,9 +114,9 @@
                     </a>
                 </div>
             </div>
-            @endforeach
+             @endforeach
             @elseif(isset($products) && $products->isNotEmpty())
-            @foreach($listProduct as $product)
+            @foreach ($products as $product)
             <div class="product-container">
                 <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">
                     @csrf

@@ -13,6 +13,7 @@ use App\Models\Attribute;
 use App\Models\AttributeProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ProductsController extends Controller
 {
@@ -56,6 +57,32 @@ class ProductsController extends Controller
     //         'data' => $products
     //     ]);
     // }
+    public function search(Request $request)
+    {
+        $searchTerm = $request->input('search');
+
+        if ($searchTerm) {
+            $products = Product::where('is_active', true)
+                ->where(function ($query) use ($searchTerm) {
+                    $query->where('name', 'LIKE', '%' . $searchTerm . '%')
+                        ->orWhere('sku', 'LIKE', '%' . $searchTerm . '%')
+                        ->orWhere('slug', 'LIKE', '%' . $searchTerm . '%');
+                        // ->orWhere('description', 'LIKE', '%' . $searchTerm . '%');
+                })
+                ->get();
+        } else {
+            $products = Product::where('is_active', true)
+                ->where(function ($query) use ($searchTerm) {
+            $query->where('name', 'LIKE', '%' . $searchTerm . '%')
+                ->orWhere('sku', 'LIKE', '%' . $searchTerm . '%');
+                // ->orWhere('description', 'LIKE', '%' . $searchTerm . '%');
+        })
+        ->get();
+
+         }
+
+        return view('user.product', compact('products'));
+    }
 
 
     // API để lấy danh sách sản phẩm
@@ -72,14 +99,14 @@ class ProductsController extends Controller
                 ->where('is_active', true)
                 ->get();
         }
-       
-    
+
+
         // Lấy top 10 sản phẩm bán chạy (sold_count > 100) và đang hoạt động
         $bestSellers = Product::getBestSellers();
         $hotProducts = Product::getHotProducts();
         // Trả về view với dữ liệu
-        return view('user.product', 
-        compact('listProduct', 'hotProducts', 'bestSellers',))->with('alert', 'Bạn đang vào trang sản phẩm');
+        return view('user.product',
+        compact('listProduct', 'hotProducts', 'bestSellers',));
     }
 
 
@@ -90,7 +117,7 @@ class ProductsController extends Controller
         $product = Product::where('product_id', $productId)
             ->with(['attributeProducts.color', 'attributeProducts.size', 'attributeProducts']) // Eager load color and size attributes
             ->firstOrFail();
-            
+
         // Nếu tìm thấy sản phẩm, xử lý số lượt xem
         if ($product) {
             // Thêm hoặc tìm bản ghi trong ProductView
@@ -103,18 +130,20 @@ class ProductsController extends Controller
                     'view_count' => 0 // Giá trị mặc định khi thêm mới
                 ]
             );
-        
+
             // Tăng view_count
             $productView->increment('view_count');
         }
-    
+
+        $viewCount = ProductView::where('product_id', $productId)->sum('view_count');
+
         // Hiển thị sản phẩm liên quan
         $relatedProducts = Product::where('product_category_id', $product->product_category_id)
             ->where('product_id', '!=', $product->product_id) // Loại trừ sản phẩm hiện tại
             ->where('is_active', 1) // Chỉ lấy sản phẩm đang hoạt động
-            ->take(4) // Giới hạn 4 sản phẩm
+            // ->take(4) // Giới hạn 4 sản phẩm
             ->get();
-    
+
         // Lấy comment của sản phẩm từ người dùng hiện tại
         $reviews = Reviews::where('product_id', $productId)
             ->where('user_id', auth()->id()) // Chỉ lấy đánh giá của người dùng hiện tại
@@ -127,59 +156,69 @@ class ProductsController extends Controller
                 }
             ])
             ->get();
-        
+
         // Lấy số sao từ query string (nếu không có thì trả về null)
         $rating = $request->query('rating');
-    
+
         // Truy vấn lấy tất cả đánh giá của sản phẩm
         $query = Reviews::where('product_id', $productId)
             ->with('user', 'likes', 'reports') // Lấy thông tin người dùng đã đánh giá
             ->when($rating, function ($q) use ($rating) {
                 // Lọc theo số sao nếu có
                 $q->where('rating', $rating);
-            });
-    
+            })
+            ->orderBy('created_at', 'desc');
+
         $reviewAll = $query->get();
-    
+
         // Kiểm tra xem người dùng đã mua sản phẩm chưa
         $user = Auth::user();
-        $hasPurchased = $user->orders()->whereHas('products', function ($query) use ($productId) {
+        $hasPurchased = $user->orders()
+        ->where('status', 'completed') // Chỉ lấy các đơn hàng có trạng thái completed
+        ->whereHas('products', function ($query) use ($productId) {
             $query->where('order_items.product_id', $productId);
         })->exists();
 
-        // Kiểm tra xem người dùng đã đánh giá sản phẩm chưa
-        $hasReviewed = Reviews::where('product_id', $productId)
-        ->where('user_id', Auth::id()) // Sử dụng Auth::id() để lấy đúng user_id
-        ->exists();
+
+        $purchaseCount = DB::table('orders')
+        ->join('order_items', 'orders.order_id', '=', 'order_items.order_id')
+        ->where('order_items.product_id', $productId)
+        ->where('orders.user_id', Auth::id()) // Lọc theo user_id
+        ->where('orders.status', 'completed') // Đảm bảo chỉ tính những đơn hàng đã hoàn thành
+        ->count();
+
+        $hasReviewed = $purchaseCount > 0;
         // Thêm thông báo vào session
         session()->flash('alert', 'Bạn đang vào trang chi tiết sản phẩm');
-    
-        // Trả về view với các biến cần thiết
-        return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed'));
-    }
 
-    public function addReview(ReviewRequest $request)
+
+        // Trả về view với các biến cần thiết, bao gồm số lượt xem
+        return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount'));
+
+        }
+
+    public function addReview(Request $request)
 
     {
         $bannedWords = BannedWord::pluck('word')->toArray();
         $comment = $request->input('comment');
-    
+
         // Kiểm tra các từ bị cấm trong bình luận
         foreach ($bannedWords as $bannedWord) {
             if (stripos($comment, $bannedWord) !== false) {
                 $comment = str_ireplace($bannedWord, str_repeat('*', strlen($bannedWord)), $comment);
             }
         }
-    
+
         // Kiểm tra xem người dùng đã đánh giá sản phẩm này chưa
         $existingReview = Reviews::where('product_id', $request->input('product_id'))
                                  ->where('user_id', auth()->id())
                                  ->first();
-    
+
         if ($existingReview) {
             return redirect()->back()->with('error', 'Bạn chỉ có thể đánh giá sản phẩm này một lần.');
         }
-    
+
         // Xử lý hình ảnh (nếu có)
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -188,13 +227,13 @@ class ProductsController extends Controller
         } else {
             $anh = '';
         }
-    
+
         // Kiểm tra xem người dùng có chọn sao hay không
         $rating = $request->input('rating');
         if (empty($rating)) {
             return redirect()->back()->with('error', 'Vui lòng chọn sao :))');
         }
-    
+
         // Thêm mới bình luận và đánh giá
         $review = Reviews::create([
             'product_id' => $request->input('product_id'), // Lưu product_id của review
@@ -203,10 +242,10 @@ class ProductsController extends Controller
             'rating' => $rating ,
             'comment' => $comment ?: null,
         ]);
-    
+
         return redirect()->back()->with('success', 'Cảm ơn bạn đã đánh giá!');
     }
-    
+
     public function like($reviewId)
     {
         $userId = auth()->id(); // ID của người dùng hiện tại

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Banner;
 use Carbon\Carbon;
 use App\Models\Category;
 use App\Models\Product;
@@ -22,10 +23,11 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $banners = Banner::where('is_active', true)->get();
         $listProduct = Product::with([
             'attributeProducts',
             'promPerProducts.promPer' => function ($query) {
-                $query->where('is_active', 1);// 
+                $query->where('is_active', 1);//
             }
         ])
         ->where('is_active', 1) // Lọc sản phẩm đang hoạt động
@@ -36,7 +38,7 @@ class HomeController extends Controller
         ->where('product_views.user_id', Auth::id())  // Lọc theo người dùng hiện tại
         ->groupBy('products.product_id',
          'products.brand_id',
-          'products.product_category_id', 
+          'products.product_category_id',
         'products.name','products.main_image_url',
         'products.view_count',
         'products.description',
@@ -62,7 +64,7 @@ class HomeController extends Controller
         //     ->get();
         $bestSellers = Product::getBestSellers();
         $hotProducts = Product::getHotProducts();
-        return view('user.home', 
-        compact('listProduct', 'hotProducts', 'bestSellers','topProducts'));
+        return view('user.home',
+        compact('listProduct', 'hotProducts', 'bestSellers','topProducts','banners'));
     }
 }

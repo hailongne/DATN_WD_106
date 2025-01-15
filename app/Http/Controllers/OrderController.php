@@ -120,7 +120,7 @@ class OrderController extends Controller
         }
 
         // Xóa giỏ hàng sau khi đặt hàng
-        $cart->cartItems()->delete();
+        $cart->cartItems()->where('shopping_cart_id', $cart->id)->delete();
         $cart->delete();
         session()->flash('alert', 'Đặt hàng thành công!');
         return redirect()->route('user.orders.index')->with('success', 'Đơn hàng đã được tạo thành công!');
@@ -189,44 +189,51 @@ class OrderController extends Controller
     {
         // Lấy thông tin người dùng đang đăng nhập
         $user = Auth::user();
-
+    
         if (!$user) {
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thanh toán!');
         }
-
+    
         // Lấy giỏ hàng của người dùng
         $shoppingCart = ShoppingCart::where('user_id', $user->user_id)->first();
         if (!$shoppingCart) {
             return redirect()->route('shopping-cart')->with('error', 'Giỏ hàng trống!');
         }
-
+    
         // Lấy các ID sản phẩm đã được chọn từ request
         $selectedProductIds = explode(',', $request->input('selected_products'));
-
+    
         // Lọc các items trong giỏ hàng dựa trên các ID đã được chọn
         $cartItems = $shoppingCart->cartItems->filter(function ($item) use ($selectedProductIds) {
             return in_array($item->id, $selectedProductIds);
         });
-
+    
         if ($cartItems->isEmpty()) {
             return redirect()->back()->with('error', 'Không có sản phẩm nào được chọn để thanh toán!');
         }
-
+        $hasUpdatedItems = false;
+        
         // Tính tổng tiền đơn hàng (không bao gồm phí vận chuyển)
         $totalWithoutShipping = 0;
         $productDetails = []; // Lưu thông tin chi tiết sản phẩm
+        
         foreach ($cartItems as $item) {
             // Lấy thông tin sản phẩm với size_id và color_id
-            $attributeProduct = $item->product->attributeProducts->firstWhere('size_id', $item->size_id);
+            $attributeProduct = $item->product->attributeProducts
+                ->where('size_id', $item->size_id)
+                ->where('color_id', $item->color_id)
+                ->first();
+    
             if ($attributeProduct) {
                 // Kiểm tra số lượng sản phẩm trong kho
                 if ($attributeProduct->in_stock < $item->qty) {
-                    return redirect()->route('shopping-cart')->with('error', 'Sản phẩm "' . $item->product->name . '" không đủ số lượng trong kho!');
+                    session()->flash('error', 'Một số sản phẩm vừa được cập nhật thông tin, vui lòng kiểm tra lại!');
+                    return redirect()->back();
                 }
-
+    
                 // Tính tổng tiền
                 $totalWithoutShipping += $attributeProduct->price * $item->qty;
-
+    
                 // Lưu thông tin chi tiết sản phẩm
                 $productDetails[] = [
                     'name' => $item->product->name,
@@ -240,7 +247,7 @@ class OrderController extends Controller
                     'color_id' => $item->color_id,  // Lưu color_id
                     'size_id' => $item->size_id    // Lưu size_id
                 ];
-
+    
                 // Cập nhật số lượng tồn kho sau khi thanh toán
                 $attributeProduct->update([
                     'in_stock' => $attributeProduct->in_stock - $item->qty,
@@ -275,18 +282,21 @@ class OrderController extends Controller
         foreach ($attributeProducts as $attributeProduct) {
             $this->sendLowStockEmail($attributeProduct);
         }
+
         // Thêm phí vận chuyển
         $shippingFee = 40000;
         $total = $totalWithoutShipping + $shippingFee;
         session()->put('productDetails', $productDetails);
-
+    
         return view('user.orders.orderConfirm', [
             'user' => $user,
             'productDetails' => $productDetails,
+            'totalWithoutShipping' => $totalWithoutShipping,
             'total' => $total,
             'shippingFee' => $shippingFee
         ]);
     }
+    
 
     public function confirmOrderVNPay(Request $request)
     {
@@ -346,17 +356,11 @@ class OrderController extends Controller
         return view('user.orders.orderConfirmVNPay', [
             'user' => $user,
             'productDetails' => $productDetails,
+            'totalWithoutShipping' => $totalWithoutShipping,
             'total' => $total,
             'shippingFee' => $shippingFee
         ]);
 
     }
-    public function sendLowStockEmail($attributeProduct)
-    {
-        // Địa chỉ email của quản trị viên
-        $adminEmail = 'longnhph44749@fpt.edu.vn'; // Địa chỉ email của quản trị viên
 
-        // Gửi email cảnh báo
-        Mail::to($adminEmail)->send(new LowStockAlert($attributeProduct));
-    }
 }

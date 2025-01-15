@@ -74,8 +74,8 @@
                     onclick="document.getElementById('image').click();">
                     <i class="bi bi-upload"></i> <span class="ml-2"> Tải lên</span>
                 </button>
-                <input type="file" class="form-control-file d-none" id="image" name="image"
-                    accept="image/*" onchange="showImage(event)" />
+                <input type="file" class="form-control-file d-none" id="image" name="image" accept="image/*"
+                    onchange="showImage(event)" />
             </div>
             @error('image')
             <span class="text-danger">{{$message}}</span>

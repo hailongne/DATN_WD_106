@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\BannerController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -27,7 +28,7 @@ use App\Http\Controllers\PaymentVnPayController;
 use App\Http\Controllers\OrderController as OrderUserController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\UserController as ProfileController;
-
+use App\Http\Controllers\CouponController as UserCouponController;
 Route::group(
     [
         'prefix' => 'admin',
@@ -36,7 +37,15 @@ Route::group(
     ],
     function () {
         Route::get('/dashBoard', [StatsController::class, 'Stats'])->name('dashboard');
-
+        Route::resource('/banners', BannerController::class)->names([
+            'index' => 'banners.index',
+            'create' => 'banners.create',
+            'store' => 'banners.store',
+            'show' => 'banners.show',
+            'edit' => 'banners.edit',
+            'update' => 'banners.update',
+            'destroy' => 'banners.destroy',
+        ]);
         // CRUD CATEGORY - Manager chỉ được xem danh mục
         Route::group(
             [
@@ -344,7 +353,7 @@ Route::group(
                 Route::get('/cart-list', [CartController::class, 'viewCart'])->name('index');
                 Route::post('/cart/add', [CartController::class, 'addToCart'])->name('add');
                 Route::post('cart/buy-now', [CartController::class, 'buyNow'])->name('buy');
-                Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cupdate');
+                Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('update');
                 Route::delete('/cart/remove/{id}', [CartController::class, 'removeItem'])->name('remove');
                 Route::get('/cart-popup', [CartController::class, 'viewCartPopup'])->name('popup');
             }
@@ -359,6 +368,16 @@ Route::group(
                 Route::get('/profiles', [ProfileController::class, 'showUserInfo'])->name('showUserInfo');
                 Route::get('/profiles/{id}/edit', [ProfileController::class, 'edit'])->name('edit-profile');
                 Route::post('/profiles/{id}/update', [ProfileController::class, 'updateUser'])->name('update-profile');
+            }
+        );
+        Route::group(
+            [
+                'prefix' => 'coupons',
+                'as' => 'coupons.',
+
+            ],
+            function () {
+                Route::get('/coupons', [UserCouponController::class, 'listCoupon'])->name('list');
             }
         );
     }

@@ -182,7 +182,7 @@ $(document).ready(function() {
     // });
 
     //lặp qua tất cả class url
-   
+
     // Thêm sự kiện khi click vào nút submit
     $('#submitForm').click(function(event) {
      
