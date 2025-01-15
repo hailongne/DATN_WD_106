@@ -251,11 +251,20 @@ class OrderController extends Controller
                 $attributeProduct->update([
                     'in_stock' => $attributeProduct->in_stock - $item->qty,
                 ]);
+            //cập nhật view trong productView
+            foreach ($cartItems as $item) {
+                $productId = $item->product->product_id;
     
-                // Gửi email nếu tồn kho nhỏ hơn hoặc bằng ngưỡng cảnh báo
-                if ($attributeProduct->in_stock <= $attributeProduct->warning_threshold) {
-                    $this->sendLowStockEmail($attributeProduct);
-                }
+                if ($productId) {
+                    // Kiểm tra xem sản phẩm có tồn tại trong ProductView không
+                    $productView = ProductView::where('product_id', $productId)
+                                              ->where('user_id', Auth::id())
+                                              ->first();
+    
+                    if ($productView) {
+                        // Nếu tồn tại, xóa bản ghi
+                        $productView->delete();
+
             }
         }
     
