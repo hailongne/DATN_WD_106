@@ -258,7 +258,7 @@ class CartController extends Controller
             $item->qty = $request->input('quantity');
             $item->save();
 
-            return response()->json(['success' => true, 'message' => 'Giỏ hàng đã được cập nhật!']);
+        return response()->json(['success' => true, 'reload' => true]);
         } catch (\Exception $e) {
             // Nếu có lỗi xảy ra, trả về thông báo lỗi chung
             return response()->json(['success' => false, 'message' => 'Có lỗi xảy ra, vui lòng thử lại!']);
