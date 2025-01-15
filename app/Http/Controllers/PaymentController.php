@@ -232,7 +232,7 @@ class PaymentController extends Controller
         if ($shoppingCart) {
             // Chuyển thông tin sản phẩm từ session thành collection để dễ thao tác
             $productDetails = collect(session()->get('productDetails', []));
-            
+
             // Duyệt qua từng sản phẩm trong giỏ hàng và kiểm tra sự trùng lặp với sản phẩm trong session
             foreach ($shoppingCart->cartItems as $cartItem) {
                 // Tìm kiếm sản phẩm trong session có trùng `product_id`, `size_id`, `color_id` với sản phẩm trong giỏ hàng
@@ -241,16 +241,15 @@ class PaymentController extends Controller
                         && $product['size_id'] == $cartItem->size_id
                         && $product['color_id'] == $cartItem->color_id;
                 });
-    
+
                 // Nếu tìm thấy sản phẩm trùng khớp trong session, xóa sản phẩm đó khỏi giỏ hàng
                 if ($matchingProduct) {
-                    // Xóa sản phẩm trùng khớp khỏi giỏ hàng
+
                     $cartItem->delete();
+                    // Xóa sản phẩm trùng khớp trong giỏ hàng
                 }
             }
         }
-        
-        // Kiểm tra và giảm số lượng mã giảm giá nếu có
         $discountCode = session('discount_code');
         if ($discountCode) {
             $coupon = Coupon::where('code', $discountCode)->first();
@@ -258,13 +257,11 @@ class PaymentController extends Controller
                 $coupon->decrement('quantity');  // Giảm số lượng mã giảm giá
             }
         }
-    
         // Lấy thông tin tên người dùng từ session
         $userName = session('userName');
         $successMessage = session('success');
-    
+
         // Trả về view với thông báo và tên người dùng
         return view('user.orders.order-cod', compact('userName', 'successMessage'))->with('alert', 'Đơn hàng của bạn đã được thanh toán thành công. Cảm ơn bạn!');
     }
-    
 }
