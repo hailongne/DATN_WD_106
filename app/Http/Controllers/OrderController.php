@@ -244,7 +244,6 @@ class OrderController extends Controller
                     'color_id' => $item->color_id,  // Lưu color_id
                     'size_id' => $item->size_id    // Lưu size_id
                 ];
-
             }
 
 

@@ -100,7 +100,7 @@ class PaymentController extends Controller
             'recipient_name' => $recipients_name
         ]);
 
-        // Thêm các sản phẩm vào đơn hàng và cập nhật số lượng trong kho
+        // Thêm các sản phẩm vào đơn hàng
         foreach ($productDetails as $product) {
             // Thêm sản phẩm vào bảng OrderItem
             $orderItem = OrderItem::create([
@@ -151,6 +151,7 @@ class PaymentController extends Controller
             ->with('alert', 'Đơn hàng của bạn đã được thanh toán thành công. Cảm ơn bạn!')
             ->with(['discountAmount' => $discountAmount]);
     }
+
 
 
 
