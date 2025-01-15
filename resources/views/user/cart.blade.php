@@ -185,15 +185,16 @@ function confirmSelection(itemId, quantity) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message);
-            location.reload();
+            // Nếu thành công, tải lại trang
+            if (data.reload) {
+                location.reload();
+            } else {
+                alert(data.message);
+            }
         } else {
             alert('Có lỗi xảy ra: ' + data.message);
         }
     })
-    .catch(error => {
-        alert('Có lỗi xảy ra khi cập nhật giỏ hàng.');
-    });
 }
 
 function updateQuantity(itemId, quantity) {
@@ -202,7 +203,6 @@ function updateQuantity(itemId, quantity) {
         alert("Số lượng phải lớn hơn hoặc bằng 1.");
         return;
     }
-
     // Gọi hàm xác nhận để xử lý cập nhật dữ liệu giỏ hàng
     confirmSelection(itemId, quantity);
 }
