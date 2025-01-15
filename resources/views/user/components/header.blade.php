@@ -89,7 +89,7 @@
                                     Sản phẩm yêu thích
                                 </a>
                                 <a href="{{ route('user.coupons.list') }}" class="dropdown-item">
-                                    Mã giảm giá của bạn
+                                    Mã giảm giá của tôi
                                 </a>
                                 <a href="{{route('user.order.history')}}" class="dropdown-item">Đơn mua</a>
 
