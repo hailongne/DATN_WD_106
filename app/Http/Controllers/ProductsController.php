@@ -187,12 +187,8 @@ class ProductsController extends Controller
             $query->where('product_id', $productId);
         })
         ->count();
-    
+
         $hasReviewed = $purchaseCount > 0;
-
-        // Thêm thông báo vào session
-        session()->flash('alert', 'Bạn đang vào trang chi tiết sản phẩm');
-
 
         // Trả về view với các biến cần thiết, bao gồm số lượt xem
         return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount'));
