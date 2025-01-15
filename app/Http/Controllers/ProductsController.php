@@ -188,8 +188,6 @@ class ProductsController extends Controller
         ->count();
 
         $hasReviewed = $purchaseCount > 0;
-        // Thêm thông báo vào session
-        session()->flash('alert', 'Bạn đang vào trang chi tiết sản phẩm');
 
 
         // Trả về view với các biến cần thiết, bao gồm số lượt xem

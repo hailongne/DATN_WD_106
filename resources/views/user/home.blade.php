@@ -209,7 +209,7 @@ alert("{{ session('error') }}");
                                     @endif
                                 </span>
                                 <p class="classname-special-title">{{ $hotProduct->name }}</p>
-                                <p class="classname-special-subtitle">{{ $soldProduct->subtitle }}</p>
+                                <p class="classname-special-subtitle">{{ $hotProduct->subtitle }}</p>
                                 @php
                                 $createdAt = \Carbon\Carbon::parse($hotProduct->created_at);
                                 $now = \Carbon\Carbon::now();
