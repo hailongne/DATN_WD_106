@@ -97,42 +97,39 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($order->orderItems as $item)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>
-                                    @if($item->product)
-                                    <img src="/storage/{{ $item->product->main_image_url }}"
-                                        alt="{{ $item->product->name }}"
-                                        style="width: 50px; height: 50px; object-fit: cover;">
-                                    @else
-                                    <img src="/storage/default_image.png" alt="Sản phẩm đã bị xóa"
-                                        style="width: 50px; height: 50px; object-fit: cover;">
-                                    @endif
-                                </td>
-                                <td>
-                                    {{ $item->product ? $item->product->name : 'Sản phẩm này đã bị xóa' }}
-                                </td>
-                                <td>{{ $item->color ? $item->color->name : 'Không có thông tin' }}</td>
-                                <td>{{ $item->size ? $item->size->name : 'Không có thông tin' }}</td>
-                                <td>{{ $item->product ? number_format($item->price, 0, ',', '.') . ' đ' : 'Không có thông tin' }}</td>
-                                <td>{{ $item->quantity }}</td>
-                                <td>{{ $item->product ? number_format($item->price * $item->quantity, 0, ',', '.') . ' đ' : 'Không có thông tin' }}</td>
-                            </tr>
-                            @endforeach
-                            @if ($order->statusHistories->isNotEmpty())
-                            <hr />
-                            <p><strong>Lịch sử trạng thái đơn hàng:</strong></p>
-                            <ul class="status-history-list">
-                                @foreach ($order->statusHistories as $history)
-                                <li>
-                                    <span class="status-timestamp">{{ $history->created_at->format('d/m/Y H:i') }}</span> -
-                                    <span class="status-change">Trạng thái: <strong>{{ $statusLabels[strtolower($history->new_status)] ?? $history->new_status }}</strong></span>
-                                </li>
-                                @endforeach
-                            </ul>
-                            @endif
-                        </tbody>
+    @foreach($order->orderItems as $item)
+    <tr>
+        <td>{{ $loop->iteration }}</td>
+        <td>
+            @if($item->product)
+            <img src="/storage/{{ $item->product->main_image_url }}" alt="{{ $item->product->name }}"
+                style="width: 50px; height: 50px; object-fit: cover;">
+            @else
+            <img src="/storage/default_image.png" alt="Sản phẩm đã bị xóa"
+                style="width: 50px; height: 50px; object-fit: cover;">
+            @endif
+        </td>
+        <td>
+            {{ $item->product ? $item->product->name : 'Sản phẩm này đã bị xóa' }}
+        </td>
+        <td>{{ $item->color ? $item->color->name : 'Không có thông tin' }}</td>
+        <td>{{ $item->size ? $item->size->name : 'Không có thông tin' }}</td>
+        <td>{{ $item->product ? number_format($item->price, 0, ',', '.') . ' đ' : 'Không có thông tin' }}</td>
+        <td>{{ $item->quantity }}</td>
+        <td>{{ $item->product ? number_format($item->price * $item->quantity, 0, ',', '.') . ' đ' : 'Không có thông tin' }}</td>
+        <td>
+            @if($item->product)
+            <a href="{{ route('user.product.detail', ['id' => $item->product->product_id]) }}#reviews" class="btn btn-primary btn-sm">
+                Đánh giá
+            </a>
+            @else
+            <button class="btn btn-secondary btn-sm" disabled>Đánh giá</button>
+            @endif
+        </td>
+    </tr>
+    @endforeach
+</tbody>
+
 
                         <tfoot>
                             <tr>

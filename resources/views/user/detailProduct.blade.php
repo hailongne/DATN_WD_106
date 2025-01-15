@@ -130,7 +130,7 @@
 
     <!-- accordion -->
     <div class="accordion" id="accordionPanelsStayOpenExample">
-        <div class="accordion-item">
+        <div id="reviews" class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                     data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
@@ -553,7 +553,14 @@
 
 
     <script>
-
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.location.hash === '#reviews') {
+            const reviewsSection = document.querySelector('#reviews');
+            if (reviewsSection) {
+                reviewsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
     document.addEventListener('DOMContentLoaded', function() {
         var reviewsContainer = document.getElementById('reviewsContainer');
         reviewsContainer.scrollTop = reviewsContainer.scrollHeight;
