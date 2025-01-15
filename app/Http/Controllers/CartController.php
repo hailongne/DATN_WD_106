@@ -253,8 +253,8 @@ class CartController extends Controller
             // }
 
             // Nếu không có sản phẩm tương tự trong giỏ hàng, cập nhật lại sản phẩm hiện tại
-            $item->color_id = $request->input('color_id');
-            $item->size_id = $request->input('size_id');
+            // $item->color_id = $request->input('color_id');
+            // $item->size_id = $request->input('size_id');
             $item->qty = $request->input('quantity');
             $item->save();
 
