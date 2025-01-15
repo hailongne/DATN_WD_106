@@ -210,7 +210,7 @@ class OrderController extends Controller
         if ($cartItems->isEmpty()) {
             return redirect()->back()->with('error', 'Không có sản phẩm nào được chọn để thanh toán!');
         }
-        $hasUpdatedItems = false;
+     
         
         // Tính tổng tiền đơn hàng (không bao gồm phí vận chuyển)
         $totalWithoutShipping = 0;
