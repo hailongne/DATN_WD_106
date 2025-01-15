@@ -262,9 +262,6 @@
                 <div class="comment-section">
                     <textarea name="comment" class="customReviewTest" id="reviewText"
                         placeholder="Bình luận..."></textarea>
-                    <button class="btn" type="submit">
-                        Bình luận
-                    </button>
                     @error('comment')
             <span class="text-danger">{{$message}}</span>
             @enderror
@@ -284,7 +281,7 @@
         </form>
     </div>
 @else
-    <p>Bạn đã đánh giá sản phẩm này rồi.</p>
+ 
 @endif
 
 

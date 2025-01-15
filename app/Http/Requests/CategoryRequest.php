@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
-
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CategoryRequest extends FormRequest
@@ -29,16 +29,18 @@ class CategoryRequest extends FormRequest
             'is_active' => 'boolean',
             'slug' => [
                 'required',
+                'unique:categories,slug,' . $categoryId . ',category_id',
                 'alpha_dash',
                 'min:3',
-                'unique:categories,slug',  // Slug must be unique
                 function ($attribute, $value, $fail) {
-                    // Remove spaces from both name and slug to compare them in the same format
-                    $slugWithoutSpace = str_replace(' ', '-', $this->input('name'));  // Replace spaces with dashes
-                    if ($value !== $slugWithoutSpace) {
-                        $fail('Slug phải giống với Name, và phải thay thế các dấu cách bằng dấu gạch ngang.');
+                    // Chuẩn hóa slug và name để so sánh
+                    $name = $this->input('name');
+                    $normalizedSlug = $this->generateSlug($name);
+                    
+                    if (strtolower($value) !== strtolower($normalizedSlug)) {
+                        $fail('Slug phải giống với Name (sau khi thay thế các dấu cách bằng dấu gạch ngang và loại bỏ dấu).');
                     }
-                }
+                },
             ],
             'parent_id' => 'nullable',  // Kiểm tra nếu có thì phải tồn tại trong bảng categories
         ];
@@ -61,5 +63,9 @@ class CategoryRequest extends FormRequest
             'slug.min' => 'Slug phải có ít nhất 3 ký tự',
         ];
     }
-    
+    protected function generateSlug($string)
+    {
+        // Loại bỏ dấu (nếu bạn dùng Laravel thì nên dùng thư viện `Str::slug` thay vì xử lý thủ công)
+        return Str::slug($string);
+    }
 }

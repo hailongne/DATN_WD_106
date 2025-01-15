@@ -8,6 +8,7 @@ use App\Models\AttributeProduct;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatusHistory;
+use App\Models\ProductView;
 use App\Models\ShoppingCart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -245,9 +246,31 @@ class OrderController extends Controller
                     'in_stock' => $attributeProduct->in_stock - $item->qty,
                 ]);
                 // Kiểm tra nếu tồn kho nhỏ hơn hoặc bằng ngưỡng cảnh báo
-               
+         
+            }
+     
+           
+        }
+        //cập nhật view trong productView
+        foreach ($cartItems as $item) {
+            $productId = $item->product->product_id;
+        
+            if ($productId) {
+                // Kiểm tra xem sản phẩm có tồn tại trong ProductView không
+                $productView = ProductView::where('product_id', $productId)
+                                          ->where('user_id', Auth::id())
+                                          ->first();
+        
+                if ($productView) {
+                    // Nếu tồn tại, xóa bản ghi
+                    $productView->delete();
+                }
             }
         }
+        
+        
+      
+        // gửi mail những sản phâm có số lượng dưới ngưỡng
         $attributeProducts = AttributeProduct::where('in_stock', '<=', 'warning_threshold')->get();
         foreach ($attributeProducts as $attributeProduct) {
             $this->sendLowStockEmail($attributeProduct);
@@ -310,10 +333,11 @@ class OrderController extends Controller
         $attributeProduct->update([
             'in_stock' => $attributeProduct->in_stock - $item->qty,
         ]);
-        $attributeProducts = AttributeProduct::where('in_stock', '<=', 'warning_threshold')->get();
-        foreach ($attributeProducts as $attributeProduct) {
-            $this->sendLowStockEmail($attributeProduct);
-        }
+        //  // gửi mail những sản phâm có số lượng dưới ngưỡng
+        // $attributeProducts = AttributeProduct::where('in_stock', '<=', 'warning_threshold')->get();
+        // foreach ($attributeProducts as $attributeProduct) {
+        //     $this->sendLowStockEmail($attributeProduct);
+        // }
         // Thêm phí vận chuyển
         $shippingFee = 40000;
         $total = $totalWithoutShipping + $shippingFee;

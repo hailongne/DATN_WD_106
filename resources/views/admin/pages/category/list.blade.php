@@ -51,7 +51,7 @@
                 <th style="width: 10%;">STT</th>
                 <th style="width: 20%;">Tên Danh mục</th>
                 <th style="width: 20%;">Hình ảnh</th>
-                <th style="width: 20%;">Trạng thái</th>
+              
                 <th style="width: 20%;">Hành động</th>
             </tr>
         </thead>
@@ -63,15 +63,6 @@
                 <td>
                     <img src="{{Storage::url($category->image)}} " class="cusstom-no-image"
                         onerror="this.onerror=null; this.src='{{ asset('imagePro/icon/icon-no-image.png') }}';">
-                </td>
-                <td>
-                    <form action="{{ route('admin.categories.toggle', $category->category_id) }}" method="POST">
-                        @csrf
-                        <button type="submit"
-                            class="custom-btn-active-admin {{ $category->is_active ? 'btn-success' : 'btn-danger' }}">
-                            <p>{{ $category->is_active ? 'Đang hoạt động' : 'Đã tắt hoạt động' }}</p>
-                        </button>
-                    </form>
                 </td>
                 <td>
                     <div class="icon-product d-flex justify-content-center gap-2">
