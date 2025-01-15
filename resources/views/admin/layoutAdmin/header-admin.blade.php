@@ -27,6 +27,8 @@
                 </li>
                 <li><a href="{{ route('admin.inventories.index') }}"><i class="fa-solid fa-money-bill"></i> Tồn kho </a>
                 </li>
+                <li><a href="{{ route('admin.contacts.index') }}"><i class="fa-solid fa-address-book"></i> Liên hệ</a>
+                </li>
             </ul>
         </li>
         <li>
