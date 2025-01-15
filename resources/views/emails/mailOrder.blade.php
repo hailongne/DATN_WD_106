@@ -104,8 +104,8 @@
                 @foreach ($emailData['productDetails'] as $product)
                     <tr>
                         <td>{{ $product['name'] }}</td>
-                        <td>{{ $product['color'] }}</td>
-                        <td>{{ $product['size'] }}</td>
+                        <td>{{ $product['color_id'] }}</td>
+                        <td>{{ $product['size_id'] }}</td>
                         <td>{{ $product['quantity'] }}</td>
                         <td>{{ number_format($product['price'], 0, ',', '.') }} VND</td>
                         <td>{{ number_format($product['subtotal'], 0, ',', '.') }} VND</td>
