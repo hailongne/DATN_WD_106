@@ -8,6 +8,7 @@ use App\Models\AttributeProduct;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderStatusHistory;
+use App\Models\ProductView;
 use App\Models\ShoppingCart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -251,20 +252,29 @@ class OrderController extends Controller
                 $attributeProduct->update([
                     'in_stock' => $attributeProduct->in_stock - $item->qty,
                 ]);
-            //cập nhật view trong productView
-            foreach ($cartItems as $item) {
-                $productId = $item->product->product_id;
-    
-                if ($productId) {
-                    // Kiểm tra xem sản phẩm có tồn tại trong ProductView không
-                    $productView = ProductView::where('product_id', $productId)
-                                              ->where('user_id', Auth::id())
-                                              ->first();
-    
-                    if ($productView) {
-                        // Nếu tồn tại, xóa bản ghi
-                        $productView->delete();
+            }
 
+
+        }
+        //cập nhật view trong productView
+        foreach ($cartItems as $item) {
+            $productId = $item->product->product_id;
+
+            if ($productId) {
+                // Kiểm tra xem sản phẩm có tồn tại trong ProductView không
+                $productView = ProductView::where('product_id', $productId)
+                                          ->where('user_id', Auth::id())
+                                          ->first();
+
+                if ($productView) {
+                    // Nếu tồn tại, xóa bản ghi
+                    $productView->delete();
+                if ($productView) {
+                    // Nếu tồn tại, xóa bản ghi
+                    $productView->delete();
+                }
+
+                }
             }
         }
     
