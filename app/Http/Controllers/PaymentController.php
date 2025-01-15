@@ -27,19 +27,19 @@ class PaymentController extends Controller
         if (!$user) {
             return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để thanh toán!');
         }
-    
+
         // Kiểm tra xem người dùng đã chọn sản phẩm chưa
         $productDetails = session()->get('productDetails', []);
         if (empty($productDetails)) {
             return redirect()->back()->with('error', 'Không có sản phẩm nào để thanh toán!');
         }
-    
+
         // Lấy thông tin địa chỉ giao hàng và số điện thoại từ form
         $shippingAddress = $request->input('shipping_address');
         $phone = $request->input('phone');
         $recipients_name = $request->input('recipient_name');
         $amount = $request->input('amount');
-    
+
         // Kiểm tra thông tin từng sản phẩm trong giỏ hàng
         foreach ($productDetails as $product) {
             // Lấy sản phẩm từ cơ sở dữ liệu
@@ -47,29 +47,29 @@ class PaymentController extends Controller
             if (!$dbProduct) {
                 return redirect()->route('user.cart.index')->with('error', 'Sản phẩm "' . $dbProduct->name . '" đã ngừng bán.');
             }
-    
+
             // Kiểm tra trạng thái sản phẩm (is_active)
             if (!$dbProduct->is_active) {
                 return redirect()->route('user.cart.index')->with('error', 'Sản phẩm "' . $dbProduct->name . '" đã ngừng bán.');
             }
-    
+
             // Kiểm tra tính hợp lệ của sản phẩm trong cơ sở dữ liệu
             $attributeProduct = $dbProduct->attributeProducts()
                 ->where('color_id', $product['color_id'])
                 ->where('size_id', $product['size_id'])
                 ->first();
-    
+
             if (!$attributeProduct || $attributeProduct->in_stock < $product['quantity']) {
                 return redirect()->back()->with('error', 'Sản phẩm "' . $dbProduct->name . '" không đủ số lượng trong kho.');
             }
         }
-    
+
         // Tính tổng tiền đơn hàng (không bao gồm phí vận chuyển)
         $totalWithoutShipping = 0;
         foreach ($productDetails as $product) {
             $totalWithoutShipping += $product['price'] * $product['quantity'];
         }
-    
+
         // Áp dụng giảm giá nếu có
         $discountAmount = 0;
         $discountCode = $request->input('discount_code');
@@ -82,11 +82,11 @@ class PaymentController extends Controller
                 $discountAmount = $this->calculateDiscount($coupon, $totalAfterShipping);
             }
         }
-    
+
         // Thêm phí vận chuyển
         $shippingFee = 40000;
         $total = $amount;
-    
+
         // Tạo đơn hàng mới
         $order = Order::create([
             'user_id' => $user->user_id,
@@ -99,10 +99,11 @@ class PaymentController extends Controller
             'payment_method' => 'COD',
             'recipient_name' => $recipients_name
         ]);
-    
-        // Thêm các sản phẩm vào đơn hàng
+
+        // Thêm các sản phẩm vào đơn hàng và cập nhật số lượng trong kho
         foreach ($productDetails as $product) {
-            OrderItem::create([
+            // Thêm sản phẩm vào bảng OrderItem
+            $orderItem = OrderItem::create([
                 'order_id' => $order->order_id,
                 'product_id' => $product['product_id'],
                 'product_name' => $product['name'],
@@ -112,8 +113,19 @@ class PaymentController extends Controller
                 'price' => $product['price'],
                 'subtotal' => $product['subtotal'],
             ]);
+
+            // Cập nhật số lượng tồn kho sau khi đặt hàng
+            $attributeProduct = $dbProduct->attributeProducts()
+                ->where('color_id', $product['color_id'])
+                ->where('size_id', $product['size_id'])
+                ->first();
+
+            if ($attributeProduct) {
+                $attributeProduct->in_stock -= $product['quantity'];
+                $attributeProduct->save(); // Lưu thay đổi
+            }
         }
-    
+
         // Lưu lại lịch sử trạng thái đơn hàng
         OrderStatusHistory::create([
             'order_id' => $order->order_id,
@@ -121,7 +133,7 @@ class PaymentController extends Controller
             'status_change_date' => now(),
             'updated_by' => $user->user_id
         ]);
-    
+
         // Gửi email xác nhận đơn hàng
         $emailData = [
             'user' => $user,
@@ -132,14 +144,15 @@ class PaymentController extends Controller
             'shippingFee' => $shippingFee
         ];
         Mail::to($user->email)->send(new OrderConfirm($emailData));
-    
+
         // Chuyển hướng đến trang thông báo thanh toán thành công
         return redirect()
             ->route('user.order.order-cod')
             ->with('alert', 'Đơn hàng của bạn đã được thanh toán thành công. Cảm ơn bạn!')
             ->with(['discountAmount' => $discountAmount]);
     }
-    
+
+
 
 
 
@@ -165,7 +178,7 @@ class PaymentController extends Controller
         // Tìm mã giảm giá và kiểm tra tất cả các điều kiện
         $coupon = Coupon::where('code', $code)
             ->where('is_active', true)
-            ->whereDate('start_date', '<=', now())
+            // ->whereDate('start_date', '=', now())
             ->whereDate('end_date', '>=', now())
             ->first();
 

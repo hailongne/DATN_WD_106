@@ -11,12 +11,6 @@
         Gentle Manor - Giỏ hàng <i class="fa fa-star"></i>
     </button>
 </div>
-@if (session('error'))
-    <script>
-        alert("{{ session('error') }}");
-    </script>
-@endif
-
 <div class="cart-container">
     <div class="cart-items-section">
         <div class="cart-header">
@@ -73,7 +67,7 @@
 
                     <!-- Thông báo nếu số lượng giỏ hàng vượt quá tồn kho -->
                     @if($item->qty > $inStock)
-                        <p class="section-title" style="color: red;">Số lượng trong giỏ hàng vượt quá số lượng trong kho, vui lòng chỉnh sửa số lượng.</p>
+                    <i class="fas fa-info-circle icon-error-cart" data-bs-toggle="tooltip" data-bs-placement="top" title="Số lượng trong giỏ hàng vượt quá số lượng trong kho, vui lòng chỉnh sửa số lượng."></i>
                     @endif
                 </div>
                 <div class="product-total-cart mr-5">
@@ -124,7 +118,17 @@
         @endif
     </div>
 </div>
-
+@if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: "{{ session('error') }}",
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#d33',
+        });
+    </script>
+@endif
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
@@ -149,8 +153,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         // Kiểm tra nếu không có sản phẩm nào được chọn
         if (selectedProducts.length === 0) {
-            alert('Vui lòng chọn ít nhất một sản phẩm để thanh toán.');
-            return; // Dừng việc gửi form
+            Swal.fire({
+                icon: 'warning',
+                title: 'Thông báo',
+                text: 'Vui lòng chọn ít nhất một sản phẩm để thanh toán.',
+            });
+            return;
         }
         // Cập nhật giá trị vào input hidden
         document.getElementById('selected_products').value = selectedProducts.join(',');
@@ -166,7 +174,11 @@ function confirmSelection(itemId, quantity) {
     const finalQuantity = quantity || document.getElementById('quantity' + itemId).value || 1;
 
     if (finalQuantity < 1) {
-        alert('Vui lòng chọn số lượng hợp lệ.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Vui lòng chọn số lượng hợp lệ.',
+        });
         return;
     }
 
@@ -192,7 +204,11 @@ function confirmSelection(itemId, quantity) {
                 alert(data.message);
             }
         } else {
-            alert('Có lỗi xảy ra: ' + data.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Có lỗi xảy ra: ' + data.message,
+            });
         }
     })
 }
@@ -200,7 +216,16 @@ function confirmSelection(itemId, quantity) {
 function updateQuantity(itemId, quantity) {
     // Kiểm tra số lượng nhập vào có hợp lệ không
     if (quantity < 1) {
-        alert("Số lượng phải lớn hơn hoặc bằng 1.");
+        Swal.fire({
+        icon: 'info',
+        title: 'Thông báo!',
+        text: 'Số lượng phải lớn hơn hoặc bằng 1!',
+        confirmButtonText: 'OK',
+        timer: 5000,
+        willClose: () => {
+            location.reload();
+        }
+    });
         return;
     }
     // Gọi hàm xác nhận để xử lý cập nhật dữ liệu giỏ hàng
@@ -253,7 +278,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Thay đổi văn bản trong label và thêm lớp màu đỏ nếu cần
         if (disableSelectAll) {
-            selectAllLabelText.textContent = 'Một số sản phẩm trong giỏ hàng vượt quá số lượng trong kho và không thể chọn tất cả.';
             selectAllLabelText.classList.add('warning'); // Thêm lớp warning
         } else {
             selectAllLabelText.textContent = 'Chọn tất cả';
@@ -296,10 +320,18 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function confirmRemove(itemId) {
-    if (confirm('Bạn có muốn xóa sản phẩm này hay không ?')) {
-        // Nếu người dùng xác nhận, gửi form để xóa sản phẩm
-        document.getElementById('remove-item-form-' + itemId).submit();
-    }
+    Swal.fire({
+        title: 'Xác nhận xóa',
+        text: 'Bạn có muốn xóa sản phẩm này hay không?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('remove-item-form-' + itemId).submit();
+        }
+    });
 }
 </script>
 

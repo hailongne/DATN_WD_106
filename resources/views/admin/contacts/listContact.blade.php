@@ -5,7 +5,11 @@
 @endpush
 
 @section('content')
-    <h1>Danh Sách Liên Hệ</h1>
+    <div class="button-header mb-3">
+        <button>
+        Danh Sách Liên Hệ <i class="fa fa-star"></i>
+        </button>
+    </div>
 
     @if($contacts->isEmpty())
         <p>Không có liên hệ nào.</p>

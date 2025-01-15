@@ -35,13 +35,13 @@ class CouponController extends Controller
         $query->where('end_date', '<=', request('end_date'));
     })
     ->latest()
-    ->paginate(5);
+    ->paginate(10);
 
 return view('admin.pages.coupon.list', compact('coupons'));
 
-    
-    
-    
+
+
+
     }
     public function toggle($id)
     {
@@ -57,7 +57,7 @@ return view('admin.pages.coupon.list', compact('coupons'));
     {
         $query = $request->input('query');
         $authUserId = auth()->id(); // ID của user hiện tại
-    
+
         $users = User::where('name', 'like', '%' . $query . '%')
             ->where('user_id', '!=', $authUserId) // Loại bỏ user đang đăng nhập
             ->where('role', '!=', 1) // Loại bỏ user có role = 1 (admin)
@@ -67,9 +67,9 @@ return view('admin.pages.coupon.list', compact('coupons'));
             'data' => $users,
         ]);
     }
-    
+
     public function createCoupon(Request $request){
-        
+
         $users=User::where('name', 'like', '%' . $request->input('nhap') . '%')->get();
         return view('admin.pages.coupon.create',compact('users'));
 
@@ -101,7 +101,7 @@ return view('admin.pages.coupon.list', compact('coupons'));
             Mail::to(User::find($userId)->email)->send(new CouponCreated($coupon));
             }
         }
-    
+
 
         return redirect()->route('admin.coupons.index')->with([
             'coupon' => $coupon,
@@ -201,7 +201,7 @@ return view('admin.pages.coupon.list', compact('coupons'));
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa mã giảm giá.');
     }
-       
+
     }
 
 }

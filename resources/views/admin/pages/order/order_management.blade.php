@@ -89,11 +89,11 @@ select.form-control option[value="cancelled"] {
                     <td>
                         <select class="form-control status-select" data-order-id="{{ $order->order_id }}"
                             data-initial-status="{{ $order->status }}" data-received-delivery="{{ $order->received }}">
-                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Đang chờ xử lý
+                            <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Chờ xác nhận
                             </option>
                             <option value="processing" {{ $order->status == 'processing' ? 'selected' : '' }}>Đã xác
                                 nhận</option>
-                            <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Đang vận chuyển
+                            <option value="shipped" {{ $order->status == 'shipped' ? 'selected' : '' }}>Đang giao hàng
                             </option>
                             <option value="delivered" {{ $order->status == 'delivered' ? 'selected' : '' }}>Đã giao hàng
                             </option>

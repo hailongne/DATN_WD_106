@@ -82,7 +82,7 @@
             @endforeach
         </div>
         <div class="total-order-confirm mt-3">
-            
+
             <div class="order-item">
                 <span class="order-label">Tạm tính:</span>
                 <span class="order-value">
@@ -100,7 +100,7 @@
                 <span class="order-label">Giảm giá: </span>
                 <span class="order-value" id="discountAmount">0 đ</span>
             </div>
-            
+
             <hr class="order-divider">
             <div class="order-item total">
                 <span class="order-label">Tổng cộng:</span>

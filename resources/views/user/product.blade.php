@@ -35,7 +35,7 @@
         <hr class="line-filter-product"/>
         <div class="product-items">
             @if(isset($listProduct) && $listProduct->isNotEmpty())
-            @foreach ($listProduct as $product)
+            @foreach ($listProduct->sortByDesc('created_at') as $product)
             <div class="product-container">
                 <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">
                     @csrf

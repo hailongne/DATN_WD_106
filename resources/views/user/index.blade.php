@@ -17,8 +17,13 @@
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <!-- Thêm SweetAlert2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.22/dist/sweetalert2.min.css" rel="stylesheet">
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Thêm SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.22/dist/sweetalert2.all.min.js"></script>
+
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
@@ -103,11 +108,11 @@
                 alertElement.style.display = 'none';
             }, 2000); // 2000ms = 2 seconds
         }
-        
+
         // Hiển thị form liên hệ khi nhấn nút "Liên Hệ"
         var contactBtn = document.getElementById('contactBtn');
         var contactSection = document.getElementById('contactSection');
-        
+
         if (contactBtn && contactSection) {
             contactBtn.addEventListener('click', function() {
                 contactSection.style.display = 'block'; // Hiện phần liên hệ

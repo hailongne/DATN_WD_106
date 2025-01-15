@@ -5,7 +5,7 @@
 <div class="container mt-4">
     <!-- Tiêu đề -->
     <div class="button-header">
-        <button>Danh Sách Bình luận <i class="fa fa-star"></i></button>
+        <button>Danh Sách Đánh giá <i class="fa fa-star"></i></button>
     </div>
     <!-- Modal Add -->
     <div class="modal fade" id="productCreateModal" tabindex="-1" aria-labelledby="productCreateModalLabel"
@@ -15,10 +15,10 @@
                 <div class="modal-header">
                     <div class="button-header">
                         <button>
-                            Trả lời bình luận <i class="fa fa-star"></i>
+                            Trả lời Đánh giá <i class="fa fa-star"></i>
                         </button>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">✖</button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- AJAX nội dung sẽ được load tại đây -->
@@ -36,7 +36,7 @@
                 <th>Email khác hàng</th>
                 <th>Tên sản phẩm</th>
                 <th>Đánh giá</th>
-                <th>Bình luận</th>
+                <th>Đánh giá</th>
                 <th>Thời gian</th>
                 <th>Trạng thái</th>
                 <th>Hành Động</th>
@@ -45,7 +45,7 @@
         <tbody>
             @foreach ($reviews as $review)
             <tr>
-                <td>{{ $review->review_id }}</td>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ $review->user->email }}</td>
                 <td>{{ $review->product->name }}</td>
                 <td>{{ $review->rating }} ★</td>

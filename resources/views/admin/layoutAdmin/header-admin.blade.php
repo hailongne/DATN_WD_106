@@ -25,10 +25,8 @@
                 <li><a href="{{ route('admin.colors.index') }}"><i class="fa-solid fa-droplet"></i> Màu</a></li>
                 <li><a href="{{ route('admin.brands.index') }}"><i class="fa-solid fa-copyright"></i> Thương hiệu</a>
                 </li>
-                <li><a href="{{ route('admin.inventories.index') }}"><i class="fa-solid fa-money-bill"></i> Tồn kho </a>
-                </li>
-                <li><a href="{{ route('admin.contacts.index') }}"><i class="fa-solid fa-address-book"></i> Liên hệ</a>
-                </li>
+                <!-- <li><a href="{{ route('admin.inventories.index') }}"><i class="fa-solid fa-money-bill"></i> Tồn kho </a>
+                </li> -->
             </ul>
         </li>
         <li>
@@ -38,7 +36,7 @@
         </li>
         <li>
             <a href="{{route('admin.reviews.index')}}">
-                <i class="fa-solid fa-comment"></i> Bình luận
+                <i class="fa-solid fa-comment"></i> Đánh giá
             </a>
         </li>
         <li>
@@ -51,5 +49,7 @@
         </li>
         <li><a href="{{ route('admin.banners.index') }}"><i class="fa-solid fa-image"></i> Banner </a></li>
 
+        <li><a href="{{ route('admin.contacts.index') }}"><i class="fa-solid fa-address-book"></i> Liên hệ</a>
+        </li>
     </ul>
 </div>

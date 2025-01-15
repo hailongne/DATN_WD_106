@@ -67,9 +67,13 @@
                             <li class="order-item {{ $loop->index >= 2 ? 'hidden-item' : '' }}">
                                 <div class="item-left mr-5">
                                     @if ($item->product)
+
+                                    <a href="{{ route('user.product.detail', $item->product_id) }}" class="product-card-link">
                                     <img src="{{ asset('storage/' . $item->product->main_image_url) }}"
                                         alt="{{ $item->product->name }}" />
+                                    </a>
                                     <div class="item-info">
+                                    <a href="{{ route('user.product.detail', $item->product_id) }}" class="product-card-link">
                                         <span class="title-item-info">{{ $item->product->name }}</span>
                                         <br>
                                         <div class="attribute-info-size">
@@ -81,6 +85,7 @@
                                                 {{ $item->color ? $item->color->name : 'Không có thông tin' }}</strong>
                                         </div>
                                         <span class="item-quantity">x{{ $item->quantity }}</span>
+                                    </a>
                                     </div>
                                     @else
                                     <div class="item-info">
@@ -150,12 +155,10 @@
                             @if ($order->status === 'pending')
                             <form action="{{ route('user.order.cancelOrder', $order->order_id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="btn btn-danger"
-                                    onclick="return confirm('Bạn có chắc muốn hủy đơn hàng này?');">Hủy đơn
-                                    hàng</button>
+                                <button type="submit" class="btn btn-danger cancel-order-btn">Hủy đơn hàng</button>
                             </form>
                             @else
-                            <button type="submit" class="btn btn-danger" disabled>Hủy đơn hàng</button>
+                            <button type="submit" class="btn btn-danger cancel-order-btn"  disabled>Hủy đơn hàng</button>
                             @endif
 
                             <a href="{{ route('user.order.detail', $order->order_id) }}"
@@ -209,5 +212,31 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Gắn sự kiện confirm cho tất cả nút hủy đơn
+    document.querySelectorAll('.cancel-order-btn').forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault(); // Ngừng hành động mặc định
+            const form = this.closest('form'); // Lấy form gần nút được click
+
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn hủy đơn hàng này?',
+                text: 'Sau khi hủy, bạn sẽ không thể khôi phục lại đơn hàng.',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'Hủy',
+                confirmButtonText: 'Xác nhận',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Gửi form khi xác nhận
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+
 </script>
 @endpush

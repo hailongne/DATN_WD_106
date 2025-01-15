@@ -239,7 +239,7 @@ alert("{{ session('error') }}");
                 </button>
             </div>
             <div class="product-slide">
-                @foreach($topProducts as $product)
+                @foreach($topProducts->sortByDesc('created_at') as $product)
 
                 <div class="product-container">
                     <form action="{{route('user.product.love', ['id' => $product->product_id])}}" method="POST">

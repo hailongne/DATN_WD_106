@@ -48,7 +48,7 @@
     <table class="product-table table table-bordered text-center align-middle mb-5">
         <thead class="thead-dark">
             <tr>
-                <th style="width: 10%;">STT</th>
+                <th style="width: 10%;"></th>
                 <th style="width: 20%;">Tên Danh mục</th>
                 <th style="width: 20%;">Hình ảnh</th>
                 <th style="width: 20%;">Hành động</th>

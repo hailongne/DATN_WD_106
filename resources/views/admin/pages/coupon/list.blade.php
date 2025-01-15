@@ -70,18 +70,18 @@
 
                 @foreach ($coupons as $key => $coupon)
                 <tr>
-                    <td>{{$coupon->coupon_id}}</td>
+                    <td>{{ $loop->iteration }}</td>
                     <td>{{$coupon->code}}</td>
                     @if($coupon->discount_amount)
-                    <td>{{ number_format($coupon->discount_amount, 0, ',', '.') }}</td>
+                    <td>{{ number_format($coupon->discount_amount, 0, ',', '.') }} ₫</td>
                     @else
                     <td>{{$coupon->discount_percentage	}}%</td>
                     @endif
                     <td>{{$coupon->quantity}}</td>
-                    <td>{{$coupon->min_order_value}}</td>
-                    <td>{{$coupon->max_order_value}}</td>
-                    <td>{{$coupon->start_date}}</td>
-                    <td>{{$coupon->end_date}}</td>
+                    <td>{{ number_format($coupon->min_order_value, 0, ',', '.') }} ₫</td>
+                    <td>{{ number_format($coupon->max_order_value, 0, ',', '.') }} ₫</td>
+                    <td>{{ date('d/m/Y', strtotime($coupon->start_date)) }}</td>
+                    <td>{{ date('d/m/Y', strtotime($coupon->end_date)) }}</td>
                     <td>
                         <form action="{{ route('admin.coupons.toggle', $coupon->coupon_id) }}" method="POST"
                             style="display:inline;">

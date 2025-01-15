@@ -104,7 +104,7 @@ canvas {
 }
 /* Tạo viền rõ ràng và màu nền nhẹ cho ô tìm kiếm */
 #searchInput {
-    border: 2px solid #007bff; /* Màu viền xanh dương */
+    border: 2px solid #000000; /* Màu viền xanh dương */
     background-color: #f9f9f9; /* Màu nền sáng */
     padding: 10px; /* Thêm khoảng cách trong */
     font-size: 16px; /* Cỡ chữ dễ đọc */
@@ -116,14 +116,14 @@ canvas {
 /* Hiệu ứng khi focus vào ô tìm kiếm */
 #searchInput:focus {
     outline: none; /* Loại bỏ viền mặc định */
-    border-color: #0056b3; /* Đổi màu viền khi focus */
+    border-color: #000000; /* Đổi màu viền khi focus */
     background-color: #e7f3ff; /* Màu nền thay đổi khi focus */
-    box-shadow: 0 0 10px rgba(0, 123, 255, 0.3); /* Thêm hiệu ứng đổ bóng */
+    box-shadow: 0 0 10px rgba(29, 30, 31, 0.3); /* Thêm hiệu ứng đổ bóng */
 }
 
 /* Hiệu ứng khi hover (di chuột vào ô tìm kiếm) */
 #searchInput:hover {
-    border-color: #0056b3; /* Đổi màu viền khi hover */
+    border-color: #0c0c0c; /* Đổi màu viền khi hover */
     background-color: #f1f8ff; /* Màu nền nhẹ khi hover */
 }
 
@@ -135,7 +135,7 @@ canvas {
     top: 50%;
     transform: translateY(-50%);
     font-size: 20px;
-    color: #007bff; /* Màu biểu tượng */
+    color: #242526; /* Màu biểu tượng */
 }
 
 /* Đảm bảo ô tìm kiếm có khoảng cách với các phần tử xung quanh */

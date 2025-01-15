@@ -41,7 +41,7 @@
                 <p class="text-muted">{{ $product->subtitle }}</p>
                 <!-- <div class="product-meta">
                     <span class="rating">★★★★☆</span>
-                    <span class="comments">| 120 bình luận</span>
+                    <span class="comments">| 120 Đánh giá</span>
                     <span class="sales">| 500 đã bán</span>
                 </div> -->
                 <p class="price" id="product-price">
@@ -251,7 +251,7 @@
                                 </div>
                             </div>
                             <p class="review-text">
-                                {{!empty($review->comment) ? $review->comment : 'Bạn không bình luận gì về sản phẩm'}}
+                                {{!empty($review->comment) ? $review->comment : 'Bạn không Đánh giá gì về sản phẩm'}}
                             </p>
                             <img src="{{ asset('storage/' . $review->image) }}" class="image-review-product">
                             @if($review->replies->isNotEmpty())
@@ -297,7 +297,7 @@
                             <input type="hidden" name="product_id" value="{{ $product->product_id }}">
                             <div class="comment-section">
                                 <textarea name="comment" class="customReviewTest" id="reviewText"
-                                    placeholder="Bình luận... (Tùy chọn)"></textarea>
+                                    placeholder="Đánh giá... (Tùy chọn)"></textarea>
                             </div>
                         </div>
                         <div class="comment-upload-section">
@@ -305,7 +305,7 @@
                                 <i class="fa-solid fa-upload"></i>
                                 <input type="file" name="image" />
                             </label>
-                            <button class="btn btn-primary" type="submit">Bình luận</button>
+                            <button class="btn btn-primary" type="submit">Đánh giá</button>
                         </div>
                     </form>
 
@@ -714,8 +714,17 @@ function selectSize(sizeId, element) {
         if (currentQuantity < 1) currentQuantity = 1;
         // Kiểm tra nếu số lượng vượt quá số lượng có sẵn trong kho
         if (currentQuantity > inStock) {
-            alert('Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!');
-            return; // Không cho phép thay đổi nếu vượt quá kho
+            Swal.fire({
+                icon: 'error',
+                title: 'Vượt quá kho!',
+                text: 'Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!',
+                confirmButtonText: 'OK',
+                timer: 5000,
+                willClose: () => {
+                    location.reload();
+                }
+            });
+            return;
         }
 
         quantityInput.value = currentQuantity;
@@ -731,8 +740,17 @@ function selectSize(sizeId, element) {
 
         // Kiểm tra nếu số lượng vượt quá số lượng có sẵn trong kho
         if (qty > inStock) {
-            alert('Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!');
-            return; // Dừng lại nếu vượt quá kho
+            Swal.fire({
+                icon: 'error',
+                title: 'Vượt quá kho!',
+                text: 'Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!',
+                confirmButtonText: 'OK',
+                timer: 5000,
+                willClose: () => {
+                    location.reload();
+                }
+            });
+            return; // Không cho phép thay đổi nếu vượt quá kho
         }
 
         // Cập nhật giá trị của input hiển thị
@@ -787,9 +805,9 @@ function selectSize(sizeId, element) {
                 // Kiểm tra nếu có thông báo lỗi
                 else if (data.error) {
                     Swal.fire({
-                        title: 'Lỗi',
+                        title: 'Thông báo',
                         text: data.error,
-                        icon: 'error',
+                        icon: 'info',
                         confirmButtonText: 'OK'
                     });
                 } else {

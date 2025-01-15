@@ -27,6 +27,10 @@
                     <div class="col-md-1">
                         <button type="submit" class="custom-btn-filte-dashboard w-100">Lọc</button>
                     </div>
+
+                    <a href="{{ route('admin.dashboard') }}" class="btn col-md-1">
+                        <image src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
+                    </a>
                 </div>
             </form>
         </div>
@@ -76,11 +80,44 @@
             </div>        </div>
     </div>
     <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">Top 5 người dùng mua hàng nhiều nhất</h5>
+        </div>
+        <div class="card-body">
+            @if($topUsers->isEmpty())
+                <p class="text-muted">Không có dữ liệu.</p>
+            @else
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Hạng</th>
+                            <th>Tên người dùng</th>
+                            <th>Số đơn hàng</th>
+                            <th>Tổng chi tiêu (VNĐ)</th>
+                            <th>Đơn hàng cao nhất (VNĐ)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($topUsers as $index => $user)
+                        <tr>
+                            <td>#{{ $index + 1 }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->total_orders }}</td>
+                            <td>{{ number_format($user->total_spent, 0, ',', '.') }}</td>
+                            <td>{{ number_format($user->max_order_value, 0, ',', '.') }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
+        </div>
+    </div>
+    <div class="card mb-4">
     <div class="card-header">Thống kê sản phẩm trong kho</div>
     <div class="card-body">
         <input type="text" id="searchInput" class="form-control mb-3" placeholder="Tìm kiếm sản phẩm...">
         <table class="table">
-            <thead>
+            <thead class="thead-dark">
                 <tr>
                     <th scope="col" data-sort="product_id">Mã sản phẩm</th>
                     <th scope="col" data-sort="name">Tên sản phẩm</th>
@@ -106,39 +143,7 @@
     </div>
 </div>
 
-    <div class="card mb-4">
-    <div class="card-header bg-primary text-white">
-        <h5 class="mb-0">Top 5 người dùng mua hàng nhiều nhất</h5>
-    </div>
-    <div class="card-body">
-        @if($topUsers->isEmpty())
-            <p class="text-muted">Không có dữ liệu.</p>
-        @else
-            <table class="table table-hover">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Hạng</th>
-                        <th>Tên người dùng</th>
-                        <th>Số đơn hàng</th>
-                        <th>Tổng chi tiêu (VNĐ)</th>
-                        <th>Đơn hàng cao nhất (VNĐ)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($topUsers as $index => $user)
-                    <tr>
-                        <td>#{{ $index + 1 }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->total_orders }}</td>
-                        <td>{{ number_format($user->total_spent, 0, ',', '.') }}</td>
-                        <td>{{ number_format($user->max_order_value, 0, ',', '.') }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        @endif
-    </div>
-</div>
+
 
 
 <!-- Script vẽ biểu đồ -->
@@ -146,13 +151,13 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const headers = document.querySelectorAll('th[data-sort]');
-    
+
     headers.forEach(header => {
         header.addEventListener('click', function () {
             const column = header.getAttribute('data-sort');
             const rows = Array.from(document.querySelectorAll('#productTableBody tr'));
             const isAscending = header.classList.contains('asc');
-            
+
             // Sắp xếp các dòng bảng theo cột được bấm
             rows.sort((a, b) => {
                 const aText = a.querySelector(`td[data-column="${column}"]`).textContent.trim();
@@ -215,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
             row.style.display = match ? '' : 'none';
         });
     });
-    
+
 });
 
 
