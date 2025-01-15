@@ -93,7 +93,7 @@ class PaymentController extends Controller
             'status_change_date' => now(),
             'updated_by' => $user->user_id
         ]);
-        
+
         //Gửi email xác nhận đơn hàng
         $emailData = [
             'user' => $user,
@@ -136,7 +136,6 @@ class PaymentController extends Controller
         // Tìm mã giảm giá và kiểm tra tất cả các điều kiện
         $coupon = Coupon::where('code', $code)
             ->where('is_active', true)
-            ->where('is_public', true)
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
             ->first();
@@ -178,7 +177,7 @@ class PaymentController extends Controller
         }
         session(['discount_code' => $code]);
         // $coupon->decrement('quantity');
-        // Cập nhật số lượng mã giảm giá nếu có 
+        // Cập nhật số lượng mã giảm giá nếu có
         // if ($coupon->quantity > 0) {
         //     $coupon->decrement('quantity');
         // }

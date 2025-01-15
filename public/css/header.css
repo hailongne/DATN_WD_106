@@ -377,3 +377,23 @@ ul.d-flex.justify-content-end {
 ul.d-flex.justify-content-center {
     justify-content: center;
 }
+
+.cart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.divider-line {
+   flex: 1;
+   border: none;
+   border-top: 2px solid #707070;
+   margin: 0 10px;
+   height: 0;
+}
+
+.cart-title {
+   font-size: 14px;
+   color: #555;
+}

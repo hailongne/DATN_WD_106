@@ -7,6 +7,12 @@
 
 <body>
     <div class="container mt-5">
+        <div class="button-header mb-3">
+            <button>Danh sách phiếu giảm giá <i class="fa fa-star"></i></button>
+            @if(Auth::user()->role !== 3)
+            <a href="{{route('admin.coupons.create')}}" class="btn add-button">Thêm mới</a>
+            @endif
+        </div>
         @if (session('error'))
         <div class="alert alert-danger">
             {{ session('error') }}
@@ -17,7 +23,8 @@
             {{ session('success') }}
         </div>
         @endif
-        <form action="" method="get" class="d-flex align-items-center custom-filter-item">
+        <div class="custom-filter-bar d-flex align-items-center">
+            <form action="" method="get" class="d-flex align-items-center custom-filter-item">
                 <div class="custom-input-group">
                     <input type="text" class="custom-form-control" name="nhap" placeholder="Tìm kiếm sản phẩm..."
                         aria-label="Search">
@@ -26,25 +33,22 @@
                     </button>
                 </div>
             </form>
-            <form method="GET">
-    <div class="row">
-        <div class="col-md-6">
-            <label for="start_date">Ngày bắt đầu:</label>
-            <input type="date" id="start_date" name="start_date" class="form-control" value="{{ request('start_date') }}">
-        </div>
-        <div class="col-md-6">
-            <label for="end_date">Ngày kết thúc:</label>
-            <input type="date" id="end_date" name="end_date" class="form-control" value="{{ request('end_date') }}">
-        </div>
-    </div>
-    <button type="submit" class="btn btn-primary mt-3">Lọc</button>
-</form>
-
-        <div class="button-header mb-3">
-            <button>Danh sách phiếu giảm giá <i class="fa fa-star"></i></button>
-            @if(Auth::user()->role !== 3)
-            <a href="{{route('admin.coupons.create')}}" class="btn add-button">Thêm mới</a>
-            @endif
+            <form method="GET" class="custom-input-group">
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="date" id="start_date" name="start_date" class="form-control"
+                            value="{{ request('start_date') }}">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="date" id="end_date" name="end_date" class="form-control"
+                            value="{{ request('end_date') }}">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary m-2">Lọc</button>
+            </form>
+            <a href="{{ route('admin.coupons.index') }}" class="btn">
+                <image src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
+            </a>
         </div>
 
         <table class="product-table table table-bordered text-center align-middle mb-5">
@@ -84,7 +88,7 @@
                             @csrf
                             <button type="submit"
                                 class="custom-btn-active-admin {{ $coupon->is_active ? 'btn-success' : 'btn-danger' }} status-btn-active">
-                                <p>{{ $coupon->is_active ? 'Kích hoạt' : 'Hủy' }}</p>
+                                <p>{{ $coupon->is_active ? 'Đang kích hoạt' : 'kích hoạt' }}</p>
                             </button>
                         </form>
                     </td>
@@ -118,12 +122,12 @@
 
             </tbody>
         </table>
-           <!-- Phân trang -->
-    <nav>
-        <ul class="pagination justify-content-center">
-            {{ $coupons->links() }}
-        </ul>
-    </nav>
+        <!-- Phân trang -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                {{ $coupons->links() }}
+            </ul>
+        </nav>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

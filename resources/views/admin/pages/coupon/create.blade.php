@@ -40,7 +40,7 @@
                     </select>
                 </div>
                 <div class="row gx-2 mb-3" id="value1">
-                    <label class="custom-label" for="discount">Gía trị</label>
+                    <label class="custom-label" for="discount">Giá trị</label>
                     <input type="number" class="form-control" id="discount"
                         name="{{ old('discount_percentage') ? 'discount_percentage' : 'discount_amount' }}"
                         value="{{ old('discount_amount') ?? old('discount_percentage') }}"
@@ -106,7 +106,7 @@
         <div class="row gx-2 mb-3">
             <label>Chọn kiểu <span class="text-danger">*</span></label>
             <div class="form-check">
-                <input type="radio" name="is_public" id="public" value="0" class="form-check-input" checked>
+                <input type="radio" name="is_public" id="public" value="1" class="form-check-input" checked>
                 <label for="public" class="form-check-label">Public</label>
             </div>
             <div class="form-check">
@@ -179,7 +179,7 @@
         public.addEventListener('click', function () {
             customer.style.display = "none";
         });
-    
+
 
         //danh sách người dùng
         document.addEventListener("DOMContentLoaded", function () {
