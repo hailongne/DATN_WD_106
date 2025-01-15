@@ -130,13 +130,7 @@ $(document).ready(function() {
     //check lối price
 
     // Lấy tất cả các phần tử có class 'price' và 'in-stock'
-    const priceInputs = document.getElementsByClassName('price');
-    const priceErrors = document.getElementsByClassName('price-error');
-    const inStockInputs = document.getElementsByClassName('in-stock');
-    const inStockErrors = document.getElementsByClassName('in-stock-error');
-    const urlInputs = document.getElementsByClassName('url');
-    const urlErrors = document.getElementsByClassName('url-error');
-    let isFormValid = true;
+  
 
     // // Lặp qua tất cả các input có class 'price'
     // Array.from(priceInputs).forEach((priceInput, index) => {
@@ -191,7 +185,14 @@ $(document).ready(function() {
 
     // Thêm sự kiện khi click vào nút submit
     $('#submitForm').click(function(event) {
-
+     
+        const priceInputs = document.getElementsByClassName('price');
+    const priceErrors = document.getElementsByClassName('price-error');
+    const inStockInputs = document.getElementsByClassName('in-stock');
+    const inStockErrors = document.getElementsByClassName('in-stock-error');
+    const urlInputs = document.getElementsByClassName('url');
+    const urlErrors = document.getElementsByClassName('url-error');
+    let isFormValid = true;
 
 //check price
         Array.from(priceInputs).forEach((priceInput, index) => {
@@ -204,7 +205,7 @@ $(document).ready(function() {
             isFormValid = false;
         } else {
             priceErrors[index].textContent = '';
-            isFormValid = true;
+         
         }
     });
 //check in_stock
@@ -225,7 +226,7 @@ $(document).ready(function() {
             isFormValid = false;
         } else {
             inStockErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
-            isFormValid = true;
+        
         }
     });
 
@@ -272,15 +273,15 @@ $(document).ready(function() {
             // Nếu tất cả các file hợp lệ, xóa lỗi
             if (isValid) {
                 errorElement.textContent = '';
-                isFormValid = true;
             } else {
                 isFormValid = false; // Đặt form không hợp lệ nếu có lỗi
             }
         }
     });
         if (!isFormValid) {
+           
             event.preventDefault(); // Ngừng submit
-            alert('Vui lòng sửa các lỗi trước khi gửi form 1!');
+            alert('Vui lòng sửa các lỗi trước khi gửi form !');
             return;
         }
         imagesData = [];

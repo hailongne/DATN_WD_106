@@ -169,7 +169,7 @@
                                 <button class="action-btn edit"><i class="fas fa-edit"></i></button>
                             </a>
                             <!-- Xóa -->
-                            @if(Auth::user()->role !== 3)
+                            <!-- @if(Auth::user()->role !== 3)
                             <form action="{{ route('admin.products.delete', $product->product_id) }}" method="POST">
                                 @csrf
                                 @method('DELETE')
@@ -179,7 +179,7 @@
                                 </button>
                             </form>
                             @else
-                            @endif
+                            @endif -->
                         </div>
                     </td>
                 </tr>

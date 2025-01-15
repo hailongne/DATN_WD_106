@@ -30,8 +30,8 @@
         @enderror
         <div class="form-group">
             <label for="description" class="custom-label">Mô tả <span class="custom-required-star">*</span></label>
-            <textarea class="form-control" id="description" value="{{old('description')}}" rows="3" name="description"
-                placeholder="Nhập mô tả"></textarea>
+            <textarea class="form-control" id="description" rows="3" name="description"
+                placeholder="Nhập mô tả">{{old('description')}}</textarea>
         </div>
         @error('description')
         <span class="text-danger">{{$message}}</span>

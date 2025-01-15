@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
-
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -30,16 +30,17 @@ class CategoryRequest extends FormRequest
             'is_active' => 'boolean',
             'slug' => [
                 'required',
+                'unique:categories,slug,' . $categoryId . ',category_id',
                 'alpha_dash',
                 'min:3',
-                'max:2048',
-                // Kiểm tra duy nhất khi thêm mới (POST)
-                $this->isMethod('post') ? 'unique:categories,slug' : Rule::unique('categories', 'slug')->ignore($categoryId, 'category_id'),
                 function ($attribute, $value, $fail) {
-                    // Remove spaces from the URL to compare it in the same format
-                    $urlWithoutSpace = str_replace(' ', '-', $value);  // Thay dấu cách bằng dấu gạch ngang trong URL
-                    if ($value !== $urlWithoutSpace) {
-                        $fail('URL phải thay thế các dấu cách bằng dấu gạch ngang.');
+                    // Chuẩn hóa slug và name để so sánh
+                    $name = $this->input('name');
+                    $normalizedSlug = $this->generateSlug($name);
+                    
+                    if (strtolower($value) !== strtolower($normalizedSlug)) {
+                        $fail('Slug phải giống với Name (sau khi thay thế các dấu cách bằng dấu gạch ngang và loại bỏ dấu).');
+
                     }
                 },
             ],
@@ -64,5 +65,11 @@ class CategoryRequest extends FormRequest
             'slug.min' => 'Slug phải có ít nhất 3 ký tự',
         ];
     }
-
+    protected function generateSlug($string)
+    {
+        // Loại bỏ dấu (nếu bạn dùng Laravel thì nên dùng thư viện `Str::slug` thay vì xử lý thủ công)
+        return Str::slug($string);
+    }
 }
+
+

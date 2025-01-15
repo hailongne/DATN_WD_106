@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreign('product_id')->references('product_id')->on('products')->onDelete('cascade');
             $table->unsignedInteger('user_id'); 
             $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
-            $table->string('image', 500);
             $table->integer('rating')->unsigned(); // 1-5 sao
             $table->text('comment');
             $table->boolean('is_active')->default(true);

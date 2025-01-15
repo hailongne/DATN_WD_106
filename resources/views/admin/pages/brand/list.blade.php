@@ -46,7 +46,7 @@
                 <th></th>
                 <th>Tên Thương Hiệu</th>
                 <th>Mô Tả</th>
-                <th>Trạng thái</th>
+              
                 <th>Hành Động</th>
             </tr>
         </thead>
@@ -56,16 +56,6 @@
                 <td>{{ $index++ }}</td>
                 <td>{{ $brand->name }}</td>
                 <td>{{ $brand->description }}</td>
-                <td>
-                    <form action="{{ route('admin.brands.toggle', $brand->brand_id) }}" method="POST"
-                        style="display:inline;">
-                        @csrf
-                        <button type="submit"
-                            class="custom-btn-active-admin {{ $brand->is_active ? 'btn-success' : 'btn-danger' }} status-btn-active">
-                            <p>{{ $brand->is_active ? 'Đang hoạt động' : 'Đã tắt hoạt động' }}</p>
-                        </button>
-                    </form>
-                </td>
                 <td>
                     <div class="icon-product d-flex justify-content-center gap-2">
                         <!-- <a href="{{ route('admin.brands.detail', $brand->brand_id) }}" class="text-info">
