@@ -11,6 +11,12 @@
         Gentle Manor - Giỏ hàng <i class="fa fa-star"></i>
     </button>
 </div>
+@if (session('error'))
+    <script>
+        alert("{{ session('error') }}");
+    </script>
+@endif
+
 <div class="cart-container">
     <div class="cart-items-section">
         <div class="cart-header">
