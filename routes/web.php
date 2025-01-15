@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Admin\ContactController as AdminContactController ;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CustomerController;
@@ -117,7 +119,17 @@ Route::group(
                 });
             }
         );
-
+        Route::group(
+            [
+                'prefix' => 'contacts',
+                'as' => 'contacts.',
+                'middleware' => ['checkAdmin:admin,manager']
+            ],
+            function () {
+                Route::get('/contacts', [AdminContactController::class, 'index'])->name('index');
+                Route::get('/contacts/{contact}', [AdminContactController::class, 'show'])->name('show');
+            }
+        );
         // CRUD size
         Route::group(
             [
@@ -382,7 +394,7 @@ Route::group(
         );
     }
 );
-
+Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::post('/apply-discount', [PaymentController::class, 'applyDiscount'])->name('user.order.applyDiscount');
 
 Route::post('/vnp_payment', [PaymentVnPayController::class, 'vnp_payment'])
