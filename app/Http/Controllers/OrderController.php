@@ -276,12 +276,6 @@ class OrderController extends Controller
         }
         
         
-      
-        // gửi mail những sản phâm có số lượng dưới ngưỡng
-        $attributeProducts = AttributeProduct::where('in_stock', '<=', 'warning_threshold')->get();
-        foreach ($attributeProducts as $attributeProduct) {
-            $this->sendLowStockEmail($attributeProduct);
-        }
 
         // Thêm phí vận chuyển
         $shippingFee = 40000;

@@ -29,19 +29,15 @@ class CouponRequest extends FormRequest
             'quantity' => 'required|integer|min:1',
             'min_order_value' => 'required|numeric|min:1',
             'max_order_value' => [
-                'required',
-                'numeric',
+                'nullable',
                 'min:1',
                 function ($attribute, $value, $fail) {
-                    if ($this->filled('discount_amount') && $value <= $this->discount_amount) {
-                        $fail('Giá trị đơn hàng tối đa phải lớn hơn số tiền giảm giá.');
-                    }
-                    if ($value <= $this->min_order_value) {
-                        $fail('Giá trị đơn hàng tối đa phải lớn hơn giá trị đơn hàng tối thiểu.');
+                    // Kiểm tra nếu discount_percentage có giá trị mà max_order_value không có
+                    if ($this->input('discount_percentage') !== null && $value === null) {
+                        $fail('Giá trị tối đa của đơn hàng là bắt buộc khi có phần trăm giảm giá.');
                     }
                 },
             ],
-            'condition' => 'nullable|string',
             'user_id' => 'nullable|exists:users,user_id',
             'is_public' => 'boolean',
             'start_date' => 'nullable|date',
@@ -69,8 +65,6 @@ class CouponRequest extends FormRequest
             'min_order_value.numeric' => 'Giá trị đơn hàng tối thiểu phải là một số.',
             'min_order_value.min' => 'Giá trị đơn hàng tối thiểu phải lớn hơn hoặc bằng 1.',
             'min_order_value.required' => 'Giá trị đơn hàng tối thiểu không được để trống.',
-            'max_order_value.required' => 'Giá trị đơn hàng tối đa không được để trống.',
-            'max_order_value.numeric' => 'Giá trị đơn hàng tối đa phải là một số.',
             'max_order_value.min' => 'Giá trị đơn hàng tối đa phải lớn hơn hoặc bằng 1.',
             'condition.string' => 'Điều kiện phải là chuỗi ký tự.',
             'user_id.exists' => 'Người dùng không tồn tại.',

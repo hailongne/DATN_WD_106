@@ -100,7 +100,7 @@
                                     <i class="fas fa-edit"></i>
                                 </button>
                             </a>
-                            <!-- Form xóa -->
+                            <!-- Form xóa
                             <form action="{{ route('admin.coupons.delete', $coupon->coupon_id) }}" method="POST"
                                 onsubmit="return confirm('Bạn có chắc chắn muốn xóa màu sắc này?');">
                                 @csrf
@@ -108,7 +108,7 @@
                                 <button type="submit" class="action-btn delete">
                                     <i class="fas fa-trash-alt" title="Xóa"></i>
                                 </button>
-                            </form>
+                            </form> -->
                         </div>
                     </td>
                 </tr>
