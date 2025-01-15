@@ -13,7 +13,7 @@
         @foreach($banners as $banner)
         <div class="carousel-item active">
             <a href="">
-                <img src="{{ asset('storage/' . $banner->image_url) }}" class="d-block w-100" alt="Banner 1">
+                <img src="{{ Storage::url($banner->image_url) }}" alt="Banner">
             </a>
         </div>
         @endforeach
