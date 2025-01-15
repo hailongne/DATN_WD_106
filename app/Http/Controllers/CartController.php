@@ -61,7 +61,7 @@ class CartController extends Controller
         if ($currentQtyInCart + $newQty > $instock) {
             $maxQty = $instock - $currentQtyInCart;  // Tính số lượng tối đa có thể thêm vào giỏ hàng
             return response()->json([
-                'error' => 'Sản phẩm chỉ còn lại ' . $maxQty . '. Chúng tôi sẽ sớm cập nhật sản phẩm'
+                'error' => 'Chỉ còn lại ' . $maxQty . ' sản phẩm.'
             ], 400);  // Trả về mã lỗi 400
         }
 
@@ -125,7 +125,7 @@ class CartController extends Controller
             ]);
         }
         // Trả về thông báo và điều hướng về trang giỏ hàng
-        return redirect()->route('user.cart.index')->with('alert', 'Sản phẩm đã được thêm vào giỏ hàng.');
+        return redirect()->route('user.cart.index')->with('alert', 'Đã thêm sản phẩm vào giỏ hàng');
     }
     // API để xem giỏ hàng
     public function viewCart()
@@ -236,21 +236,21 @@ class CartController extends Controller
             $item = CartItem::findOrFail($itemId);
 
             // Kiểm tra xem có sản phẩm nào khác với cùng màu sắc và kích thước trong giỏ hàng không (bỏ qua sản phẩm hiện tại)
-            $existingItem = $shoppingCart->cartItems->first(function ($cartItem) use ($request, $item) {
-                return $cartItem->product_id == $item->product_id &&
-                       $cartItem->color_id == $request->input('color_id') &&
-                       $cartItem->size_id == $request->input('size_id') &&
-                       $cartItem->id != $item->id; // Bỏ qua chính sản phẩm hiện tại
-            });
+            // $existingItem = $shoppingCart->cartItems->first(function ($cartItem) use ($request, $item) {
+            //     return $cartItem->product_id == $item->product_id &&
+            //            $cartItem->color_id == $request->input('color_id') &&
+            //            $cartItem->size_id == $request->input('size_id') &&
+            //            $cartItem->id != $item->id; // Bỏ qua chính sản phẩm hiện tại
+            // });
 
             // Nếu đã tồn tại sản phẩm với màu sắc và kích thước này trong giỏ hàng (không tính sản phẩm hiện tại), thông báo lỗi
-            if ($existingItem) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Sản phẩm với màu sắc và kích thước này đã có trong giỏ hàng!',
-                    'confirm' => true // Yêu cầu xác nhận từ người dùng
-                ]);
-            }
+            // if ($existingItem) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Sản phẩm với màu sắc và kích thước này đã có trong giỏ hàng!',
+            //         'confirm' => true // Yêu cầu xác nhận từ người dùng
+            //     ]);
+            // }
 
             // Nếu không có sản phẩm tương tự trong giỏ hàng, cập nhật lại sản phẩm hiện tại
             $item->color_id = $request->input('color_id');

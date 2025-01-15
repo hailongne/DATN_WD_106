@@ -234,29 +234,6 @@ function changeQuantity(itemId, change) {
     confirmSelection(itemId, newQuantity);
 }
 
-let selectedColor = {};
-let selectedSize = {};
-
-function selectSize(itemId, sizeId, element) {
-    selectedSize[itemId] = sizeId;
-    const sizeOptions = document.querySelectorAll(`#popupOverlay${itemId} .size-option`);
-    sizeOptions.forEach(option => option.classList.remove('selected'));
-    element.classList.add('selected');
-
-    // Cập nhật giá sau khi thay đổi kích thước
-    updatePrice(itemId);
-}
-
-function changeColor(itemId, colorId, element) {
-    selectedColor[itemId] = colorId;
-    const colorOptions = document.querySelectorAll(`#popupOverlay${itemId} .color-option`);
-    colorOptions.forEach(option => option.classList.remove('selected'));
-    element.classList.add('selected');
-
-    // Cập nhật giá sau khi thay đổi màu sắc
-    updatePrice(itemId);
-}
-
 document.addEventListener('DOMContentLoaded', function() {
     const selectAllCheckbox = document.getElementById('select-all-checkbox');
     const productCheckboxes = document.querySelectorAll('.product-checkbox-item');
