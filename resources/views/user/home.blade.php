@@ -33,7 +33,7 @@ alert("{{ session('error') }}");
 
                     <div class="product-item">
                         <a href="{{ route('user.product.detail', $product->product_id) }}" class="product-card-link">
-                            <div class="card-detailProduct">
+                            <div class="card">
                                 <img src="{{ asset('storage/' . $product->main_image_url) }}" alt="{{ $product->name }}"
                                     class="product-image"
                                     onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
@@ -129,7 +129,7 @@ alert("{{ session('error') }}");
                 </form>
                 <div class="product-item">
                     <a href="{{ route('user.product.detail', $soldProduct->product_id) }}" class="product-card-link">
-                        <div class="card-detailProduct">
+                        <div class="card">
                             <img src="{{ asset('storage/' . $soldProduct->main_image_url) }}"
                                 alt="{{ $soldProduct->name }}" class="product-image"
                                 onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
@@ -190,7 +190,7 @@ alert("{{ session('error') }}");
                 </a> -->
                 <div class="product-item">
                     <a href="{{ route('user.product.detail', $hotProduct->product_id) }}" class="product-card-link">
-                        <div class="card-detailProduct">
+                        <div class="card">
                             <img src="{{ asset('storage/' . $hotProduct->main_image_url) }}"
                                 alt="{{ $hotProduct->name }}" class="product-image"
                                 onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
@@ -253,7 +253,7 @@ alert("{{ session('error') }}");
                     </a>
                     <div class="product-item">
                         <a href="{{ route('user.product.detail', $product->product_id) }}" class="product-card-link">
-                            <div class="card-detailProduct">
+                            <div class="card">
                                 <img src="{{ asset('storage/' . $product->main_image_url) }}" alt="{{ $product->name }}"
                                     class="product-image"
                                     onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">
