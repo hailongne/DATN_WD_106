@@ -65,7 +65,7 @@
             @error('min_order_value')
                 <span class="text-danger">{{$message}}</span>
             @enderror
-            <div class="col-4">
+            <div class="col-4" id="max" style="display: none">
                 <label for="max_order_value" class="custom-label">Giá trị tối đa <span
                         class="text-danger">*</span></label>
                 <input type="number" id="max_order_value" value="{{old('max_order_value')}}" name="max_order_value"
@@ -106,7 +106,7 @@
         <div class="row gx-2 mb-3">
             <label>Chọn kiểu <span class="text-danger">*</span></label>
             <div class="form-check">
-                <input type="radio" name="is_public" id="public" value="1" class="form-check-input" checked>
+                <input type="radio" name="is_public" id="public" value="0" class="form-check-input" checked>
                 <label for="public" class="form-check-label">Public</label>
             </div>
             <div class="form-check">
@@ -159,11 +159,13 @@
 
         value.addEventListener('change', function () {
             if (value.value == 1) {
+                document.getElementById('max').style.display="none";
                 document.getElementById('value1').style.display = "block";
                 discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
                 discount.setAttribute('name', 'discount_amount')
                 discount.setAttribute('value', '')
             } else {
+                document.getElementById('max').style.display="block";
                 document.getElementById('value1').style.display = "block";
                 discount.setAttribute('placeholder', 'Nhập phần trăm giảm giá')
                 discount.setAttribute('name', 'discount_percentage')

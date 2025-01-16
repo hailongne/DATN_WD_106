@@ -13,5 +13,9 @@ class CouponUser extends Model
     protected $fillable=[
         'coupon_id','user_id'
     ];
-    
+    public function coupon()
+    {
+        return $this->belongsToMany(Coupon::class, 'coupon_user', 'user_id', 'coupon_id');
+                  ;
+    }
 }

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 use App\Models\Brand;
 use App\Http\Controllers\Controller;
+use App\Models\Coupon;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\BrandsRequest;
 use Illuminate\Support\Str;
-
+use PhpParser\Builder\Use_;
+use App\Models\User;
 class BrandController extends Controller
 {
 
@@ -34,7 +36,9 @@ class BrandController extends Controller
 }
 public function createBrand()
 {
+
     return view('admin.pages.brand.create');
+   
 }
     public function addBrand(BrandsRequest $request)
     {

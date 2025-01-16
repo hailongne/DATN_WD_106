@@ -27,5 +27,8 @@ class Coupon extends Model
     {
         return $this->belongsToMany(User::class, 'coupon_user', 'coupon_id', 'user_id');
     }
+    public function couponUsers(){
+        return $this->belongsToMany(User::class, 'coupon_user', 'coupon_id', 'user_id');
+    }
     
 }

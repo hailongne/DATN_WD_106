@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\ShoppingCart;
 use App\Models\CartItem;
 use App\Models\OrderItem;
+use App\Models\User;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Coupon;
@@ -132,21 +133,26 @@ class PaymentController extends Controller
         $code = $request->input('discount_code');
         $amount = $request->input('amount');
         $discountAmount = 0;
-
-        // Tìm mã giảm giá và kiểm tra tất cả các điều kiện
+        $userEmail = auth()->user()->email; 
+        // Tìm mã giảm giá  và kiểm tra tất cả các điều kiện
         $coupon = Coupon::where('code', $code)
-            ->where('is_active', true)
+            ->where('is_active', '1')
+            ->where('is_public', '0')   
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now())
             ->first();
+            $coupons = Coupon::whereHas('couponUsers', function ($query) use ($userEmail) {
+                $query->where('email', $userEmail);  // Kiểm tra email người dùng có trong danh sách couponUsers
+            })
+            ->where('code', $code)
+            ->where('is_active', '1')
+            ->where('is_public', '1')  
+            ->whereDate('start_date', '<=', now())
+            ->whereDate('end_date', '>=', now()) 
+            ->first();
 
-        if (!$coupon) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn.',
-            ]);
-        }
-        // nếu hết mã giảm giá
+      if(isset($coupon)) {
+            // nếu hết mã giảm giá
         if ($coupon->quantity <= 0) {
             return response()->json([
                 'success' => false,
@@ -155,26 +161,78 @@ class PaymentController extends Controller
         }
 
         // Kiểm tra giá trị đơn hàng có hợp lệ với mã giảm giá không
-        if ($amount < $coupon->min_order_value || $amount > $coupon->max_order_value) {
+        if ($amount < $coupon->min_order_value) {
             return response()->json([
                 'success' => false,
-                'message' => 'Mã giảm giá chỉ áp dụng cho đơn hàng có giá trị từ ' .
-                    number_format($coupon->min_order_value, 0, ',', '.') . 'đ đến ' .
-                    number_format($coupon->max_order_value, 0, ',', '.') . 'đ.',
+                'message' => 'Mã giảm giá chỉ áp dụng cho đơn hàng có giá trị từ ' . 
+        number_format($coupon->min_order_value, 0, ',', '.') . ' VND trở lên.',
             ]);
         }
 
         // Tính giá trị giảm giá
-        if ($coupon->discount_amount > 0) {
+        if ( isset($coupon->discount_amount) && $coupon->discount_amount > 0) {
         // Nếu có giá trị giảm giá cố định
             $discountAmount = $coupon->discount_amount;
         } else {
             // Nếu không, tính giảm giá theo tỷ lệ phần trăm
-            $discountAmount = $amount * $coupon->discount_percentage / 100;
+    $discountAmount = $amount * $coupon->discount_percentage / 100;
+
+    if ($discountAmount > $coupon->max_order_value) {
+        $discountAmount = $coupon->max_order_value;
+    }
+            
         }
         if ($discountAmount > $amount) {
             $discountAmount = $amount;
         }
+      }elseif(isset($coupons)){
+    if ($coupons->quantity <= 0) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Mã giảm giá này đã được sử dụng hết.',
+        ]);
+    }
+    if ($amount < $coupons->min_order_value) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Mã giảm giá chỉ áp dụng cho đơn hàng có giá trị từ ' . 
+    number_format($coupons->min_order_value, 0, ',', '.') . ' VND trở lên.',
+        ]);
+    }
+    $couponUser = $coupons->couponUsers->where('email', $userEmail)->first();
+        // Kiểm tra quyền sử dụng mã giảm giá cho người dùng
+        if (!isset( $couponUser)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mã giảm giá này không dành cho bạn.',
+            ]);
+        }
+     // Tính giá trị giảm giá
+     if ( isset($coupons->discount_amount) && $coupons->discount_amount > 0) {
+        // Nếu có giá trị giảm giá cố định
+            $discountAmount = $coupons->discount_amount;
+        } else {
+            // Nếu không, tính giảm giá theo tỷ lệ phần trăm
+                   // Nếu không, tính giảm giá theo tỷ lệ phần trăm
+    $discountAmount = $amount * $coupons->discount_percentage / 100;
+
+    if ($discountAmount > $coupons->max_order_value) {
+        $discountAmount = $coupons->max_order_value;
+    }
+        }
+        if ($discountAmount > $amount) {
+            $discountAmount = $amount;
+        }
+
+
+
+      }else{
+        return response()->json([
+            'success' => false,
+            'message' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn.',
+        ]);
+      }
+      
         session(['discount_code' => $code]);
         // $coupon->decrement('quantity');
         // Cập nhật số lượng mã giảm giá nếu có
@@ -184,7 +242,7 @@ class PaymentController extends Controller
 
         // Tính tổng mới sau khi áp dụng mã giảm giá
         $newTotal = $amount - $discountAmount;
-
+       
         return response()->json([
             'success' => true,
             'message' => 'Mã giảm giá đã được áp dụng thành công!',

@@ -55,9 +55,9 @@
                     <tr>
                         <th></th>
                         <th>Tên</th>
-                        <th>Loại</th>
+                        <th>Giá trị giảm giá</th>
                         <th>Số lượng</th>
-                        <th>Giá trị tối thiểu</th>
+                        <th>Giá trị đơn hàng tối thiểu</th>
                         <th>Giá trị tối đa</th>
                         <th>Ngày bắt đầu </th>
                         <th>Ngày kết thúc</th>
@@ -72,13 +72,18 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $coupon->code }}</td>
                             @if ($coupon->discount_amount)
-                                <td>{{ number_format($coupon->discount_amount) }}</td>
+                                <td>{{ number_format($coupon->discount_amount, 0, '.', ',') . ' VNĐ' }}</td>
                             @else
-                                <td>{{ $coupon->discount_percentage }}%</td>
+                                <td>{{ number_format($coupon->discount_percentage) }}%</td>
                             @endif
                             <td>{{ $coupon->quantity }}</td>
                             <td>{{ number_format($coupon->min_order_value) }} VNĐ</td>
+                            @if($coupon->discount_amount)
+                            
+                            <td>{{ number_format($coupon->max_order_value = $coupon->min_order_value) }} VNĐ</td>
+                            @else
                             <td>{{ number_format($coupon->max_order_value) }} VNĐ</td>
+                            @endif
                             <td>{{ \Carbon\Carbon::parse($coupon->start_date)->format('d/m/Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($coupon->end_date)->format('d/m/Y') }}</td>
                             <td>

@@ -37,7 +37,7 @@
                 <input name="shipping_address" id="shipping_address" class="form-control" required
                     placeholder="Địa chỉ nhận hàng" value="{{ old('shipping_address', $user->address ?? '') }}"></input>
             </div>
-            <input type="hidden" name="discount_code" id="hiddenDiscountCode" value="">
+            <!-- <input type="hidden" name="discount_code" id="hiddenDiscountCode" value=""> -->
 
             <!-- Nút xác nhận -->
             <div class="text-center mt-4 d-flex ">
@@ -173,6 +173,7 @@
                     amount: subtotal,
                     _token: '{{ csrf_token() }}'
                 },
+             
                 success: function (response) {
                     console.log(response); // Kiểm tra dữ liệu trả về từ server
 

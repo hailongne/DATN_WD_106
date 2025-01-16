@@ -24,7 +24,8 @@ class CouponController extends Controller
     })
     ->when(request('start_date') && request('end_date'), function ($query) {
         // Lọc theo cả start_date và end_date
-        $query->whereBetween('start_date', [request('start_date'), request('end_date')]);
+        $query->whereBetween('start_date', [request('start_date'), request('end_date')])
+        ->WhereBetween('end_date', [request('start_date'), request('end_date')]);;
     })
     ->when(request('start_date') && !request('end_date'), function ($query) {
         // Lọc theo start_date mà không cần end_date
