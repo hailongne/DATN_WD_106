@@ -84,7 +84,7 @@
         <div class="form-group">
             <label class="custom-label" for="name">Tên danh mục <span class="custom-required-star">*</span></label>
             <input type="text" class="form-control" value="{{old('name')}}" id="name" name="name"
-                placeholder="Nhập tên danh mục" />
+                placeholder="Nhập tên danh mục" oninput="generateSlug()" />
         </div>
         @error('name')
         <span class="text-danger">{{$message}}</span>
@@ -132,6 +132,16 @@ function showImage(event) {
         preview.classList.remove("show");
         noImageText.style.display = "block";
     }
+}
+
+// Tạo slug từ tên danh mục
+function generateSlug() {
+    const name = document.getElementById("name").value;
+    let slug = name.trim().toLowerCase(); // Chuyển chữ hoa thành chữ thường
+    slug = slug.replace(/[^a-z0-9\s-]/g, ''); // Loại bỏ các ký tự không hợp lệ
+    slug = slug.replace(/\s+/g, '-'); // Thay thế khoảng cách bằng dấu gạch ngang
+    slug = slug.replace(/-+/g, '-'); // Loại bỏ dấu gạch ngang dư thừa
+    document.getElementById("slug").value = slug; // Cập nhật giá trị vào trường tên đường dẫn
 }
 </script>
 <!-- Thêm các Scripts cần thiết -->
