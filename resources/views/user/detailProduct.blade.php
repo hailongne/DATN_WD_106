@@ -295,17 +295,17 @@
                     </div>
                     @endif
 
-                    @if($hasPurchased && $hasReviewed)
-                    <!-- Form đánh giá -->
-                    <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="review-form">
-                            <p>Đánh giá của bạn:</p>
-                            <div class="form-start-detail-select">
-                                <label class="text-muted mr-3">Chất lượng sản phẩm</label>
-                                <div class="stars">
-                                    <input type="radio" id="star5" name="rating" value="5">
-                                    <label for="star5" data-text="Tuyệt vời">★</label>
+                    @if($hasPurchased && !$hasReviewed && $purchaseCount > $reviewCount)
+<!-- Form đánh giá -->
+<form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    <div class="review-form">
+        <p>Đánh giá của bạn:</p>
+        <div class="form-start-detail-select">
+            <label class="text-muted mr-3">Chất lượng sản phẩm</label>
+            <div class="stars">
+                <input type="radio" id="star5" name="rating" value="5">
+                <label for="star5" data-text="Tuyệt vời">★</label>
 
                 <input type="radio" id="star4" name="rating" value="4">
                 <label for="star4" data-text="Hài lòng">★</label>
@@ -316,30 +316,28 @@
                 <input type="radio" id="star2" name="rating" value="2">
                 <label for="star2" data-text="Không hài lòng">★</label>
 
-                                    <input type="radio" id="star1" name="rating" value="1">
-                                    <label for="star1" data-text="Tệ">★</label>
-                                </div>
-                            </div>
-                            <input type="hidden" name="product_id" value="{{ $product->product_id }}">
-                            <div class="comment-section">
-                                <textarea name="comment" class="customReviewTest" id="reviewText"
-                                    placeholder="Đánh giá... (Tùy chọn)"></textarea>
-                            </div>
-                        </div>
-                        <div class="comment-upload-section">
-                            <label class="upload-button">
-                                <i class="fa-solid fa-upload"></i>
-                                <input type="file" name="image" />
-                            </label>
-                            <button class="btn btn-primary" type="submit">Đánh giá</button>
-                        </div>
-                    </form>
-
-                    @elseif(!$hasReviewed)
-                    <p class="text-center">Bạn đã đánh giá sản phẩm này rồi.</p>
-                    @else
-                    <p class="text-center">Hãy mua hàng và cho chúng tôi đánh giá để cải thiện dịch vụ nha!!!</p>
-                    @endif
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star1" data-text="Tệ">★</label>
+            </div>
+        </div>
+        <input type="hidden" name="product_id" value="{{ $product->product_id }}">
+        <div class="comment-section">
+            <textarea name="comment" class="customReviewTest" id="reviewText" placeholder="Đánh giá... (Tùy chọn)"></textarea>
+        </div>
+    </div>
+    <div class="comment-upload-section">
+        <label class="upload-button">
+            <i class="fa-solid fa-upload"></i>
+            <input type="file" name="image" />
+        </label>
+        <button class="btn btn-primary" type="submit">Đánh giá</button>
+    </div>
+</form>
+@elseif($reviewCount >= $purchaseCount)
+<p class="text-center">Bạn đã hết lượt đánh giá cho sản phẩm này.</p>
+@elseif(!$hasReviewed)
+<p class="text-center">Hãy mua hàng và cho chúng tôi đánh giá để cải thiện dịch vụ nha!!!</p>
+@endif
                 </div>
             </div>
         </div>
