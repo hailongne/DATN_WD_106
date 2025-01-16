@@ -124,9 +124,9 @@
         </div>
     @endforeach
 </div>
-<div class="pagination">
-    {{ $coupons->links() }}
-</div>
+    <div class="pagination ml-5">
+        {{ $coupons->links() }}
+    </div>
     @else
     <p>Không có mã giảm giá nào khả dụng.</p>
     @endif

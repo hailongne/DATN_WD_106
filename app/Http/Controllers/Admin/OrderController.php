@@ -30,18 +30,34 @@ class OrderController extends Controller
         $startDate = $request->input('start_date'); // Ngày bắt đầu
         $endDate = $request->input('end_date');     // Ngày kết thúc
         $status = $request->input('status');        // Trạng thái đơn hàng
-        $paymentStatus = $request->input('payment_status');
-        $query = Order::with('user');
+        $paymentStatus = $request->input('payment_status'); // Trạng thái thanh toán
 
+        $query = Order::with('user'); // Thêm quan hệ với bảng user
+
+        // Lọc theo ngày bắt đầu
         if ($startDate) {
             $query->whereDate('created_at', '>=', Carbon::parse($startDate));
         }
+
+        // Lọc theo ngày kết thúc
         if ($endDate) {
             $query->whereDate('created_at', '<=', Carbon::parse($endDate));
         }
 
+        // Lọc theo trạng thái đơn hàng
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        // Lọc theo trạng thái thanh toán
+        if ($paymentStatus) {
+            $query->where('payment_status', $paymentStatus);
+        }
+
+        // Sắp xếp và lấy dữ liệu
         $orders = $query->orderBy('order_id', 'desc')->get();
 
+        // Trả về view với dữ liệu đơn hàng
         return view('admin.pages.order.order_management', compact('orders'));
     }
 

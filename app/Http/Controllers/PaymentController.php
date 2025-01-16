@@ -197,12 +197,11 @@ class PaymentController extends Controller
         }
 
         // Kiểm tra giá trị đơn hàng có hợp lệ với mã giảm giá không
-        if ($amount < $coupon->min_order_value || $amount > $coupon->max_order_value) {
+        if ($amount < $coupon->min_order_value) {
             return response()->json([
                 'success' => false,
-                'message' => 'Mã giảm giá chỉ áp dụng cho đơn hàng có giá trị từ ' .
-                    number_format($coupon->min_order_value, 0, ',', '.') . 'đ đến ' .
-                    number_format($coupon->max_order_value, 0, ',', '.') . 'đ.',
+                'message' => 'Mã giảm giá chỉ áp dụng cho đơn hàng có giá trị tối thiểu ' .
+                    number_format($coupon->min_order_value, 0, ',', '.') . 'đ.',
             ]);
         }
 
@@ -214,8 +213,9 @@ class PaymentController extends Controller
             // Nếu không, tính giảm giá theo tỷ lệ phần trăm
             $discountAmount = $amount * $coupon->discount_percentage / 100;
         }
-        if ($discountAmount > $amount) {
-            $discountAmount = $amount;
+        $maxDiscount = $coupon->max_order_value;
+        if ($discountAmount > $maxDiscount) {
+            $discountAmount = $maxDiscount;
         }
         session(['discount_code' => $code]);
         // $coupon->decrement('quantity');
@@ -293,7 +293,7 @@ class PaymentController extends Controller
         // Lấy thông tin tên người dùng từ session
         $userName = session('userName');
         $successMessage = session('success');
-        
+
         CouponUser::where('coupon_id', $coupon->coupon_id)
         ->where('user_id', $user->user_id)
         ->update(['has_used' => false]);

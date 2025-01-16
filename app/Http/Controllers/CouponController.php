@@ -17,13 +17,12 @@ class CouponController extends Controller
 
         // Lấy các coupon thuộc về người dùng và chưa được sử dụng
         $coupons = Coupon::where('is_active', true)
-            ->where('is_public', true) // Chỉ lấy coupon công khai
             ->whereDoesntHave('couponUsers', function ($query) use ($user) {
                 $query->where('user_id', $user->user_id)
-                    ->where('has_used', true); // Lọc các coupon đã sử dụng
+                    ->where('has_used', true);
             })
             ->latest()
-            ->paginate(5);
+            ->paginate(6);
         return view('user.coupons', compact('coupons', 'user'));
     }
 
