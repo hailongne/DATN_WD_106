@@ -13,13 +13,6 @@
         <div class="filter-container">
             <h2 class="text-title-prodict-list text-start">Khám phá sản phẩm</h2>
             <div class="filter-group">
-             <label class="mr-2 text-align-center"> Lọc theo danh mục: </label>
-                <select class="form-select filter-select mr-4" id="filterCategory">
-                    <option value="">Tất cả</option>
-                    @foreach ($categories as $category)
-                    <option value="$category->category_id">{{ $category->name }}</option>
-                    @endforeach
-                </select>
                 <label class="mr-2 text-align-center"> Sắp xếp: </label>
                 <select class="form-select filter-select" id="filterCategory">
                     <option value="">Mới Nhất</option>
