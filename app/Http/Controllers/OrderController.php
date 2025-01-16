@@ -267,13 +267,10 @@ class OrderController extends Controller
                 if ($productView) {
                     // Nếu tồn tại, xóa bản ghi
                     $productView->delete();
-                if ($productView) {
-                    // Nếu tồn tại, xóa bản ghi
-                    $productView->delete();
-                }
-
                 }
             }
+
+
         }
     
         // Thêm phí vận chuyển

@@ -167,7 +167,11 @@ $(document).ready(function() {
         } else if (isNaN(value) || value <= 10000) {
             priceErrors[index].textContent = 'Giá phải là số lớn hơn 10000';
             isFormValid = false;
-        } else {
+        } 
+        else if (isNaN(value) || value >= 100000000) {
+            priceErrors[index].textContent = 'Giá phải nhỏ hơn 100000000';
+            isFormValid = false;
+        }else {
             priceErrors[index].textContent = '';
          
         }
@@ -182,7 +186,13 @@ $(document).ready(function() {
         } else if (value <= 5) { // Kiểm tra ngưỡng tồn kho
             inStockErrors[index].textContent = 'Số lượng phải lớn hơn 5 vì 5 là ngưỡng tồn kho';
             isFormValid = false;
-        } else if (isNaN(value)) {
+        }
+        else if (value >= 10000) { // Kiểm tra ngưỡng tồn kho
+            inStockErrors[index].textContent = 'Số lượng không được quá 10000';
+            isFormValid = false;
+        }
+        
+        else if (isNaN(value)) {
             inStockErrors[index].textContent = 'Số lượng phải là số';
             isFormValid = false;
         } else if (!Number.isInteger(Number(value))) {

@@ -53,6 +53,7 @@ class CategoryRequest extends FormRequest
         return [
             'name.required' => 'Yêu cầu không để trống',
             'name.unique' => 'Tên thương hiệu đã tồn tại.',
+            'name.max' => 'Tên danh mục không được vượt quá 255 ký tự.',
             'description.required' => 'Yêu cầu không để trống',
             'image.required' => 'Yêu cầu không để trống',
             'image.image' => 'Tệp tải lên phải là hình ảnh.',

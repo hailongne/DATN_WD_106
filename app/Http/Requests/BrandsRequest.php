@@ -52,6 +52,7 @@ class BrandsRequest extends FormRequest
     {
         return [
             'name.required' => 'Yêu cầu không để trống',
+            'name.max' => 'Tên thưogn hiêuk không được vượt quá 255 ký tự.',
             'name.unique' => 'Tên thương hiệu đã tồn tại.',  // Thông báo lỗi khi tên bị trùng
             'slug.unique' => 'Slug đã tồn tại. Vui lòng chọn một slug khác.',
             'description.required' => 'Yêu cầu không để trống',

@@ -208,7 +208,7 @@ class ProductController extends Controller
         // Xử lý từng color_id và ảnh tương ứng
         foreach ($colorIds as $colorId) {
             // Lấy ảnh của color_id này
-            
+           
             $colorImages = $request->file("images_{$colorId}");
 
             if ($colorImages) {
