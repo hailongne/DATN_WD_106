@@ -442,3 +442,6 @@ Route::get('/buy-instruction', function () {
 Route::get('/customer-instruction', function () {
     return view('user.instructions.custumerInstruction');
 });
+Route::get('/introduce-instruction', function () {
+    return view('user.instructions.introduce');
+});
