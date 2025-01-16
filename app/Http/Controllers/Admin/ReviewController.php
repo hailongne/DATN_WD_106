@@ -10,7 +10,7 @@ class ReviewController extends Controller
     //
     public function listReview()
 {
-    $reviews = Reviews::with(['product:product_id,name', 'user:user_id,email,name'])
+    $reviews = Reviews::with(['product:product_id,name', 'user:user_id,email,name','replies'])
         ->orderBy('created_at', 'desc') // Sắp xếp theo created_at giảm dần
         ->paginate(10);
 
@@ -32,7 +32,8 @@ public function reply($id)
 
     // Lấy product_id từ review
     $product_id = $review->product->product_id; // Truy xuất trực tiếp từ mối quan hệ `product`
-    return view('admin.pages.reviews.reply', compact('review', 'product_id'));
+    return view('admin.pages.reviews.reply',
+     compact('review', 'product_id'));
 }
 
 
@@ -92,7 +93,7 @@ public function destroyReview($reviewId)
 {
     $review = Reviews::findOrFail($reviewId);
     $review->delete();
-
+    $review->replies()->delete();
     return redirect()->route('admin.reviews.index')->with('success', 'Bình luận đã được xóa.');
 }
 

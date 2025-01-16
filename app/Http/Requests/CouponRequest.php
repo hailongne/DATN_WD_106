@@ -40,7 +40,7 @@ class CouponRequest extends FormRequest
             ],
             'user_id' => 'nullable|exists:users,user_id',
             'is_public' => 'boolean',
-            'start_date' => 'nullable|date',
+            'start_date' => 'nullable|date|after_or_equal:today',
             'end_date' => 'nullable|date|after:start_date',
             'is_active' => 'boolean',
 
@@ -70,6 +70,7 @@ class CouponRequest extends FormRequest
             'user_id.exists' => 'Người dùng không tồn tại.',
             'is_public.boolean' => 'Chỉ nhận giá trị true hoặc false.',
             'start_date.date' => 'Ngày bắt đầu phải có định dạng ngày hợp lệ.',
+            'start_date.after_or_equal' => 'Ngày bắt đầu không được nhỏ hơn ngày hiện tại.',
             'end_date.date' => 'Ngày kết thúc phải có định dạng ngày hợp lệ.',
             'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
             'is_active.boolean' => 'Chỉ nhận giá trị true hoặc false.',

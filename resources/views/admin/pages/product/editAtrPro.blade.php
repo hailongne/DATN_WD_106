@@ -57,22 +57,36 @@
                     <tr>
                         <td colspan="4" class="text-center">
                             @CSRF
+                            <div class="send-img" data-color-id="{{ $parts[1] }}">
                             <label for="url_{{ $parts[1] }}" class="btn custom-upload-btn-atriPro">
                                 <i class="fa fa-upload"></i> Tải lên
                             </label>
-                            <input type="file" name="url[]" accept="image/png, image/jpg, image/jpeg, image/gif"
-                                id="url_{{ $parts[1] }}" class="d-none url" multiple>
+                            <input type="file" name="url[]" 
+                            accept="image/png, image/jpg, image/jpeg, image/gif"
+                                id="url_{{ $parts[1] }}"
+                                 class="d-none url" multiple>
 
                             <div id="imagePreviewContainer_{{ $parts[1] }}" class="mt-3 d-flex flex-wrap">
                                 <!-- Ảnh sẽ hiển thị ở đây -->
+                                @foreach($item->product->productImages as $image)
+                                @if(isset($parts[1]) && $image->color_id == $parts[1]) <!-- Kiểm tra ảnh thuộc màu nào -->
+                                        <div class="image-container">
+                                            <!-- Sử dụng đúng đường dẫn ảnh -->
+                                            <img src="{{ Storage::url( $image->url) }}" alt="image" class="img-thumbnail" style="max-width: 100px; margin-right: 10px;">
+                                            <button type="button" class="remove-image" data-image-id="{{ $image->product_image_id  }}">Xóa</button>
+                                        </div>
+                                    @endif
+                                @endforeach
                             </div>
                             <span class="text-danger url-error" id="url-error-{{ $parts[1] }}"></span>
+                            </div>
                         </td>
 
                     </tr>
                 </tfoot>
             </table>
             @endforeach
+            
             <div class="button-group">
                 <button type="submit" id="submitForm" class="btn btn-primary">Cập nhật</button>
                 <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Hủy</a>
@@ -127,62 +141,6 @@ $(document).ready(function() {
         });
     });
 
-    //check lối price
-
-    // Lấy tất cả các phần tử có class 'price' và 'in-stock'
-  
-
-    // // Lặp qua tất cả các input có class 'price'
-    // Array.from(priceInputs).forEach((priceInput, index) => {
-    //     priceInput.addEventListener('change', function(event) {
-    //         const value = event.target.value;
-
-    //         // Kiểm tra giá trị input price
-    //         if (value.trim() === '') {
-    //             priceErrors[index].textContent = 'Giá không được để trống';
-    //             isFormValid = false;
-    //         } else if (isNaN(value) || value <= 0) {
-    //             priceErrors[index].textContent = 'Giá phải là số lớn hơn 0';
-    //             isFormValid = false;
-    //         } else {
-    //             priceErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ'
-    //             isFormValid = true;
-    //         }
-    //     });
-    // });
-
-    // Lặp qua tất cả các input có class 'in-stock'
-    // Array.from(inStockInputs).forEach((inStockInput, index) => {
-    //     inStockInput.addEventListener('change', function(event) {
-    //         const value = event.target.value;
-    //         // Kiểm tra giá trị input in_stock
-    //         if (value.trim() === '') {
-    //             inStockErrors[index].textContent = 'Số lượng không được để trống';
-    //             isFormValid = false;
-    //         } else if (value <= 5) { // Kiểm tra nếu giá trị là số 0
-    //             inStockErrors[index].textContent = 'Số lượng phải lớn hơn 5 vì 5 là ngưỡng tồn kho';
-    //             isFormValid = false; // Form không hợp lệ
-    //         } else if (isNaN(value)) {
-    //             inStockErrors[index].textContent =
-    //                 'Số lượng phải là số và lớn hơn hoặc bằng 1';
-    //             isFormValid = false;
-
-    //         } else if (!Number.isInteger(Number(value))) {
-    //             inStockErrors[index].textContent = 'Số lượng phải là số nguyên';
-    //             isFormValid = false;
-
-    //         } else if (value == 0) { // Kiểm tra nếu giá trị là số 0
-    //             inStockErrors[index].textContent = 'Số lượng phải lớn hơn 0';
-    //             isFormValid = false; // Form không hợp lệ
-    //         } else {
-    //             inStockErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
-    //             isFormValid = true;
-    //         }
-    //     });
-    // });
-
-    //lặp qua tất cả class url
-
     // Thêm sự kiện khi click vào nút submit
     $('#submitForm').click(function(event) {
      
@@ -200,8 +158,8 @@ $(document).ready(function() {
         if (value === '') {
             priceErrors[index].textContent = 'Giá không được để trống';
             isFormValid = false;
-        } else if (isNaN(value) || value <= 0) {
-            priceErrors[index].textContent = 'Giá phải là số lớn hơn 0';
+        } else if (isNaN(value) || value <= 10000) {
+            priceErrors[index].textContent = 'Giá phải là số lớn hơn 10000';
             isFormValid = false;
         } else {
             priceErrors[index].textContent = '';
@@ -230,10 +188,7 @@ $(document).ready(function() {
         }
     });
 
-
     //check url
-
-
         Array.from(urlInputs).forEach((urlInput, index) => {
         const files = urlInput.files; // Lấy danh sách các file được chọn
         const errorElement = urlErrors[index]; // Lấy phần tử hiển thị lỗi
@@ -290,11 +245,13 @@ $(document).ready(function() {
             const colorId = $(this).data('color-id');
             const files = $(this).find('input[type="file"]')[0].files;
             const imgArray = Array.from(files);
-
+            console.log(colorId);  // Kiểm tra xem colorId có đúng không
+            console.log(files);    // Kiểm tra xem files có chứa các file được chọn không
             imagesData.push({
                 color_id: colorId,
                 images: imgArray
             });
+ 
         });
 
         const attributesData = [];
@@ -320,7 +277,7 @@ $(document).ready(function() {
                 formData.append(`images_${img.color_id}[]`, image);
             });
         });
-
+        console.log(imagesData); // Kiểm tra dữ liệu ảnh gửi đi
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
         fetch("/admin/products/update-atrPro", {
                 method: "POST",

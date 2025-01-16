@@ -164,6 +164,7 @@ class ProductsController extends Controller
         // Truy vấn lấy tất cả đánh giá của sản phẩm
         $query = Reviews::where('product_id', $productId)
             ->with('user', 'likes', 'reports') // Lấy thông tin người dùng đã đánh giá
+            ->where('is_active', '1') //
             ->when($rating, function ($q) use ($rating) {
                 // Lọc theo số sao nếu có
                 $q->where('rating', $rating);
@@ -189,19 +190,22 @@ class ProductsController extends Controller
         ->count();
     
         $hasReviewed = $purchaseCount > 0;
-
+$reviewUser= Reviews::where('product_id', $productId)
+->where('user_id', Auth::id())->count();
         // Thêm thông báo vào session
+        $reviewsExist = $reviewUser ? true : false; // Nếu có đánh giá, set là true
         session()->flash('alert', 'Bạn đang vào trang chi tiết sản phẩm');
 
 
         // Trả về view với các biến cần thiết, bao gồm số lượt xem
-        return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount'));
+        return view('user.detailProduct', compact('product', 'reviewsExist','relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount'));
 
         }
 
-    public function addReview(Request $request)
+    public function addReview(ReviewRequest $request)
 
     {
+        \Log::info('Request Data:', $request->all());
         $bannedWords = BannedWord::pluck('word')->toArray();
         $comment = $request->input('comment');
 
@@ -218,7 +222,8 @@ class ProductsController extends Controller
                                  ->first();
 
         if ($existingReview) {
-            return redirect()->back()->with('error', 'Bạn chỉ có thể đánh giá sản phẩm này một lần.');
+            return redirect()->back()
+            ->with(['existingReview'=>$existingReview])->with('error', 'Bạn chỉ có thể đánh giá sản phẩm này một lần.');
         }
 
         // Xử lý hình ảnh (nếu có)
