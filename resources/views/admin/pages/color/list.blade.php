@@ -47,7 +47,7 @@
         <table class="product-table table table-bordered text-center align-middle mb-5">
             <thead class="thead-dark">
                 <tr>
-                    <th>STT</th>
+                    <th></th>
                     <th>Tên Màu Sắc</th>
                     <th style="width: 10%;">Mã Màu Sắc</th>
                     <th>Hành Động</th>
@@ -56,7 +56,7 @@
             <tbody>
                 @foreach ($colors as $color)
                 <tr>
-                    <td>{{ $color->color_id }}</td>
+                    <td>{{ $loop->iteration }}</td>
                     <td>{{ $color->name }}</td>
                     <td style="background-color: {{ $color->color_code }};">
                         <!-- {{ $color->color_code }} -->

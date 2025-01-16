@@ -41,7 +41,7 @@
                 <p class="text-muted">{{ $product->subtitle }}</p>
                 <!-- <div class="product-meta">
                     <span class="rating">★★★★☆</span>
-                    <span class="comments">| 120 bình luận</span>
+                    <span class="comments">| 120 Đánh giá</span>
                     <span class="sales">| 500 đã bán</span>
                 </div> -->
                 <p class="price" id="product-price">
@@ -251,7 +251,7 @@
                                 </div>
                             </div>
                             <p class="review-text">
-                                {{!empty($review->comment) ? $review->comment : 'Bạn không bình luận gì về sản phẩm'}}
+                                {{!empty($review->comment) ? $review->comment : 'Bạn không Đánh giá gì về sản phẩm'}}
                             </p>
                             <img src="{{ asset('storage/' . $review->image) }}" class="image-review-product">
                             @if($review->replies->isNotEmpty())
@@ -298,7 +298,7 @@
                             <input type="hidden" name="product_id" value="{{ $product->product_id }}">
                             <div class="comment-section">
                                 <textarea name="comment" class="customReviewTest" id="reviewText"
-                                    placeholder="Bình luận... (Tùy chọn)"></textarea>
+                                    placeholder="Đánh giá... (Tùy chọn)"></textarea>
                             </div>
                         </div>
                         <div class="comment-upload-section">
@@ -306,7 +306,7 @@
                                 <i class="fa-solid fa-upload"></i>
                                 <input type="file" name="image" />
                             </label>
-                            <button class="btn btn-primary" type="submit">Bình luận</button>
+                            <button class="btn btn-primary" type="submit">Đánh giá</button>
                         </div>
                     </form>
               
@@ -554,7 +554,9 @@
     </div>
 
 
-    <script>
+
+</div>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         if (window.location.hash === '#reviews') {
             const reviewsSection = document.querySelector('#reviews');
@@ -600,38 +602,39 @@
             return;
         }
     });
-    var productAttributes = @json($product->attributeProducts->map(function($attribute) {
-        return [
-            'color_id' => $attribute->color_id,
-            'size_id' => $attribute->size_id,
-            'in_stock' => $attribute->in_stock
-        ];
-    }));
+    var productAttributes = {!! $productAttributesJson !!};
 
-    function checkStockAvailability() {
+function checkStockAvailability() {
     const color = document.getElementById('selected-color').value;
     const size = document.getElementById('selected-size').value;
 
-    // Kiểm tra nếu chưa chọn màu sắc hoặc kích thước
     if (!color || !size) {
         document.getElementById('product-stock').innerText = '... sản phẩm';
+        document.getElementById('product-price').innerText = '0 VND';
         return;
     }
 
-    // Lấy thông tin tồn kho dựa trên màu sắc và kích thước đã chọn
+    // Lấy thông tin tồn kho và giá dựa trên lựa chọn
     let selectedStock = 0;
+    let selectedPrice = 0;
 
     productAttributes.forEach(attribute => {
         if (attribute.color_id == color && attribute.size_id == size) {
-            selectedStock = attribute.in_stock; // lấy số lượng tồn kho
+            selectedStock = attribute.in_stock;
+            selectedPrice = attribute.price; // Lấy giá từ productAttributes
         }
     });
 
-    // Cập nhật số lượng tồn kho hiển thị
+    // Cập nhật tồn kho và giá
     if (selectedStock > 0) {
         document.getElementById('product-stock').innerText = `${selectedStock} sản phẩm có sẵn`;
+        document.getElementById('product-price').innerText = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(selectedPrice);
     } else {
         document.getElementById('product-stock').innerText = 'Hết hàng';
+        document.getElementById('product-price').innerText = '0 VND';
     }
 }
 
@@ -654,38 +657,18 @@ function changeColor(colorId, element) {
 
 // Hàm chọn kích thước
 function selectSize(sizeId, element) {
-    // Cập nhật giá trị vào input ẩn
     document.getElementById('selected-size').value = sizeId;
 
-    // Lấy giá và tồn kho từ thuộc tính data của nút được chọn
-    const newPrice = element.getAttribute('data-price');
-    const newStock = element.getAttribute('data-stock');
-
-    // Cập nhật giá sản phẩm hiển thị
-    document.getElementById('product-price').innerText = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    }).format(newPrice);
-
-    // Cập nhật số lượng tồn kho hiển thị
-    document.getElementById('product-stock').innerText = `${newStock} sản phẩm`;
-
-    // Cập nhật số lượng tồn kho vào biến toàn cục
-    inStock = parseInt(newStock);
-
-    // Xóa lớp active khỏi tất cả các nút kích thước
+    // Cập nhật giao diện nút kích thước
     const sizeOptions = document.querySelectorAll('.size-option');
     sizeOptions.forEach(option => {
         option.classList.remove('active');
     });
-
-    // Thêm lớp active cho kích thước được chọn
     element.classList.add('active');
 
-    // Kiểm tra lại số lượng tồn kho khi thay đổi kích thước
+    // Kiểm tra lại thông tin tồn kho và giá
     checkStockAvailability();
 }
-
 
     // Hàm cập nhật giá sản phẩm
     function updatePrice(price, type, element) {
@@ -716,8 +699,17 @@ function selectSize(sizeId, element) {
         if (currentQuantity < 1) currentQuantity = 1;
         // Kiểm tra nếu số lượng vượt quá số lượng có sẵn trong kho
         if (currentQuantity > inStock) {
-            alert('Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!');
-            return; // Không cho phép thay đổi nếu vượt quá kho
+            Swal.fire({
+                icon: 'error',
+                title: 'Vượt quá kho!',
+                text: 'Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!',
+                confirmButtonText: 'OK',
+                timer: 5000,
+                willClose: () => {
+                    location.reload();
+                }
+            });
+            return;
         }
 
         quantityInput.value = currentQuantity;
@@ -733,8 +725,17 @@ function selectSize(sizeId, element) {
 
         // Kiểm tra nếu số lượng vượt quá số lượng có sẵn trong kho
         if (qty > inStock) {
-            alert('Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!');
-            return; // Dừng lại nếu vượt quá kho
+            Swal.fire({
+                icon: 'error',
+                title: 'Vượt quá kho!',
+                text: 'Số lượng yêu cầu vượt quá số lượng sản phẩm có sẵn trong kho!',
+                confirmButtonText: 'OK',
+                timer: 5000,
+                willClose: () => {
+                    location.reload();
+                }
+            });
+            return; // Không cho phép thay đổi nếu vượt quá kho
         }
 
         // Cập nhật giá trị của input hiển thị
@@ -789,9 +790,9 @@ function selectSize(sizeId, element) {
                 // Kiểm tra nếu có thông báo lỗi
                 else if (data.error) {
                     Swal.fire({
-                        title: 'Lỗi',
+                        title: 'Thông báo',
                         text: data.error,
-                        icon: 'error',
+                        icon: 'info',
                         confirmButtonText: 'OK'
                     });
                 } else {
@@ -886,7 +887,5 @@ function selectSize(sizeId, element) {
         });
     });
     </script>
-</div>
-
 
 @endsection

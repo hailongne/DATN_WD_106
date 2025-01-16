@@ -307,8 +307,7 @@ Route::group(
             function () {
                 Route::get('/search', [ProductsController::class, 'search'])->name('search');
                 Route::get('product/{id}', [ProductsController::class, 'showProduct'])->name('detail');
-                Route::get('/product-list', [ProductsController::class, 'productList'])->name('list');
-                Route::get('/products/{categoryId?}', [ProductController::class, 'productList'])->name('user.proincate');
+                Route::get('/product-list/{categoryId?}', [ProductsController::class, 'productList'])->name('list');
                 Route::get('/color', [ColorController::class, 'index'])->name('color.index');
                 Route::get('/size', [SizeController::class, 'index'])->name('size.index');
                 Route::get('/brand', [BrandController::class, 'index'])->name('brand.index');

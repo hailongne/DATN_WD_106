@@ -90,7 +90,7 @@ class ProductController extends Controller
 
     public function getData()
     {
-        $categories = Category::callTreeCategory();
+        $categories = Category::all();
         $brands = Brand::all();
         $sizes = Size::get();
         $colors = Color::get();
@@ -172,27 +172,36 @@ class ProductController extends Controller
         return redirect()->route('admin.products.getDataAtrPro', ['id' => $product->product_id])->with('success', 'Thêm sản phẩm mới thành công!');
     }
 
-
     public function getDataAtrPro($id)
     {
 
         $productsAttPro = AttributeProduct::with([
             'product:product_id,name',
+<<<<<<< HEAD
             'color:color_id,name',
             'size:size_id,name',
             'product.productImages'
+=======
+            'size:size_id,name',
+            'color:color_id,name'
+>>>>>>> 4b289bba82cb21842d6b4a27f0f006f9c7bc13b9
         ])
             ->where('product_id', $id)
             ->get();
-        $groupedByColor = $productsAttPro->groupBy(function ($item) {
-            return $item->color->name . "-" . $item->color->color_id;  // Group by both color name and color_id
+        $groupedBySize = $productsAttPro->groupBy(function ($item) {
+            return $item->size->name . "-" . $item->size->size_id;  // Group by both size name and size_id
         });
         $colorId = $productsAttPro[0]->color_id; // Nếu lấy từ bảng AttributeProduct
 
         return view('admin.pages.product.editAtrPro')
+<<<<<<< HEAD
             ->with(['groupedByColor' => $groupedByColor, 'product_id' => $id, 
             'colorId' => $colorId]);
+=======
+            ->with(['groupedBySize' => $groupedBySize, 'product_id' => $id]);
+>>>>>>> 4b289bba82cb21842d6b4a27f0f006f9c7bc13b9
     }
+
 
     public function updateAllAttributeProducts(Request $request)
     {
@@ -287,7 +296,7 @@ class ProductController extends Controller
     public function editProduct($id)
     {
         $product = Product::findOrFail($id);
-        $categories = Category::callTreeCategory();
+        $categories = Category::get();
 
         $brands = Brand::get();
         $sizes = Size::get();

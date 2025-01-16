@@ -28,7 +28,7 @@ class BannerController extends Controller
 
         $imagePath = $request->file('image')->store('banners', 'public');
         Banner::create([
-            'image_url' => 'storage/' . $imagePath,
+            'image_url' =>$imagePath,
             'link' => $request->input('link'),
             'is_active' => true, // Mặc định banner mới luôn hoạt động
         ]);

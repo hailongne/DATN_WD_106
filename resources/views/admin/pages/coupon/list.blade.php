@@ -31,12 +31,89 @@
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
+<<<<<<< HEAD
                 </form>
                 <form method="GET" class="custom-input-group">
                     <div class="row">
                         <div class="col-md-6">
                             <input type="date" id="start_date" name="start_date" class="form-control"
                                 value="{{ request('start_date') }}">
+=======
+                    <div class="col-md-6">
+                        <input type="date" id="end_date" name="end_date" class="form-control"
+                            value="{{ request('end_date') }}">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary m-2">Lọc</button>
+            </form>
+            <a href="{{ route('admin.coupons.index') }}" class="btn">
+                <image src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
+            </a>
+        </div>
+
+        <table class="product-table table table-bordered text-center align-middle mb-5">
+            <thead class="thead-dark">
+                <tr>
+                    <th></th>
+                    <th>Tên</th>
+                    <th>Loại</th>
+                    <th>Số lượng</th>
+                    <th>Giá trị tối thiểu</th>
+                    <th>Giá trị tối đa</th>
+                    <th>Ngày bắt đầu </th>
+                    <th>Ngày kết thúc</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach ($coupons as $key => $coupon)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{$coupon->code}}</td>
+                    @if($coupon->discount_amount)
+                    <td>{{ number_format($coupon->discount_amount, 0, ',', '.') }} ₫</td>
+                    @else
+                    <td>{{$coupon->discount_percentage	}}%</td>
+                    @endif
+                    <td>{{$coupon->quantity}}</td>
+                    <td>{{ number_format($coupon->min_order_value, 0, ',', '.') }} ₫</td>
+                    <td>{{ number_format($coupon->max_order_value, 0, ',', '.') }} ₫</td>
+                    <td>{{ date('d/m/Y', strtotime($coupon->start_date)) }}</td>
+                    <td>{{ date('d/m/Y', strtotime($coupon->end_date)) }}</td>
+                    <td>
+                        <form action="{{ route('admin.coupons.toggle', $coupon->coupon_id) }}" method="POST"
+                            style="display:inline;">
+                            @csrf
+                            <button type="submit"
+                                class="custom-btn-active-admin {{ $coupon->is_active ? 'btn-success' : 'btn-danger' }} status-btn-active">
+                                <p>{{ $coupon->is_active ? 'Đang kích hoạt' : 'kích hoạt' }}</p>
+                            </button>
+                        </form>
+                    </td>
+                    <td class="action-icons">
+                        <div class="icon-product d-flex justify-content-center gap-2">
+                            <!-- <a href="{{route('admin.coupons.detail',$coupon->coupon_id)}}">
+                                <button class="action-btn eye" title="Xem chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </a> -->
+                            <a href="{{route('admin.coupons.edit',$coupon->coupon_id)}}">
+                                <button class="action-btn edit" title="Chỉnh sửa">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </a>
+                            <!-- Form xóa
+                            <form action="{{ route('admin.coupons.delete', $coupon->coupon_id) }}" method="POST"
+                                onsubmit="return confirm('Bạn có chắc chắn muốn xóa màu sắc này?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="action-btn delete">
+                                    <i class="fas fa-trash-alt" title="Xóa"></i>
+                                </button>
+                            </form> -->
+>>>>>>> 4b289bba82cb21842d6b4a27f0f006f9c7bc13b9
                         </div>
                         <div class="col-md-6">
                             <input type="date" id="end_date" name="end_date" class="form-control"

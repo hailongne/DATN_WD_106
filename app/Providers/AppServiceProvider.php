@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Providers;
+
+use App\Models\Category;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ShoppingCart;
@@ -21,8 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-        Paginator::useBootstrapFive(); // Dùng Bootstrap 5
+        $categories = Category::all();
+        View::share('categories', $categories);
+        Paginator::useBootstrapFive();
         View::composer('*', function ($view) {
             $user = Auth::user();
             $cartCount = 0;

@@ -66,10 +66,10 @@
                                 </a>
                             </div>
                             <div class="custom-remove-btn">
-                                <form action="{{ route('user.cart.remove', '') }}/${item.id}" method="POST">
+                                <form action="{{ route('user.cart.remove', '') }}/${item.id}" method="POST" id="removeForm${item.id}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="custom-btn-remove" onclick="confirm('Bạn có muốn xóa sản phẩm này hay không ?')">&times;</button>
+                                    <button type="button" class="custom-btn-remove" onclick="confirmRemove(${item.id})">&times;</button>
                                 </form>
                             </div>
                         </div>
@@ -113,7 +113,12 @@ function updateProductCount() {
 
     cartTitle.innerText = `${productCards.length} sản phẩm`;
 }
-
+function confirmRemove(itemId) {
+        if (confirm('Bạn có muốn xóa sản phẩm này hay không ?')) {
+            // Nếu người dùng chọn "OK", gửi form xóa
+            document.getElementById('removeForm' + itemId).submit();
+        }
+    }
 fetchCartItems().then(() => {
     updateProductCount();
 });

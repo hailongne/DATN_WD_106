@@ -1,5 +1,14 @@
 @extends('admin.index')
 @section('content')
+<style>
+.radio-group {
+    display: none;
+}
+
+.text-danger {
+    font-size: 12px;
+}
+</style>
 
 <body>
     <form action="{{ route('admin.coupons.store') }}" method="POST" class="custom-form-container"
@@ -26,84 +35,93 @@
                     <input type="text" id="tenMaGiamGia" value="{{old('code')}}" name="code"
                         placeholder="Nhập tên mã giảm giá" class="form-control" />
                     @error('code')
-                        <span class="text-danger">{{$message}}</span>
+                    <span class="text-danger">{{$message}}</span>
                     @enderror
                 </div>
                 <div class="col-6">
-                    <label for="tenMaGiamGia" class="custom-label">Giá trị giảm giá <span
+                    <label for="value" class="custom-label">Phân loại giảm giá <span
                             class="text-danger">*</span></label>
-                    <select class="form-select" id="value" aria-label="Default select example">
-                        <option selected>Chọn loại giảm giá</option>
-                        <option value="1">Số tiền giảm giá</option>
-                        <option value="2">Phần trăm giảm giá</option>
-
+                    <select class="form-select" id="value" name="discount_type" aria-label="Default select example"
+                        required>
+                        <option value="" disabled {{ old('discount_type') ? '' : 'selected' }}>Chọn loại giảm giá
+                        </option>
+                        <option value="1" {{ old('discount_type') == '1' ? 'selected' : '' }}>Số tiền giảm giá</option>
+                        <option value="2" {{ old('discount_type') == '2' ? 'selected' : '' }}>Phần trăm giảm giá
+                        </option>
                     </select>
                 </div>
-                <div class="row gx-2 mb-3" id="value1">
-                    <label class="custom-label" for="discount">Giá trị</label>
+                <div class="row gx-2 my-3" id="value1">
+                    <label class="custom-label" for="discount">Ưu đãi giảm giá đơn hàng</label>
                     <input type="number" class="form-control" id="discount"
                         name="{{ old('discount_percentage') ? 'discount_percentage' : 'discount_amount' }}"
                         value="{{ old('discount_amount') ?? old('discount_percentage') }}"
                         placeholder="Nhập số tiền giảm giá" />
-
+                    <div class="d-flex">
+                        @error('discount_amount')
+                        <span class="text-danger mr-5">{{$message}}</span>
+                        @enderror
+                        @error('discount_percentage')
+                        <span class="text-danger">{{$message}}</span>
+                        @enderror
+                    </div>
                 </div>
-                @error('discount_amount')
-
-                    <span class="text-danger">{{$message}}</span>
-                @enderror
-                @error('discount_percentage')
-                    <span class="text-danger">{{$message}}</span>
-                @enderror
             </div>
         </div>
         <div class="row gx-2 mb-3">
             <div class="col-4">
-                <label for="condition" class="custom-label">Giá trị tối thiểu <span class="text-danger">*</span></label>
+                <label for="condition" class="custom-label">Giá trị đơn hàng tối thiểu <span
+                        class="text-danger">*</span></label>
                 <input type="number" id="condition" value="{{old('min_order_value')}}" name="min_order_value"
                     placeholder="Nhập điều kiện áp dụng" class="form-control" />
-            </div>
-            @error('min_order_value')
+                @error('min_order_value')
                 <span class="text-danger">{{$message}}</span>
+<<<<<<< HEAD
             @enderror
             <div class="col-4" id="max" style="display: none">
                 <label for="max_order_value" class="custom-label">Giá trị tối đa <span
+=======
+                @enderror
+            </div>
+            <div class="col-4">
+                <label for="max_order_value" class="custom-label">Giá trị đơn hàng tối đa <span
+>>>>>>> 4b289bba82cb21842d6b4a27f0f006f9c7bc13b9
                         class="text-danger">*</span></label>
                 <input type="number" id="max_order_value" value="{{old('max_order_value')}}" name="max_order_value"
                     placeholder="Nhập giá trị tối đa" class="form-control" />
                 @error('max_order_value')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
             </div>
             <div class="col-4">
-                <label for="quantity" class="custom-label">Số lượng <span class="text-danger">*</span></label>
+                <label for="quantity" class="custom-label">Số lượng mã giảm giá <span
+                        class="text-danger">*</span></label>
                 <input type="number" id="quantity" name="quantity" value="{{old('quantity')}}"
                     placeholder="Nhập số lượng" class="form-control" />
                 @error('quantity')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
             </div>
         </div>
         <div class="row gx-2 mb-3">
             <div class="col-6">
-                <label for="start_date" class="custom-label">Thời gian từ ngày <span
-                        class="text-danger">*</span></label>
+                <label for="start_date" class="custom-label">Bắt đầu ưu đãi <span class="text-danger">*</span></label>
                 <input type="datetime-local" value="{{old('start_date')}}" name="start_date" id="start_date"
                     class="form-control" />
 
                 @error('start_date')
-                    <span class="text-danger">{{$message}}</span>
+                <span class="text-danger">{{$message}}</span>
                 @enderror
             </div>
             <div class="col-6">
-                <label for="end_date" class="custom-label">Thời gian đến ngày <span class="text-danger">*</span></label>
+                <label for="end_date" class="custom-label">Kết thúc ưu đãi <span class="text-danger">*</span></label>
                 <input type="datetime-local" value="{{old('end_date')}}" name="end_date" id="end_date"
                     class="form-control" />
-            </div>
-            @error('end_date')
+                @error('end_date')
                 <span class="text-danger">{{$message}}</span>
-            @enderror
+                @enderror
+            </div>
         </div>
-        <div class="row gx-2 mb-3">
+        <div class="row gx-2 mb-3 radio-group">
             <label>Chọn kiểu <span class="text-danger">*</span></label>
             <div class="form-check">
                 <input type="radio" name="is_public" id="public" value="0" class="form-check-input" checked>
@@ -113,14 +131,13 @@
                 <input type="radio" name="is_public" id="private" value="1" class="form-check-input">
                 <label for="private" class="form-check-label">Private</label>
             </div>
-        </div>
-
-        @error('is_public')
+            @error('is_public')
             <span class="text-danger">{{$message}}</span>
-        @enderror
+            @enderror
+        </div>
         </div>
         <!-- table -->
-        <div class="customer-section-list" style="display:none" id="customer-section">
+        <!-- <div class="customer-section-list" style="display:none" id="customer-section">
             <div class="button-header mb-3">
                 <button>
                     Danh sách khách hàng <i class="fa fa-star"></i>
@@ -141,22 +158,22 @@
                     </tr>
                 </thead>
                 <tbody class="table-scrollable">
-        <!-- Kết quả tìm kiếm sẽ được thêm vào đây bằng AJAX -->
-    </tbody>
+                </tbody>
             </table>
-        </div>
+        </div> -->
     </form>
 </body>
 
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
-    <script>
-        value = document.getElementById('value');
-        discount = document.getElementById('discount');
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+<script>
+value = document.getElementById('value');
+discount = document.getElementById('discount');
 
+<<<<<<< HEAD
         value.addEventListener('change', function () {
             if (value.value == 1) {
                 document.getElementById('max').style.display="none";
@@ -181,10 +198,34 @@
         public.addEventListener('click', function () {
             customer.style.display = "none";
         });
+=======
+value.addEventListener('change', function() {
+    if (value.value == 1) {
+        document.getElementById('value1').style.display = "block";
+        discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
+        discount.setAttribute('name', 'discount_amount')
+        discount.setAttribute('value', '')
+    } else {
+        document.getElementById('value1').style.display = "block";
+        discount.setAttribute('placeholder', 'Nhập phần trăm giảm giá')
+        discount.setAttribute('name', 'discount_percentage')
+        discount.setAttribute('value', '')
+    }
+});
+private = document.getElementById('private');
+public = document.getElementById('public');
+customer = document.getElementById('customer-section');
+private.addEventListener('click', function() {
+    customer.style.display = "block";
+});
+public.addEventListener('click', function() {
+    customer.style.display = "none";
+});
+>>>>>>> 4b289bba82cb21842d6b4a27f0f006f9c7bc13b9
 
 
-        //danh sách người dùng
-        document.addEventListener("DOMContentLoaded", function () {
+//danh sách người dùng
+document.addEventListener("DOMContentLoaded", function() {
     const searchInput = document.querySelector("input[name='nhap']");
     const searchButton = document.querySelector("button[name='action'][value='search_user']");
     const tableBody = document.querySelector("tbody.table-scrollable");
@@ -224,7 +265,7 @@
     }
 
     // Bước 3: Thêm sự kiện click cho nút "Tìm kiếm"
-    searchButton.addEventListener("click", function (event) {
+    searchButton.addEventListener("click", function(event) {
         event.preventDefault(); // Ngăn form gửi đi
         const query = searchInput.value.trim();
 
@@ -247,10 +288,12 @@
         }
     });
 });
-
-    </script>
+</script>
 
 @endpush
 
 </body>
+
+
+
 @endsection

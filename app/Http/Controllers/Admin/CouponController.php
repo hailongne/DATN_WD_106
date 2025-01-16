@@ -36,13 +36,13 @@ class CouponController extends Controller
         $query->where('end_date', '<=', request('end_date'));
     })
     ->latest()
-    ->paginate(5);
+    ->paginate(10);
 
 return view('admin.pages.coupon.list', compact('coupons'));
 
-    
-    
-    
+
+
+
     }
     public function toggle($id)
     {
@@ -58,7 +58,7 @@ return view('admin.pages.coupon.list', compact('coupons'));
     {
         $query = $request->input('query');
         $authUserId = auth()->id(); // ID của user hiện tại
-    
+
         $users = User::where('name', 'like', '%' . $query . '%')
             ->where('user_id', '!=', $authUserId) // Loại bỏ user đang đăng nhập
             ->where('role', '!=', 1) // Loại bỏ user có role = 1 (admin)
@@ -68,49 +68,59 @@ return view('admin.pages.coupon.list', compact('coupons'));
             'data' => $users,
         ]);
     }
-    
+
     public function createCoupon(Request $request){
-        
+
         $users=User::where('name', 'like', '%' . $request->input('nhap') . '%')->get();
         return view('admin.pages.coupon.create',compact('users'));
 
 }
-    public function addCoupon(CouponRequest $request)
-    {
-        $coupon = Coupon::create([
-            'code' => $request->input('code'),
-            'discount_amount' => $request->input('discount_amount'),
-            'discount_percentage' => $request->input('discount_percentage'),
-            'quantity' => $request->input('quantity'),
-            'min_order_value' => $request->input('min_order_value'),
-            'max_order_value' => $request->input('max_order_value'),
-            'condition' => $request->input('condition'),
-            'is_public' => $request->input('is_public', true),
-            'start_date' => $request->input('start_date'),
-            'end_date' => $request->input('end_date'),
+public function addCoupon(CouponRequest $request)
+{
+    // Tạo coupon mới
+    $coupon = Coupon::create([
+        'code' => $request->input('code'),
+        'discount_amount' => $request->input('discount_amount'),
+        'discount_percentage' => $request->input('discount_percentage'),
+        'quantity' => $request->input('quantity'),
+        'min_order_value' => $request->input('min_order_value'),
+        'max_order_value' => $request->input('max_order_value'),
+        'condition' => $request->input('condition'),
+        'is_public' => $request->input('is_public', true),
+        'start_date' => $request->input('start_date'),
+        'end_date' => $request->input('end_date'),
+    ]);
+
+    // Lấy tất cả người dùng trong hệ thống
+    $users = User::all();
+
+    // Mảng để lưu các liên kết coupon-user
+    $couponUsers = [];
+
+    // Duyệt qua tất cả người dùng và tạo liên kết với coupon mới
+    foreach ($users as $user) {
+        // Tạo liên kết coupon-user giữa coupon và user
+        $couponUser = CouponUser::create([
+            'coupon_id' => $coupon->coupon_id,  
+            'user_id' => $user->user_id,
+            'has_used' => true,         
         ]);
-        $couponUsers = [];
-        // $couponProducts = [];
-        if ($request->has('user_id')) {
-            foreach ($request->input('user_id') as $userId) {
-                $couponUser = CouponUser::create([
-                    'coupon_id' => $coupon->coupon_id,
-                    'user_id' => $userId,
-                ]);
-                $couponUsers[] = $couponUser;
-                   // Gửi email thông báo sau khi tạo coupon liên kết với người dùng
-            Mail::to(User::find($userId)->email)->send(new CouponCreated($coupon));
-            }
-        }
-    
 
-        return redirect()->route('admin.coupons.index')->with([
-            'coupon' => $coupon,
-            'couponUsers' => $couponUsers,
-            'success' => 'Thêm mới phiếu giảm giá thành công!',
-        ], 201);
+        // Thêm vào mảng couponUsers
+        $couponUsers[] = $couponUser;
 
+        // Gửi email thông báo cho mỗi người dùng
+        Mail::to($user->email)->send(new CouponCreated($coupon));
     }
+
+    // Trả về thông báo thành công và dữ liệu liên quan
+    return redirect()->route('admin.coupons.index')->with([
+        'coupon' => $coupon,
+        'couponUsers' => $couponUsers,
+        'success' => 'Thêm mới phiếu giảm giá thành công!',
+    ], 201);
+}
+
     public function detailCoupon($id){
         $coupon = Coupon::findOrFail($id);
         return view('admin.pages.coupon.detail',compact('coupon'));
@@ -202,7 +212,7 @@ return view('admin.pages.coupon.list', compact('coupons'));
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'Có lỗi xảy ra khi xóa mã giảm giá.');
     }
-       
+
     }
 
 }

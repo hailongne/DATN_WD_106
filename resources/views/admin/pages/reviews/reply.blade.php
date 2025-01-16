@@ -52,9 +52,9 @@
         <div class="form-group">
             <input type="hidden" class="form-control" id="name" name="product_id" value="{{$product_id}}" />
         </div>
-        <!-- Phần hiển thị bình luận của khách hàng -->
+        <!-- Phần hiển thị Đánh giá của khách hàng -->
         <div class="customer-comment">
-            <h5>Bình luận của khách hàng</h5>
+            <h5>Đánh giá của khách hàng</h5>
             <div class="info">
                 <span><strong>Email:</strong> {{ $review->user->email }}</span><br>
                 <span><strong>Thời gian:</strong>

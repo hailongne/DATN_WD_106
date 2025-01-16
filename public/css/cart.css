@@ -324,3 +324,14 @@ input[type="number"] {
 #select-all-label-text.warning {
     color: red; /* Màu đỏ cho thông báo khi có sản phẩm vượt quá số lượng kho */
 }
+
+.icon-error-cart {
+    font-size: 20px;
+    color: red;
+    cursor: pointer;
+}
+
+/* Thêm hiệu ứng khi hover vào icon */
+.icon-error-cart:hover {
+    color: rgb(205, 0, 0);
+}

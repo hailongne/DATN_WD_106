@@ -23,6 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $categories = Category::all();
         $banners = Banner::where('is_active', true)->get();
         $listProduct = Product::with([
             'attributeProducts',
@@ -66,6 +67,6 @@ class HomeController extends Controller
         $bestSellers = Product::getBestSellers();
         $hotProducts = Product::getHotProducts();
         return view('user.home',
-        compact('listProduct', 'hotProducts', 'bestSellers','topProducts','banners'));
+        compact('listProduct', 'hotProducts', 'bestSellers','topProducts','banners','categories'));
     }
 }

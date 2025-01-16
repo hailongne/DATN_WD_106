@@ -72,30 +72,12 @@
                     Lọc</button>
             </div>
         </form>
-        <!-- form lọc thưogn hiệu -->
-        <form action="" method="get" class="d-flex">
-        <div class="input-group">
-        @php
-    $brandIds = []; // Mảng lưu các brand_id đã duyệt
-@endphp
-                <select class="form-select form-control" name="brand" aria-label="Lọc sản phẩm theo danh mục">
-                    <option value="">Lựa chọn thưogn hiệu...</option>
-                    @foreach ($products as $index => $product)
-        @if (!in_array($product->brand->brand_id, $brandIds)) <!-- Kiểm tra nếu brand_id chưa xuất hiện -->
-            @php
-                $brandIds[] = $product->brand->brand_id; // Thêm brand_id vào mảng
-            @endphp
-            <option value="{{ $product->brand->brand_id }}">{{ $product->brand->name }}</option>
-        @endif
-    @endforeach
-                </select>
-                <button class="btn btn-primary"  type="submit">
-                    Lọc</button>
-            </div>
-        </form>
             <!-- Button Bỏ Áp dụng -->
             <a href="{{ route('admin.products.index') }}" class="btn ml-3">
-                <image src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
+                <image data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip"
+                data-bs-title="Bỏ lọc"
+                src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
             </a>
 
         </div>

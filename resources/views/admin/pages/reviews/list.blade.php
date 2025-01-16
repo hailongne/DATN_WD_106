@@ -1,6 +1,7 @@
 @extends('admin.index')
 
 @section('content')
+<<<<<<< HEAD
     <div class="container mt-4">
         <!-- Tiêu đề -->
         <div class="button-header">
@@ -9,6 +10,26 @@
         @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
+=======
+
+<div class="container mt-4">
+    <!-- Tiêu đề -->
+    <div class="button-header">
+        <button>Danh Sách Đánh giá <i class="fa fa-star"></i></button>
+    </div>
+    <!-- Modal Add -->
+    <div class="modal fade" id="productCreateModal" tabindex="-1" aria-labelledby="productCreateModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="button-header">
+                        <button>
+                            Trả lời Đánh giá <i class="fa fa-star"></i>
+                        </button>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+>>>>>>> 4b289bba82cb21842d6b4a27f0f006f9c7bc13b9
                 </div>
             @endif
         <!-- Modal Add -->
@@ -106,11 +127,36 @@
             </ul>
         </nav>
     </div>
+<<<<<<< HEAD
     <script>
         $(document).ready(function() {
             $('.reply').on('click', function(e) {
                 e.preventDefault();
                 let productId = $(this).closest('a').data('id');
+=======
+    <table class="product-table table table-bordered text-center align-middle mb-5">
+        <thead class="thead-dark">
+            <tr>
+                <th>STT</th>
+                <th>Email khác hàng</th>
+                <th>Tên sản phẩm</th>
+                <th>Đánh giá</th>
+                <th>Đánh giá</th>
+                <th>Thời gian</th>
+                <th>Trạng thái</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($reviews as $review)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>{{ $review->user->email }}</td>
+                <td>{{ $review->product->name }}</td>
+                <td>{{ $review->rating }} ★</td>
+                <td>{{ $review->comment }}</td>
+                <td>{{ $review->created_at }}</td>
+>>>>>>> 4b289bba82cb21842d6b4a27f0f006f9c7bc13b9
 
                 $('#modalContent').html('<p>Đang tải...</p>');
                 $('#productCreateModal').modal('show');

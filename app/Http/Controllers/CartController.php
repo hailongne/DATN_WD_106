@@ -159,8 +159,8 @@ class CartController extends Controller
             // Lấy giá của thuộc tính sản phẩm dựa trên size_id và color_id
             $attributeProduct = $item->product->attributeProducts
                 ->where('size_id', $item->size_id)   // Lọc theo size_id
+                ->where('color_id', $item->color_id) // Lọc theo color_id
                 ->first();
-
             // Tính tổng tiền: số lượng * giá của thuộc tính sản phẩm
             return $item->qty * ($attributeProduct ? $attributeProduct->price : 0);
         });

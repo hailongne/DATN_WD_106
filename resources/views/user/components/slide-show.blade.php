@@ -8,10 +8,11 @@
 }
 </style>
 
+@if($banners->isNotEmpty())
 <div id="carouselExample" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="2000">
     <div class="carousel-inner">
-        @foreach($banners as $banner)
-        <div class="carousel-item active">
+        @foreach($banners as $index => $banner)
+        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
             <a href="">
                 <img src="{{ Storage::url($banner->image_url) }}" alt="Banner">
             </a>
@@ -19,6 +20,8 @@
         @endforeach
     </div>
 </div>
+@endif
+
 
 
 
@@ -56,7 +59,7 @@
         </div>
         <div class="info-text">
             <h4>Hotline: 0369 312 858</h4>
-            <p>Hỗ trợ bạn từ 8h30-24h00</p>
+            <p>Hỗ trợ bạn từ 8h30-22h00</p>
         </div>
     </div>
 </div>

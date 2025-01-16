@@ -42,13 +42,16 @@
             </div>
         </form>
         <a href="{{ route('admin.sizes.index') }}" class="btn ml-3">
-            <image src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
+            <image data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip"
+                data-bs-title="Bỏ lọc"
+                src="{{ asset('imagePro/icon/icon-remove-filter.png') }}" style="width: 35px" />
         </a>
     </div>
     <table class="product-table table table-bordered text-center align-middle mb-5">
         <thead class="thead-dark">
             <tr>
-                <th>STT</th>
+                <th></th>
                 <th>Tên kích thước</th>
                 <th>Hành động</th>
             </tr>
