@@ -13,5 +13,8 @@ class CouponUser extends Model
     protected $fillable=[
         'coupon_id','user_id'
     ];
-    
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class, 'coupon_id'); // Sử dụng đúng tên khóa ngoại
+    }
 }
