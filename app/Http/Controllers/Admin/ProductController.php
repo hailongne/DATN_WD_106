@@ -172,24 +172,24 @@ class ProductController extends Controller
         return redirect()->route('admin.products.getDataAtrPro', ['id' => $product->product_id])->with('success', 'Thêm sản phẩm mới thành công!');
     }
 
-
     public function getDataAtrPro($id)
     {
 
         $productsAttPro = AttributeProduct::with([
             'product:product_id,name',
-            'color:color_id,name',
-            'size:size_id,name'
+            'size:size_id,name',
+            'color:color_id,name'
         ])
             ->where('product_id', $id)
             ->get();
-        $groupedByColor = $productsAttPro->groupBy(function ($item) {
-            return $item->color->name . "-" . $item->color->color_id;  // Group by both color name and color_id
+        $groupedBySize = $productsAttPro->groupBy(function ($item) {
+            return $item->size->name . "-" . $item->size->size_id;  // Group by both size name and size_id
         });
 
         return view('admin.pages.product.editAtrPro')
-            ->with(['groupedByColor' => $groupedByColor, 'product_id' => $id]);
+            ->with(['groupedBySize' => $groupedBySize, 'product_id' => $id]);
     }
+
 
     public function updateAllAttributeProducts(Request $request)
     {

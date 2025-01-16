@@ -32,8 +32,8 @@ class OrderController extends Controller
                 ,
                 'statusHistories'
             ]) // Eager load thêm lịch sử trạng thái và người cập nhật
-            ->orderBy('order_id', 'desc') ;// Sắp xếp theo ngày đặt hàng mới nhất
-
+            ->orderBy('order_id', 'desc') // Sắp xếp theo ngày đặt hàng mới nhất
+            ->get();
         // Trả về view danh sách đơn hàng
         return view('user.orders.orderHistory', compact('orders'));
     }

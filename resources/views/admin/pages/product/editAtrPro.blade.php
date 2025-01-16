@@ -12,21 +12,21 @@
             </button>
         </div>
         <div class="containerEditAtrpro">
-            @foreach($groupedByColor as $color => $items)
+            @foreach($groupedBySize as $size => $items)
             <?php
-                $colorString = (string) $color;
-                $parts = explode('-', $colorString);
-                                                                ?>
+                $sizeString = (string) $size;
+                $parts = explode('-', $sizeString);
+            ?>
             <table class="product-table table table-bordered text-center align-middle mb-4">
                 <thead class="thead-dark">
                     <tr>
-                        <td colspan="4" class="text-left color-header-custom">
-                            <p class="text-custom">Sản phẩm màu: {{ $parts[0] }}</p>
+                        <td colspan="4" class="text-left size-header-custom">
+                            <p class="text-custom">Sản phẩm kích cỡ: {{ $parts[0] }}</p>
                         </td>
                     </tr>
                     <tr>
                         <th>Tên Sản Phẩm</th>
-                        <th>Kích cỡ</th>
+                        <th>Màu sắc</th>
                         <th>Giá </th>
                         <th>Số lượng</th>
                     </tr>
@@ -35,9 +35,8 @@
                     @foreach($items as $item)
                     <tr class="col-4 data-attribute" data-attribute_product_id="{{ $item->attribute_product_id }}">
                         <td>{{ $item->product->name }}</td>
-                        <td>{{ $item->size->name }}</td>
+                        <td>{{ $item->color->name }}</td>
                         <input type="hidden" name="attribute_product_id[]" value="{{ $item->attribute_product_id }}">
-
 
                         <td><input type="number" @if(old('price')==$item->price )selected @endif name="price[]"
                             class="form-control price" value="{{ $item->price }}">
@@ -93,9 +92,9 @@ $(document).ready(function() {
     document.querySelectorAll('input[type="file"]').forEach(input => {
         input.addEventListener('change', function(event) {
             const files = event.target.files;
-            const colorId = event.target.id.split('_')[1];
+            const sizeId = event.target.id.split('_')[1];
             const previewContainer = document.getElementById('imagePreviewContainer_' +
-                colorId);
+                sizeId);
 
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
@@ -127,172 +126,105 @@ $(document).ready(function() {
         });
     });
 
-    //check lối price
-
-    // Lấy tất cả các phần tử có class 'price' và 'in-stock'
-  
-
-    // // Lặp qua tất cả các input có class 'price'
-    // Array.from(priceInputs).forEach((priceInput, index) => {
-    //     priceInput.addEventListener('change', function(event) {
-    //         const value = event.target.value;
-
-    //         // Kiểm tra giá trị input price
-    //         if (value.trim() === '') {
-    //             priceErrors[index].textContent = 'Giá không được để trống';
-    //             isFormValid = false;
-    //         } else if (isNaN(value) || value <= 0) {
-    //             priceErrors[index].textContent = 'Giá phải là số lớn hơn 0';
-    //             isFormValid = false;
-    //         } else {
-    //             priceErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ'
-    //             isFormValid = true;
-    //         }
-    //     });
-    // });
-
-    // Lặp qua tất cả các input có class 'in-stock'
-    // Array.from(inStockInputs).forEach((inStockInput, index) => {
-    //     inStockInput.addEventListener('change', function(event) {
-    //         const value = event.target.value;
-    //         // Kiểm tra giá trị input in_stock
-    //         if (value.trim() === '') {
-    //             inStockErrors[index].textContent = 'Số lượng không được để trống';
-    //             isFormValid = false;
-    //         } else if (value <= 5) { // Kiểm tra nếu giá trị là số 0
-    //             inStockErrors[index].textContent = 'Số lượng phải lớn hơn 5 vì 5 là ngưỡng tồn kho';
-    //             isFormValid = false; // Form không hợp lệ
-    //         } else if (isNaN(value)) {
-    //             inStockErrors[index].textContent =
-    //                 'Số lượng phải là số và lớn hơn hoặc bằng 1';
-    //             isFormValid = false;
-
-    //         } else if (!Number.isInteger(Number(value))) {
-    //             inStockErrors[index].textContent = 'Số lượng phải là số nguyên';
-    //             isFormValid = false;
-
-    //         } else if (value == 0) { // Kiểm tra nếu giá trị là số 0
-    //             inStockErrors[index].textContent = 'Số lượng phải lớn hơn 0';
-    //             isFormValid = false; // Form không hợp lệ
-    //         } else {
-    //             inStockErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
-    //             isFormValid = true;
-    //         }
-    //     });
-    // });
-
-    //lặp qua tất cả class url
+    //check lỗi price
 
     // Thêm sự kiện khi click vào nút submit
     $('#submitForm').click(function(event) {
-     
         const priceInputs = document.getElementsByClassName('price');
-    const priceErrors = document.getElementsByClassName('price-error');
-    const inStockInputs = document.getElementsByClassName('in-stock');
-    const inStockErrors = document.getElementsByClassName('in-stock-error');
-    const urlInputs = document.getElementsByClassName('url');
-    const urlErrors = document.getElementsByClassName('url-error');
-    let isFormValid = true;
+        const priceErrors = document.getElementsByClassName('price-error');
+        const inStockInputs = document.getElementsByClassName('in-stock');
+        const inStockErrors = document.getElementsByClassName('in-stock-error');
+        const urlInputs = document.getElementsByClassName('url');
+        const urlErrors = document.getElementsByClassName('url-error');
+        let isFormValid = true;
 
-//check price
+        //check price
         Array.from(priceInputs).forEach((priceInput, index) => {
-        const value = priceInput.value.trim();
-        if (value === '') {
-            priceErrors[index].textContent = 'Giá không được để trống';
-            isFormValid = false;
-        } else if (isNaN(value) || value <= 0) {
-            priceErrors[index].textContent = 'Giá phải là số lớn hơn 0';
-            isFormValid = false;
-        } else {
-            priceErrors[index].textContent = '';
-         
-        }
-    });
-//check in_stock
- // Lặp qua tất cả các input có class 'in-stock'
- Array.from(inStockInputs).forEach((inStockInput, index) => {
-        const value = inStockInput.value.trim();
-        if (value === '') {
-            inStockErrors[index].textContent = 'Số lượng không được để trống';
-            isFormValid = false;
-        } else if (value <= 5) { // Kiểm tra ngưỡng tồn kho
-            inStockErrors[index].textContent = 'Số lượng phải lớn hơn 5 vì 5 là ngưỡng tồn kho';
-            isFormValid = false;
-        } else if (isNaN(value)) {
-            inStockErrors[index].textContent = 'Số lượng phải là số';
-            isFormValid = false;
-        } else if (!Number.isInteger(Number(value))) {
-            inStockErrors[index].textContent = 'Số lượng phải là số nguyên';
-            isFormValid = false;
-        } else {
-            inStockErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
-        
-        }
-    });
-
-
-    //check url
-
-
-        Array.from(urlInputs).forEach((urlInput, index) => {
-        const files = urlInput.files; // Lấy danh sách các file được chọn
-        const errorElement = urlErrors[index]; // Lấy phần tử hiển thị lỗi
-
-        // Kiểm tra nếu không có file nào được chọn
-        if (files.length === 0) {
-            errorElement.textContent = 'Vui lòng chọn ít nhất một ảnh';  // Hiển thị lỗi nếu không có ảnh
-            isFormValid = false;  // Đặt form không hợp lệ
-        } else if (files.length > 4) {
-            errorElement.textContent = 'Không được chọn quá 4 ảnh';  // Hiển thị lỗi nếu chọn nhiều hơn 4 ảnh
-            isFormValid = false;  // Đặt form không hợp lệ
-        } else {
-            let isValid = true;
-
-            // Kiểm tra từng file
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const fileExtension = file.name.split('.').pop().toLowerCase();
-                const validExtensions = ['png', 'jpg', 'jpeg', 'gif'];
-
-                // Kiểm tra xem file có phải là ảnh hợp lệ không
-                if (!validExtensions.includes(fileExtension)) {
-                    errorElement.textContent =
-                        'Chỉ chấp nhận file hình ảnh với định dạng PNG, JPG, JPEG, GIF';
-                    isValid = false;
-                    break;
-                }
-
-                // Kiểm tra kích thước file
-                if (file.size > 5 * 1024 * 1024) { // Kiểm tra kích thước không vượt quá 5MB
-                    errorElement.textContent = 'Kích thước ảnh không được vượt quá 5MB';
-                    isValid = false;
-                    break;
-                }
-            }
-
-            // Nếu tất cả các file hợp lệ, xóa lỗi
-            if (isValid) {
-                errorElement.textContent = '';
+            const value = priceInput.value.trim();
+            if (value === '') {
+                priceErrors[index].textContent = 'Giá không được để trống';
+                isFormValid = false;
+            } else if (isNaN(value) || value <= 0) {
+                priceErrors[index].textContent = 'Giá phải là số lớn hơn 0';
+                isFormValid = false;
             } else {
-                isFormValid = false; // Đặt form không hợp lệ nếu có lỗi
+                priceErrors[index].textContent = '';
             }
-        }
-    });
+        });
+        //check in_stock
+        Array.from(inStockInputs).forEach((inStockInput, index) => {
+            const value = inStockInput.value.trim();
+            if (value === '') {
+                inStockErrors[index].textContent = 'Số lượng không được để trống';
+                isFormValid = false;
+            } else if (value <= 5) {
+                inStockErrors[index].textContent = 'Số lượng phải lớn hơn 5 vì 5 là ngưỡng tồn kho';
+                isFormValid = false;
+            } else if (isNaN(value)) {
+                inStockErrors[index].textContent = 'Số lượng phải là số';
+                isFormValid = false;
+            } else if (!Number.isInteger(Number(value))) {
+                inStockErrors[index].textContent = 'Số lượng phải là số nguyên';
+                isFormValid = false;
+            } else {
+                inStockErrors[index].textContent = '';
+            }
+        });
+
+        //check url
+        Array.from(urlInputs).forEach((urlInput, index) => {
+            const files = urlInput.files;
+            const errorElement = urlErrors[index];
+
+            if (files.length === 0) {
+                errorElement.textContent = 'Vui lòng chọn ít nhất một ảnh';
+                isFormValid = false;
+            } else if (files.length > 4) {
+                errorElement.textContent = 'Không được chọn quá 4 ảnh';
+                isFormValid = false;
+            } else {
+                let isValid = true;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const fileExtension = file.name.split('.').pop().toLowerCase();
+                    const validExtensions = ['png', 'jpg', 'jpeg', 'gif'];
+
+                    if (!validExtensions.includes(fileExtension)) {
+                        errorElement.textContent = 'Chỉ chấp nhận file hình ảnh với định dạng PNG, JPG, JPEG, GIF';
+                        isValid = false;
+                        break;
+                    }
+
+                    if (file.size > 5 * 1024 * 1024) {
+                        errorElement.textContent = 'Kích thước ảnh không được vượt quá 5MB';
+                        isValid = false;
+                        break;
+                    }
+                }
+
+                if (isValid) {
+                    errorElement.textContent = '';
+                } else {
+                    isFormValid = false;
+                }
+            }
+        });
+
         if (!isFormValid) {
-           
-            event.preventDefault(); // Ngừng submit
-            alert('Vui lòng sửa các lỗi trước khi gửi form !');
+            event.preventDefault();
+            alert('Vui lòng sửa các lỗi trước khi gửi form!');
             return;
         }
+
         imagesData = [];
 
         $('.send-img').each(function() {
-            const colorId = $(this).data('color-id');
+            const sizeId = $(this).data('size-id');
             const files = $(this).find('input[type="file"]')[0].files;
             const imgArray = Array.from(files);
 
             imagesData.push({
-                color_id: colorId,
+                size_id: sizeId,
                 images: imgArray
             });
         });
@@ -315,9 +247,9 @@ $(document).ready(function() {
         formData.append("product_id", <?php echo $product_id?>);
 
         imagesData.forEach(img => {
-            formData.append('color_id[]', img.color_id);
+            formData.append('size_id[]', img.size_id);
             img.images.forEach(image => {
-                formData.append(`images_${img.color_id}[]`, image);
+                formData.append(`images_${img.size_id}[]`, image);
             });
         });
 

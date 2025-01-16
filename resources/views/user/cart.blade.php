@@ -27,7 +27,9 @@
         <div class="cart-items-container">
             @foreach($cartItems as $item)
             @php
-                $attributeProduct = $item->product->attributeProducts->firstWhere('size_id', $item->size_id);
+                $attributeProduct = $item->product->attributeProducts->firstWhere(function($attribute) use ($item) {
+                            return $attribute->size_id == $item->size_id && $attribute->color_id == $item->color_id;
+                        });
                 $inStock = $attributeProduct ? $attributeProduct->in_stock : 0;
                 $isDisabled = $item->qty > $inStock; // Kiểm tra nếu số lượng giỏ hàng lớn hơn in_stock
             @endphp

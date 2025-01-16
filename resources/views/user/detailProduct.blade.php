@@ -598,38 +598,39 @@
             return;
         }
     });
-    var productAttributes = @json($product->attributeProducts->map(function($attribute) {
-        return [
-            'color_id' => $attribute->color_id,
-            'size_id' => $attribute->size_id,
-            'in_stock' => $attribute->in_stock
-        ];
-    }));
+    var productAttributes = {!! $productAttributesJson !!};
 
-    function checkStockAvailability() {
+function checkStockAvailability() {
     const color = document.getElementById('selected-color').value;
     const size = document.getElementById('selected-size').value;
 
-    // Kiểm tra nếu chưa chọn màu sắc hoặc kích thước
     if (!color || !size) {
         document.getElementById('product-stock').innerText = '... sản phẩm';
+        document.getElementById('product-price').innerText = '0 VND';
         return;
     }
 
-    // Lấy thông tin tồn kho dựa trên màu sắc và kích thước đã chọn
+    // Lấy thông tin tồn kho và giá dựa trên lựa chọn
     let selectedStock = 0;
+    let selectedPrice = 0;
 
     productAttributes.forEach(attribute => {
         if (attribute.color_id == color && attribute.size_id == size) {
-            selectedStock = attribute.in_stock; // lấy số lượng tồn kho
+            selectedStock = attribute.in_stock;
+            selectedPrice = attribute.price; // Lấy giá từ productAttributes
         }
     });
 
-    // Cập nhật số lượng tồn kho hiển thị
+    // Cập nhật tồn kho và giá
     if (selectedStock > 0) {
         document.getElementById('product-stock').innerText = `${selectedStock} sản phẩm có sẵn`;
+        document.getElementById('product-price').innerText = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND'
+        }).format(selectedPrice);
     } else {
         document.getElementById('product-stock').innerText = 'Hết hàng';
+        document.getElementById('product-price').innerText = '0 VND';
     }
 }
 
@@ -652,38 +653,18 @@ function changeColor(colorId, element) {
 
 // Hàm chọn kích thước
 function selectSize(sizeId, element) {
-    // Cập nhật giá trị vào input ẩn
     document.getElementById('selected-size').value = sizeId;
 
-    // Lấy giá và tồn kho từ thuộc tính data của nút được chọn
-    const newPrice = element.getAttribute('data-price');
-    const newStock = element.getAttribute('data-stock');
-
-    // Cập nhật giá sản phẩm hiển thị
-    document.getElementById('product-price').innerText = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND'
-    }).format(newPrice);
-
-    // Cập nhật số lượng tồn kho hiển thị
-    document.getElementById('product-stock').innerText = `${newStock} sản phẩm`;
-
-    // Cập nhật số lượng tồn kho vào biến toàn cục
-    inStock = parseInt(newStock);
-
-    // Xóa lớp active khỏi tất cả các nút kích thước
+    // Cập nhật giao diện nút kích thước
     const sizeOptions = document.querySelectorAll('.size-option');
     sizeOptions.forEach(option => {
         option.classList.remove('active');
     });
-
-    // Thêm lớp active cho kích thước được chọn
     element.classList.add('active');
 
-    // Kiểm tra lại số lượng tồn kho khi thay đổi kích thước
+    // Kiểm tra lại thông tin tồn kho và giá
     checkStockAvailability();
 }
-
 
     // Hàm cập nhật giá sản phẩm
     function updatePrice(price, type, element) {

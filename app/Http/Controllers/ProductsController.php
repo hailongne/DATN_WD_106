@@ -189,9 +189,26 @@ class ProductsController extends Controller
         ->count();
 
         $hasReviewed = $purchaseCount > 0;
-
+        $productAttributes = $product->attributeProducts->map(function($attribute) {
+            $price = $attribute->price;
+    
+            // Kiểm tra nếu giá trị price không hợp lệ
+            if (!is_numeric($price)) {
+                $price = 0; // Đặt giá trị mặc định nếu không hợp lệ
+            }
+    
+            return [
+                'color_id' => $attribute->color_id,
+                'size_id' => $attribute->size_id,
+                'in_stock' => $attribute->in_stock,
+                'price' => $price
+            ];
+        });
+    
+        // Chuyển mảng PHP thành JSON
+        $productAttributesJson = json_encode($productAttributes);
         // Trả về view với các biến cần thiết, bao gồm số lượt xem
-        return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount'));
+        return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount','productAttributesJson'));
 
         }
 
