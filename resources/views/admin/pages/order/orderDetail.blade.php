@@ -7,22 +7,31 @@
     </div>
     @php
     $statusLabels = [
-    'pending' => 'Đơn hàng đang chờ xử lý',
-    'processing' => 'Đơn Hàng đang xử lý',
-    'shipped' => 'Đơn hàng đang vận chuyển',
-    'delivered' => 'Đơn hàng đã giao hàng',
-    'cancelled' => 'Đơn hàng đã hủy',
-    'completed' => 'Đơn hàng đã hoàn thành',
+    'pending' => 'Đang chờ xử lý',
+    'processing' => 'Đã xác nhận',
+    'shipped' => 'Đang vận chuyển',
+    'delivered' => 'Đã giao hàng',
+    'cancelled' => 'Đã hủy',
+    'completed' => 'Hoàn thành',
     ];
     $statusTranslations = [
-    'pending' => 'Chờ xử lý',
+    'pending' => 'Chờ thanh toán',
     'paid' => 'Đã thanh toán',
     'failed' => 'Thanh toán thất bại',
     'refunded' => 'Hoàn tiền',
     'cancelled' => 'Đã hủy',
     ];
-
     @endphp
+    <?php
+    $defaultPendingStatus = (object) [
+        'new_status' => 'pending',
+        'created_at' => $order->created_at,
+        'updatedBy' => null,
+    ];
+    if (!$order->statusHistories->contains(fn($history) => strtolower($history->new_status) === 'pending')) {
+        $order->statusHistories->prepend($defaultPendingStatus);
+    }
+    ?>
     <div class="card align-items-center justify-content-between mb-4">
         <div class=" title-card d-flex row">
             <div class="text-back d-flex col">
@@ -98,16 +107,17 @@
                 </div>
                 <div class="order-status-timeline-section-extremely-long-classname">
                     @if ($order->statusHistories->isNotEmpty())
-                    <ul class="order-status-ul-timeline-ul-super-detailed-long-classname">
+                    <ul class="order-status-ul-timeline-ul-super-detailed-long-classname ml-5">
                         @foreach ($order->statusHistories as $history)
                         <li class="timeline-step-special-status-{{ strtolower($history->new_status) }}">
                             <div class="timeline-status-time-special-classname">
-                                {{ $history->created_at->format('H:i d-m-Y') }}</div>
+                                {{ $history->created_at->format('H:i d-m-Y') }}
+                            </div>
                             <div class="timeline-step-description-details-classname">
-                                <p><strong>{{ $statusLabels[strtolower($history->new_status)] ?? $history->new_status }}</strong>
-                                </p>
-                                <p>Cập nhật bởi: <strong>{{ $history->updatedBy->name ?? 'Không xác định' }}</strong>
-                                </p>
+                                <p><strong>{{ $statusLabels[strtolower($history->new_status)] ?? $history->new_status }}</strong></p>
+                                @if (strtolower($history->new_status) !== 'pending') <!-- Kiểm tra trạng thái -->
+                                <p>Cập nhật bởi: <strong>{{ $history->updatedBy->name ?? 'Không xác định' }}</strong></p>
+                                @endif
                             </div>
                         </li>
                         @endforeach

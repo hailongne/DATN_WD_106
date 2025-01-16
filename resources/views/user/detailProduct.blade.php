@@ -300,7 +300,6 @@
                     <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="review-form">
-                            <p>Đánh giá của bạn:</p>
                             <div class="form-start-detail-select">
                                 <label class="text-muted mr-3">Chất lượng sản phẩm</label>
                                 <div class="stars">
@@ -334,7 +333,6 @@
                             <button class="btn btn-primary" type="submit">Đánh giá</button>
                         </div>
                     </form>
-
                     @elseif(!$hasReviewed)
                     <p class="text-center">Bạn đã đánh giá sản phẩm này rồi.</p>
                     @else

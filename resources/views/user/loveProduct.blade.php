@@ -50,7 +50,7 @@
                         <div class="product-item">
                             <a href="{{ route('user.product.detail', $product->product_id) }}"
                                 class="product-card-link">
-                                <div class="card">
+                                <div class="card-detailProduct">
                                     <img src="{{ asset('storage/' . $product->main_image_url) }}"
                                         alt="{{ $product->name }}" class="product-image"
                                         onerror="this.onerror=null; this.src='{{ asset('imagePro/image/no-image.png') }}';">

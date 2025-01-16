@@ -173,6 +173,7 @@
                     amount: subtotal,
                     _token: '{{ csrf_token() }}'
                 },
+
                 success: function (response) {
                     console.log(response); // Kiểm tra dữ liệu trả về từ server
 
