@@ -227,10 +227,8 @@ class OrderController extends Controller
                     session()->flash('error', 'Một số sản phẩm vừa được cập nhật thông tin, vui lòng kiểm tra lại!');
                     return redirect()->back();
                 }
-
                 // Tính tổng tiền
                 $totalWithoutShipping += $attributeProduct->price * $item->qty;
-
                 // Lưu thông tin chi tiết sản phẩm
                 $productDetails[] = [
                     'name' => $item->product->name,
@@ -245,8 +243,6 @@ class OrderController extends Controller
                     'size_id' => $item->size_id    // Lưu size_id
                 ];
             }
-
-
         }
         //cập nhật view trong productView
         foreach ($cartItems as $item) {
