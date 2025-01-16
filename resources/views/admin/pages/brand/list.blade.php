@@ -6,17 +6,6 @@
 @section('content')
 
 <div class="container">
-    <!-- Tiêu đề -->
-    @if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-    @endif
-    @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-    @endif
     <div class="button-header mb-3">
         <button>Danh sách thương hiệu <i class="fa fa-star"></i></button>
         @if(Auth::user()->role !== 3)
@@ -46,7 +35,7 @@
                 <th></th>
                 <th>Tên Thương Hiệu</th>
                 <th>Mô Tả</th>
-              
+
                 <th>Hành Động</th>
             </tr>
         </thead>

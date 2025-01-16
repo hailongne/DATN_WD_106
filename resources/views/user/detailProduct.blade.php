@@ -10,6 +10,18 @@
     max-width: 1000px;
     margin: 0px auto;
 }
+
+.custom-btn-stop-sale {
+    background-color: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
 </style>
 
 <div class="container-detail-web">
@@ -61,6 +73,7 @@
                     </span>
                     @endif
                 </p>
+                @if ($product->is_active)
                 <p>Màu sắc: </p>
                 <div class="color-options">
                     @foreach($product->attributeProducts->unique('color_id') as $attributeProduct)
@@ -79,9 +92,12 @@
                     </button>
                     @endforeach
                 </div>
+                @else
+                @endif
             </div>
 
             <div class="quantity-container d-flex">
+                @if ($product->is_active)
                 <label for="quantity" class="form-label mr-2">Số lượng: </label>
                 <div class="custom-quantity" onclick="changeQuantity(-1)">-</div>
                 <input type="number" name="display-qty" id="quantity" class="custom-quantity-input" min="1" value="1"
@@ -92,6 +108,8 @@
                 </div>
                 <p id="error-message" style="color: red; display: none;">Số lượng không thể vượt quá số lượng có
                     sẵn!</p>
+                @else
+                @endif
             </div>
 
             <div class="d-flex">
@@ -109,7 +127,7 @@
                     </form>
                 @else
                     <!-- Sản phẩm không hoạt động -->
-                    <button type="button" class="custom-btn" disabled>Hết hàng</button>
+                    <button type="button" class="custom-btn-stop-sale" disabled>Sản phẩm ngừng bán hàng</button>
                 @endif
             </div>
 
@@ -193,6 +211,8 @@
                 </div>
             </div>
         </div>
+
+        @if ($product->is_active)
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -253,7 +273,13 @@
                             <p class="review-text">
                                 {{!empty($review->comment) ? $review->comment : 'Bạn không Đánh giá gì về sản phẩm'}}
                             </p>
-                            <img src="{{ asset('storage/' . $review->image) }}" class="image-review-product">
+                            <div class="review-images">
+                                @if (!empty($value->image))
+                                    <img src="{{ asset('storage/' . $value->image) }}" class="image-review-product">
+                                @else
+
+                                @endif
+                            </div>
                             @if($review->replies->isNotEmpty())
                             @foreach($review->replies as $reply)
                             <div class="admin-response">
@@ -317,6 +343,8 @@
                 </div>
             </div>
         </div>
+        @else
+        @endif
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
@@ -422,7 +450,12 @@
                     </div>
                     <p class="review-text"> {{ $value->comment }}</p>
                     <div class="review-images">
-                        <img src="{{ asset('storage/' . $value->image) }}" class="image-review-product">
+                    <div class="review-images">
+                        @if (!empty($value->image))
+                            <img src="{{ asset('storage/' . $value->image) }}" class="image-review-product">
+                        @else
+
+                        @endif
                     </div>
                     @if($value->replies->isNotEmpty())
                     @foreach($value->replies as $reply)
@@ -441,11 +474,6 @@
                             <button type="submit" class="custom-btn-active-admin status-btn-active">
                                 <i class="fas fa-thumbs-up "></i>{{$value->likes->count()}}
                             </button>
-                        </form>
-                        <form action="{{ route('user.product.report', $value->review_id) }}" method="POST"
-                            style="display:inline;">
-                            @csrf
-                            <button><i class="fas fa-flag"></i> {{$value->reports->count()}}</button>
                         </form>
                     </div>
                 </div>

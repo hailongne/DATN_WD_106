@@ -16,6 +16,8 @@ use App\Models\Coupon;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\AttributeProduct;
+
 
 class PaymentController extends Controller
 {
@@ -119,11 +121,6 @@ class PaymentController extends Controller
                 ->where('color_id', $product['color_id'])
                 ->where('size_id', $product['size_id'])
                 ->first();
-
-            if ($attributeProduct) {
-                $attributeProduct->in_stock -= $product['quantity'];
-                $attributeProduct->save(); // Lưu thay đổi
-            }
         }
 
         // Lưu lại lịch sử trạng thái đơn hàng
@@ -226,7 +223,8 @@ class PaymentController extends Controller
         // }
 
         // Tính tổng mới sau khi áp dụng mã giảm giá
-        $newTotal = $amount - $discountAmount;
+        $shippingFee=40000;
+        $newTotal = $amount - $discountAmount + $shippingFee;
 
         return response()->json([
             'success' => true,
@@ -249,6 +247,25 @@ class PaymentController extends Controller
 
             // Duyệt qua từng sản phẩm trong giỏ hàng và kiểm tra sự trùng lặp với sản phẩm trong session
             foreach ($shoppingCart->cartItems as $cartItem) {
+                $attributeProduct = AttributeProduct::where('product_id', $cartItem->product_id)
+                    ->where('size_id', $cartItem->size_id)
+                    ->where('color_id', $cartItem->color_id)
+                    ->first();
+
+                if ($attributeProduct) {
+                    // Giảm số lượng tồn kho theo số lượng sản phẩm trong giỏ hàng
+                    $attributeProduct->update([
+                        'in_stock' => $attributeProduct->in_stock - $cartItem->qty,
+                    ]);
+
+                    // Đảm bảo số lượng tồn kho không âm
+                    if ($attributeProduct->in_stock < 0) {
+                        $attributeProduct->in_stock = 0;
+                    }
+
+                    // Lưu thay đổi vào cơ sở dữ liệu
+                    $attributeProduct->save();
+                }
                 // Tìm kiếm sản phẩm trong session có trùng `product_id`, `size_id`, `color_id` với sản phẩm trong giỏ hàng
                 $matchingProduct = $productDetails->first(function ($product) use ($cartItem) {
                     return $product['product_id'] == $cartItem->product_id

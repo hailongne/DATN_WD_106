@@ -89,16 +89,16 @@
                 {{ number_format($totalWithoutShipping, 0, ',', '.') }} đ</span>
             </div>
             <div class="order-item">
-                <span class="order-label">Phí vận chuyển:</span>
-                <span class="order-value">40.000 đ</span>
-            </div>
-            <div class="order-item">
                 <input type="text" name="discount_code" id="discountCode" placeholder="Nhập mã giảm giá" class="form-control">
                 <button type="button" id="applyDiscount" class="custom-btn-apply-order">Áp dụng</button>
             </div>
             <div class="order-item">
                 <span class="order-label">Giảm giá: </span>
                 <span class="order-value" id="discountAmount">0 đ</span>
+            </div>
+            <div class="order-item">
+                <span class="order-label">Phí vận chuyển:</span>
+                <span class="order-value">40.000 đ</span>
             </div>
 
             <hr class="order-divider">
@@ -163,7 +163,7 @@
         // Áp dụng mã giảm giá
             $('#applyDiscount').click(function () {
             const discountCode = $('#discountCode').val(); // Lấy mã giảm giá người dùng nhập
-            const subtotal = {{ $total }}; // Tổng tiền ban đầu từ phía server
+            const subtotal = {{ $totalWithoutShipping }}; // Tổng tiền ban đầu từ phía server
 
             $.ajax({
                 url: '{{ route("user.order.applyDiscount") }}', // URL xử lý áp mã

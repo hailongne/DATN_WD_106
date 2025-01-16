@@ -87,7 +87,7 @@
             </div>
             <div class="coupon-action mt-2">
                 <div class="coupon-copy-code">
-                    <button class="copy-btn" onclick="copyToClipboard()">
+                    <button class="copy-btn" onclick="copyToClipboard('{{ $coupon->code }}')">
                         <i class="fas fa-copy"></i>
                     </button>
                     <span class="coupon-code">{{ $coupon->code }}</span>
@@ -133,13 +133,26 @@
 
 </div>
 <script>
-    function copyToClipboard() {
-    const couponCode = document.querySelector('.coupon-code').textContent;
-    navigator.clipboard.writeText(couponCode).then(() => {
-        alert('Mã coupon đã được sao chép vào clipboard!');
-    }).catch(err => {
-        alert('Lỗi khi sao chép mã coupon!');
-    });
+function copyToClipboard(couponCode) {
+    navigator.clipboard.writeText(couponCode)
+        .then(() => {
+            Swal.fire({
+                icon: 'success',
+                text: `Sao chép mã coupon "${couponCode}".`,
+                timer: 1000,
+                showConfirmButton: false,
+            });
+        })
+        .catch(err => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Không thể sao chép mã coupon. Vui lòng thử lại!',
+                timer: 1500,
+                showConfirmButton: false,
+            });
+        });
 }
+
 </script>
 @endsection

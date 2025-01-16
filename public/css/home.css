@@ -98,10 +98,25 @@
 
 /* Tổng định dạng cho product card */
 .product-slide {
-  display: flex;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-}
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+  }
+
+  /* Tùy chỉnh thanh cuộn trên các trình duyệt hỗ trợ */
+  .product-slide::-webkit-scrollbar {
+    width: 8px; /* Độ rộng của thanh cuộn */
+    height: 2px;
+  }
+
+  .product-slide::-webkit-scrollbar-thumb {
+    background-color: #000; /* Màu sắc của phần thanh cuộn */
+    border-radius: 5px; /* Bo góc cho thanh cuộn */
+  }
+
+  .product-slide::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Màu nền của thanh cuộn */
+  }
 
 .product-item {
   flex: 0 0 auto;

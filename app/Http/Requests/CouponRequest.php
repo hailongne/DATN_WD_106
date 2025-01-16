@@ -30,10 +30,9 @@ class CouponRequest extends FormRequest
                 'min:1',
                 'required_without:discount_percentage',
                 function ($attribute, $value, $fail) {
-                    $minOrderValue = $this->input('min_order_value');
                     $maxOrderValue = $this->input('max_order_value');
-                    if ($value !== null && ($value < $minOrderValue || ($maxOrderValue !== null && $value > $maxOrderValue))) {
-                        $fail('Giá trị giảm giá phải nằm giữa giá trị tối thiểu và tối đa của đơn hàng.');
+                    if ($value !== null && ($maxOrderValue !== null && $value > $maxOrderValue)) {
+                        $fail('Giá trị giảm giá phải nhỏ hơn tối đa của đơn hàng.');
                     }
                 },
             ],

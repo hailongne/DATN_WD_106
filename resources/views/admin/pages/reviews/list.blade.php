@@ -32,11 +32,12 @@
     <table class="product-table table table-bordered text-center align-middle mb-5">
         <thead class="thead-dark">
             <tr>
-                <th>STT</th>
+                <th></th>
                 <th>Email khác hàng</th>
                 <th>Tên sản phẩm</th>
+                <th>Ảnh</th>
                 <th>Đánh giá</th>
-                <th>Đánh giá</th>
+                <th>Nội dung</th>
                 <th>Thời gian</th>
                 <th>Trạng thái</th>
                 <th>Hành Động</th>
@@ -48,6 +49,13 @@
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $review->user->email }}</td>
                 <td>{{ $review->product->name }}</td>
+                <td>
+                    @if (!empty($review->product->main_image_url))
+                    <img src="{{ asset('storage/'. $review->product->main_image_url) }}"
+                    style="width: 50px; height: 50px; object-fit: cover;">
+                    @else
+                    @endif
+                </td>
                 <td>{{ $review->rating }} ★</td>
                 <td>{{ $review->comment }}</td>
                 <td>{{ $review->created_at }}</td>
@@ -57,8 +65,8 @@
                         style="display:inline;">
                         @csrf
                         <button type="submit"
-                            class="custom-btn-active-admin {{ $review->is_active ? 'btn-danger' : 'btn-success' }} status-btn-active">
-                            <p>{{ $review->is_active ? 'Tắt hoạt động' : 'Kích hoạt' }}</p>
+                            class="custom-btn-active-admin {{ $review->is_active ? 'btn-success' : 'btn-danger' }} status-btn-active">
+                            <p>{{ $review->is_active ? 'Hiển thị' :  'Ẩn'}}</p>
                         </button>
                     </form>
                 </td>

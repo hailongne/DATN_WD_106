@@ -66,7 +66,7 @@ public function destroyColor($id){
     $productCount = AttributeProduct::where('color_id', $id)->count();
 
         if ($productCount > 0) {
-            return redirect()->back()->with('success', 'Không thể xóa màu sắc này vì còn sản phẩm liên quan.');
+            return redirect()->back()->with('error', 'Không thể xóa màu sắc này vì còn sản phẩm liên quan.');
         }
     $color->delete();
     return redirect()->route('admin.colors.index')
