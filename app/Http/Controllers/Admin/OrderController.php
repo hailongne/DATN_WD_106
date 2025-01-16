@@ -29,9 +29,11 @@ class OrderController extends Controller
     {
         $startDate = $request->input('start_date'); // Ngày bắt đầu
         $endDate = $request->input('end_date');     // Ngày kết thúc
+        $status = $request->input('status');        // Trạng thái đơn hàng
     
         $query = Order::with('user');
     
+        // Lọc theo ngày bắt đầu và ngày kết thúc
         if ($startDate) {
             $query->whereDate('created_at', '>=', Carbon::parse($startDate));
         }
@@ -39,8 +41,14 @@ class OrderController extends Controller
             $query->whereDate('created_at', '<=', Carbon::parse($endDate));
         }
     
+        // Lọc theo trạng thái
+        if ($status) {
+            $query->where('status', $status);
+        }
+    
+        // Sắp xếp và lấy dữ liệu
         $orders = $query->orderBy('order_id', 'desc')->get();
-
+    
         return view('admin.pages.order.order_management', compact('orders'));
     }
 

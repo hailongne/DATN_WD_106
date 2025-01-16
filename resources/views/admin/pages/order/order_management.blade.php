@@ -63,12 +63,23 @@ select.form-control option[value="cancelled"] {
                         value="{{ request('end_date') }}">
                 </div>
                 <div class="col-md-3">
+                    <select name="status" class="form-control">
+                        <option value="">Tất cả trạng thái</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
+                        <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Đã xác nhận</option>
+                        <option value="shipped" {{ request('status') == 'shipped' ? 'selected' : '' }}>Đang giao hàng</option>
+                        <option value="delivered" {{ request('status') == 'delivered' ? 'selected' : '' }}>Đã giao hàng</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Hoàn thành</option>
+                        <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
                     <a href="{{ route('admin.orders') }}" class="btn btn-secondary">Đặt lại</a>
                     <button type="submit" class="btn btn-primary">Lọc</button>
                 </div>
             </div>
         </form>
-
+        
         <table class="product-table table table-bordered text-center align-middle">
             <thead class="thead-dark">
                 <tr>
