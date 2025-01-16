@@ -52,24 +52,7 @@
                     </tr>
                     @endforeach
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4" class="text-center">
-                            @CSRF
-                            <label for="url_{{ $parts[1] }}" class="btn custom-upload-btn-atriPro">
-                                <i class="fa fa-upload"></i> Tải lên
-                            </label>
-                            <input type="file" name="url[]" accept="image/png, image/jpg, image/jpeg, image/gif"
-                                id="url_{{ $parts[1] }}" class="d-none url" multiple>
 
-                            <div id="imagePreviewContainer_{{ $parts[1] }}" class="mt-3 d-flex flex-wrap">
-                                <!-- Ảnh sẽ hiển thị ở đây -->
-                            </div>
-                            <span class="text-danger url-error" id="url-error-{{ $parts[1] }}"></span>
-                        </td>
-
-                    </tr>
-                </tfoot>
             </table>
             @endforeach
             <div class="button-group">
