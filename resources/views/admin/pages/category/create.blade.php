@@ -97,18 +97,7 @@
         @error('slug')
         <span class="text-danger">{{$message}}</span>
         @enderror
-        <div class="form-group">
-            <label class="custom-label" for="productCategory">Danh mục chính</label>
-            <select class="form-control" id="productCategory" value="{{old('parent_id')}}" name="parent_id">
-                <option value="0">Chọn danh mục chính </option>
-                @foreach($categories as $category)
-                <option value="{{ $category['category_id'] }}">{{ $category['name'] }}</option>
-                @endforeach
-            </select>
-        </div>
-        @error('parent_id')
-        <span class="text-danger">{{$message}}</span>
-        @enderror
+       
         <div class="form-group">
             <label class="custom-label" for="description">Mô tả<span class="custom-required-star">*</span></label>
             <textarea class="form-control" id="description" value="{{old('description')}}" rows="3" name="description"
