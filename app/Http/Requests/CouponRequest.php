@@ -27,7 +27,7 @@ class CouponRequest extends FormRequest
             'discount_amount' => 'nullable|numeric|min:1|required_without:discount_percentage',
             'discount_percentage' => 'nullable|numeric|min:1|max:99|required_without:discount_amount',
             'quantity' => 'required|integer|min:1|max:1000',
-            'min_order_value' => 'required|numeric|min:max:99999999.99',
+            'min_order_value' => 'required|numeric|min:1',
             'max_order_value' => [
                 'nullable',
                 'min:1',

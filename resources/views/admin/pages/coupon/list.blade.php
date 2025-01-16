@@ -84,8 +84,14 @@
                             @else
                             <td>{{ number_format($coupon->max_order_value) }} VNĐ</td>
                             @endif
+                            @if($coupon->is_public==0)
+                            <td>Công khai</td>
+                            @else
+                            <td>Cá nhân</td>
+                            @endif
                             <td>{{ \Carbon\Carbon::parse($coupon->start_date)->format('d/m/Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($coupon->end_date)->format('d/m/Y') }}</td>
+                            
                             <td>
                                 <form action="{{ route('admin.coupons.toggle', $coupon->coupon_id) }}" method="POST"
                                     style="display:inline;">
