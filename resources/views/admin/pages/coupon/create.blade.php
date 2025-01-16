@@ -1,9 +1,9 @@
 @extends('admin.index')
 @section('content')
 <style>
-.radio-group {
+/* .radio-group {
     display: none;
-}
+} */
 
 .text-danger {
     font-size: 12px;
@@ -118,7 +118,7 @@
         <div class="row gx-2 mb-3 radio-group">
             <label>Chọn kiểu <span class="text-danger">*</span></label>
             <div class="form-check">
-                <input type="radio" name="is_public" id="public" value="1" class="form-check-input" checked>
+                <input type="radio" name="is_public" id="public" value="0" class="form-check-input" checked>
                 <label for="public" class="form-check-label">Public</label>
             </div>
             <div class="form-check">
@@ -131,7 +131,7 @@
         </div>
         </div>
         <!-- table -->
-        <!-- <div class="customer-section-list" style="display:none" id="customer-section">
+        <div class="customer-section-list" style="display:none" id="customer-section">
             <div class="button-header mb-3">
                 <button>
                     Danh sách khách hàng <i class="fa fa-star"></i>
@@ -154,7 +154,7 @@
                 <tbody class="table-scrollable">
                 </tbody>
             </table>
-        </div> -->
+        </div>
     </form>
 </body>
 

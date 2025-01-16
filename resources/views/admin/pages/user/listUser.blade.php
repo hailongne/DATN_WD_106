@@ -28,18 +28,6 @@
     }
 </style>
 
-@section('content')
-@if (session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
-
-@if (session('error'))
-<div class="alert alert-danger">
-    {{ session('error') }}
-</div>
-@endif
 
 <div class="container">
     <div class="button-header mb-3">
@@ -124,9 +112,9 @@
     setTimeout(function() {
         const alerts = document.querySelectorAll('.alert');
         alerts.forEach(alert => {
-            alert.classList.add('fade'); 
-            setTimeout(() => alert.remove(), 500); 
+            alert.classList.add('fade');
+            setTimeout(() => alert.remove(), 500);
         });
-    }, 3000); 
+    }, 3000);
 </script>
 @endsection

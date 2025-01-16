@@ -5,9 +5,9 @@
 @section('content')
 
 <style>
-.radio-group {
+/* .radio-group {
     display: none;
-}
+} */
 
 .text-danger {
     font-size: 12px;
@@ -150,7 +150,7 @@
         </div>
         <!-- table -->
 
-        <!-- <div class="customer-section-list" style="display:none" id="customer-section" style="display: {{ $coupon->is_public == 0 ? 'none' : 'block' }};">
+        <div class="customer-section-list" style="display:none" id="customer-section" style="display: {{ $coupon->is_public == 0 ? 'none' : 'block' }};">
             <div class="button-header mb-3">
                 <button>
                     Danh sách khách hàng <i class="fa fa-star"></i>
@@ -175,7 +175,7 @@
 
                 </tbody>
             </table>
-        </div> -->
+        </div>
 
         </div>
 

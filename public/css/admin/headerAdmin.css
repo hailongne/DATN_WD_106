@@ -138,21 +138,6 @@ body {
   border-left: 5px solid #e74c3c; /* Đường viền đỏ cho mục đang chọn */
 }
 
-/* Hiệu ứng chuyển động khi hiển thị */
-@keyframes slideIn {
-  from {
-    transform: translateX(-20px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-.sidebar .menu li, .sidebar .submenu li {
-  animation: slideIn 0.3s ease-out;
-}
 
 /* Các hiệu ứng trên toàn bộ sidebar */
 .sidebar .menu li a, .sidebar .submenu li a {

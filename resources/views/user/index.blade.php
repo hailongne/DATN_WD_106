@@ -59,7 +59,9 @@
     <main class="container-contacts">
         @yield('content')
         <!-- Nút liên hệ -->
-        <img src="{{ asset('imagePro/icon/icon-chat.png') }}" id="contactBtn"
+        <img src="{{ asset('imagePro/icon/icon-chat.png') }}" id="contactBtn" data-bs-toggle="tooltip" data-bs-placement="top"
+        data-bs-custom-class="custom-tooltip"
+        data-bs-title="Liên hệ"
             class="icon-chat-contact"/>
 
         <!-- Phần Liên hệ -->

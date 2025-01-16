@@ -14,7 +14,7 @@
     $couponsArray = $coupons->items();
 
     // Sắp xếp coupon theo trạng thái (Sắp hết hạn -> Còn lại -> Hết hạn)
-    usort($couponsArray, function($a, $b) {
+    usort($couponsArray, function($a, $b){
         // Lấy ngày hết hạn và số lượng coupon
         $endDateA = \Carbon\Carbon::parse($a->end_date);
         $endDateB = \Carbon\Carbon::parse($b->end_date);
@@ -123,8 +123,6 @@
             </div>
         </div>
     @endforeach
-</div>
-<div class="pagination">
     {{ $coupons->links() }}
 </div>
     @else

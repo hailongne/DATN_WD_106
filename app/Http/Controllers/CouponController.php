@@ -17,9 +17,8 @@ class CouponController extends Controller
 
         // Lấy các coupon thuộc về người dùng
         $coupons = Coupon::where('is_active', true)
-            ->where('is_public', true) // Chỉ lấy coupon công khai
             ->latest()
-            ->paginate(5);
+            ->paginate(10);
 
         return view('user.coupons', compact('coupons', 'user'));
     }

@@ -87,6 +87,17 @@
         @include('admin.layoutAdmin.header-admin')
         <!-- Include file header -->
     </header>
+        @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show custom-alert" id="error-alert">
+            <strong>Lỗi!</strong> {{ session('error') }}
+        </div>
+        @endif
+
+        @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show custom-alert" id="success-alert">
+            <strong>Thành công!</strong> {{ session('success') }}
+        </div>
+        @endif
     <main>
         @yield('content')
     </main>
@@ -103,6 +114,24 @@ document.addEventListener('DOMContentLoaded', function() {
     tooltipTriggerList.forEach(function(tooltipTriggerEl) {
         new bootstrap.Tooltip(tooltipTriggerEl)
     });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Tự động ẩn thông báo sau 3 giây
+    setTimeout(function() {
+        let successAlert = document.getElementById("success-alert");
+        let errorAlert = document.getElementById("error-alert");
+
+        if (successAlert) {
+            successAlert.classList.add("fade");
+            setTimeout(() => successAlert.remove(), 500); // Loại bỏ hoàn toàn sau khi hiệu ứng xong
+        }
+
+        if (errorAlert) {
+            errorAlert.classList.add("fade");
+            setTimeout(() => errorAlert.remove(), 500); // Loại bỏ hoàn toàn sau khi hiệu ứng xong
+        }
+    }, 3000); // 3000ms = 3 giây
 });
 </script>
 
