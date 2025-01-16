@@ -74,6 +74,14 @@ select.form-control option[value="cancelled"] {
                     </select>
                 </div>
                 <div class="col-md-3">
+                    <select name="payment_status" class="form-control">
+                        <option value="">Tất cả trạng thái thanh toán</option>
+                        <option value="pending" {{ request('payment_status') == 'pending' ? 'selected' : '' }}>Chờ xử lý</option>
+                        <option value="paid" {{ request('payment_status') == 'paid' ? 'selected' : '' }}>Đã thanh toán</option>
+                        <option value="failed" {{ request('payment_status') == 'failed' ? 'selected' : '' }}>Thất bại</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
                     <a href="{{ route('admin.orders') }}" class="btn btn-secondary">Đặt lại</a>
                     <button type="submit" class="btn btn-primary">Lọc</button>
                 </div>

@@ -30,7 +30,7 @@ class OrderController extends Controller
         $startDate = $request->input('start_date'); // Ngày bắt đầu
         $endDate = $request->input('end_date');     // Ngày kết thúc
         $status = $request->input('status');        // Trạng thái đơn hàng
-    
+        $paymentStatus = $request->input('payment_status');
         $query = Order::with('user');
     
         // Lọc theo ngày bắt đầu và ngày kết thúc
@@ -45,7 +45,9 @@ class OrderController extends Controller
         if ($status) {
             $query->where('status', $status);
         }
-    
+        if ($paymentStatus) {
+            $query->where('payment_status', $paymentStatus);
+        }
         // Sắp xếp và lấy dữ liệu
         $orders = $query->orderBy('order_id', 'desc')->get();
     
