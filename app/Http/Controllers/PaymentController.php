@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\OrderConfirm;
+use App\Models\CouponUser;
 use App\Models\OrderStatusHistory;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -82,6 +83,9 @@ class PaymentController extends Controller
                 $shippingFee = 40000; // Phí vận chuyển
                 $totalAfterShipping = $totalWithoutShipping + $shippingFee; // Tổng tiền sau khi cộng phí vận chuyển
                 $discountAmount = $this->calculateDiscount($coupon, $totalAfterShipping);
+                CouponUser::where('coupon_id', $coupon->coupon_id)
+                ->where('user_id', $user->user_id)
+                ->update(['has_used' => false]);
             }
         }
 

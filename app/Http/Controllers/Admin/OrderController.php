@@ -31,7 +31,6 @@ class OrderController extends Controller
         $endDate = $request->input('end_date');     // Ngày kết thúc
         $status = $request->input('status');        // Trạng thái đơn hàng
         $paymentStatus = $request->input('payment_status');
-
         $query = Order::with('user');
 
         if ($startDate) {
@@ -39,12 +38,6 @@ class OrderController extends Controller
         }
         if ($endDate) {
             $query->whereDate('created_at', '<=', Carbon::parse($endDate));
-        }
-        if ($status) {
-            $query->where('status', $status);
-        }
-        if ($paymentStatus) {
-            $query->where('payment_status', $paymentStatus);
         }
 
         $orders = $query->orderBy('order_id', 'desc')->get();
