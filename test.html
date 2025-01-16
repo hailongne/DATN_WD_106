@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+        />
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <style>
+            .flatpickr-calendar {
+                background-color: #f5f5f5; /* Custom background */
+                border-radius: 8px; /* Rounded corners */
+            }
+
+            .flatpickr-day:hover {
+                background-color: #ff6347; /* Hover effect */
+            }
+
+            .flatpickr-input {
+                padding: 10px;
+                font-size: 16px;
+            }
+        </style>
+    </head>
+    <body>
+        <input
+            id="date-picker"
+            type="text"
+            class="form-control border-0 minimal-border dash-filter-picker shadow"
+            data-provider="flatpickr"
+            data-range-date="true"
+            data-date-format="d M, Y"
+            data-deafult-date="today"
+        />
+    </body>
+    <script>
+        flatpickr("#myDatePicker", {
+            enableTime: true, // Enable time selection
+            dateFormat: "Y-m-d H:i", // Custom date-time format
+            minDate: "today", // Disable past dates
+        });
+    </script>
+</html>
