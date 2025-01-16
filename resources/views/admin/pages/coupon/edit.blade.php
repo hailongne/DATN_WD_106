@@ -57,20 +57,18 @@
                         <option value="2">Phần trăm giảm giá</option>
                         @endif
                     </select>
-                </div>
-                <div class="row gx-2 my-3" id="value1">
-                    <label for="discount" class="custom-label">Ưu đãi giảm giá đơn hàng <span
-                            class="text-danger">*</span></label>
-                    @if($coupon->discount_amount)
-                    <input type="text" class="form-control"
-                        value="{{ number_format($coupon->discount_amount, 0, ',', '') }}" name="discount_amount"
-                        id="discount" placeholder="Nhập điều kiện áp dụng" />
-                    @elseif($coupon->discount_percentage)
-                    <input type="text" class="form-control" value="{{ $coupon->discount_percentage }}"
-                        name="discount_percentage" id="discount" placeholder="Nhập điều kiện áp dụng" />
-                    @else
-                    <input type="text" class="form-control" id="discount" placeholder="Nhập điều kiện áp dụng" />
-                    @endif
+                    <div class="form-group" id="value1">
+                        <label for="discount" class="custom-label">Giá trị <span class="text-danger"></span></label>
+                        @if($coupon->discount_amount)
+                            <input type="number" class="form-control"  value="{{$coupon->discount_amount}}" name="discount_amount" id="discount"
+                                placeholder="Nhập điều kiện áp dụng" />
+                        @elseif($coupon->discount_percentage)
+                            <input type="number" class="form-control" value="{{$coupon->discount_percentage}}" name="discount_percentage"
+                                id="discount" placeholder="Nhập điều kiện áp dụng" />
+                        @else
+                            <input type="number" class="form-control" id="discount" placeholder="Nhập điều kiện áp dụng" />
+                        @endif
+                    </div>
                     @error('discount_amount')
                     <span class="text-danger">{{$message}}</span>
                     @enderror
@@ -84,19 +82,17 @@
                 <div class="col-4">
                     <label for="condition" class="custom-label">Giá trị đơn hàng tối thiểu <span
                             class="text-danger">*</span></label>
-                    <input type="number" id="condition"
-                        value="{{ number_format($coupon->min_order_value, 0, ',', '') }}" name="min_order_value"
+                    <input type="number" id="condition" value="{{$coupon->min_order_value}}" name="min_order_value"
                         placeholder="Nhập điều kiện áp dụng" class="form-control" />
                 </div>
                 @error('min_order_value')
                 <span class="text-danger">{{$message}}</span>
                 @enderror
                 <div class="col-4">
-                    <label for="max_order_value" class="custom-label">Giá trị đơn hàng tối đa <span
+                    <label for="max_order_value" class="custom-label">Giá trị tối đa <span
                             class="text-danger">*</span></label>
-                    <input type="number" id="max_order_value"
-                        value="{{ number_format($coupon->max_order_value, 0, ',', '') }}" name="max_order_value"
-                        placeholder="Nhập giá trị tối đa" class="form-control" />
+                    <input type="number" id="max_order_value" value="{{$coupon->max_order_value}}"
+                        name="max_order_value" placeholder="Nhập giá trị tối đa" class="form-control" />
                     @error('max_order_value')
                     <span class="text-danger">{{$message}}</span>
                     @enderror
@@ -231,28 +227,28 @@ document.addEventListener('DOMContentLoaded', function() {
 value = document.getElementById('value');
 discount = document.getElementById('discount');
 
-value.addEventListener('change', function() {
-    if (value.value == 1) {
+        value.addEventListener('change', function () {
+            if (value.value == 1) {
 
-        discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
-        discount.setAttribute('name', 'discount_amount')
-        discount.setAttribute('value', '')
-    } else {
+                discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
+                discount.setAttribute('name', 'discount_amount')
+                discount.setAttribute('value', '')
+            } else {
 
-        discount.setAttribute('placeholder', 'Nhập phần trăm giảm giá')
-        discount.setAttribute('name', 'discount_percentage')
-        discount.setAttribute('value', '')
-    }
-});
-// private = document.getElementById('private');
-// public = document.getElementById('public');
-// customer = document.getElementById('customer-section');
-// private.addEventListener('click', function () {
-//     customer.style.display = "block";
-// });
-// public.addEventListener('click', function () {
-//     customer.style.display = "none";
-// });
+                discount.setAttribute('placeholder', 'Nhập phần trăm giảm giá')
+                discount.setAttribute('name', 'discount_percentage')
+                discount.setAttribute('value', '')
+            }
+        });
+        // private = document.getElementById('private');
+        // public = document.getElementById('public');
+        // customer = document.getElementById('customer-section');
+        // private.addEventListener('click', function () {
+        //     customer.style.display = "block";
+        // });
+        // public.addEventListener('click', function () {
+        //     customer.style.display = "none";
+        // });
 
 document.addEventListener("DOMContentLoaded", function() {
     const searchInput = document.querySelector("input[name='nhap']");

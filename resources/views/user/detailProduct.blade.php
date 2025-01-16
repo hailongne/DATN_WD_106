@@ -269,9 +269,10 @@
                     </div>
                     @endif
 
-                    @if($hasPurchased && $hasReviewed)
+                    @if($hasPurchased && $hasReviewed && !$reviewsExist)
                     <!-- Form đánh giá -->
-                    <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
+              
+                 <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="review-form">
                             <p>Đánh giá của bạn:</p>
@@ -308,6 +309,7 @@
                             <button class="btn btn-primary" type="submit">Đánh giá</button>
                         </div>
                     </form>
+              
 
                     @elseif(!$hasReviewed)
                     <p class="text-center">Bạn đã đánh giá sản phẩm này rồi.</p>

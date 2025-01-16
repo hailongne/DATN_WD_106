@@ -22,8 +22,8 @@ class ReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required|exists:products,product_id',
-            'user_id'    => 'required|exists:users,user_id',
+            'product_id' => 'exists:products,product_id',
+            'user_id'    => 'exists:users,user_id',
             'image'      => 'required|file|mimes:jpeg,png,jpg,gif|max:2048', // Bắt buộc, phải là file PNG, kích thước tối đa 2MB
             'rating'     => 'required|integer|min:1|max:5',
             'comment'    => 'required|string|min:10|max:1000',
@@ -33,9 +33,7 @@ class ReviewRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'product_id.required' => 'Sản phẩm không được để trống.',
             'product_id.exists'   => 'Sản phẩm không tồn tại.',
-            'user_id.required'    => 'Người dùng không được để trống.',
             'user_id.exists'      => 'Người dùng không tồn tại.',
             'image.required'      => 'Ảnh không được để trống.',
             'image.file'          => 'Ảnh phải là một file hợp lệ.',

@@ -30,7 +30,7 @@ class ProductController extends Controller
     {
         $categories = Category::select('category_id', 'name')->distinct()->get();
         $brands = Brand::select('brand_id', 'name')->distinct()->get();
-    
+
         $products = Product::with('category:category_id,name', 'brand:brand_id,name')
         ->when($request->input('nhap'), function ($query) use ($request) {
             $query->where(function ($q) use ($request) {
@@ -50,7 +50,7 @@ class ProductController extends Controller
             })
             ->latest()
             ->paginate(10);
-    
+
         return view('admin.pages.product.list', compact('products', 'categories', 'brands'));
     }
     public function toggle($id)
@@ -64,7 +64,7 @@ class ProductController extends Controller
             // Xóa sản phẩm khỏi tất cả các giỏ hàng
             CartItem::where('product_id', $id)->delete();
         }
-    
+
         return redirect()->back()->with('success', 'Trạng thái sản phẩm đã được thay đổi!');
     }
     public function toggleHot($id)
@@ -125,7 +125,7 @@ class ProductController extends Controller
             if ($anh->isValid()) {
                 // Tạo tên mới cho ảnh để tránh trùng lặp
                 $newAnh = time() . "." . $anh->getClientOriginalExtension();
-        
+
                 // Lưu ảnh vào thư mục 'imagePro/images' trong storage/app/public
                 $image = $anh->storeAs('imagePro', $newAnh, 'public');
             }
@@ -133,7 +133,7 @@ class ProductController extends Controller
             // Sử dụng ảnh mặc định nếu không có ảnh tải lên
             $image = 'imagePro/images/default.jpg'; // Đảm bảo file này tồn tại trong storage/app/public
         }
-        
+
 
         // Create a new product using the request data
         $product = Product::create([
@@ -153,7 +153,7 @@ class ProductController extends Controller
 
         $colors = is_array($request->input('color_id')) ? $request->input('color_id') : explode(',', $request->input('color_id'));
         $sizes = is_array($request->input('size_id')) ? $request->input('size_id') : explode(',', $request->input('size_id'));
-        
+
         // Prepare the data for the AttributeProduct table (product-color-size combinations)
         $productColorSizeData = [];
         foreach ($colors as $colorId) {
@@ -177,17 +177,20 @@ class ProductController extends Controller
 
         $productsAttPro = AttributeProduct::with([
             'product:product_id,name',
+            'color:color_id,name',
             'size:size_id,name',
-            'color:color_id,name'
+            'product.productImages'
         ])
             ->where('product_id', $id)
             ->get();
         $groupedBySize = $productsAttPro->groupBy(function ($item) {
             return $item->size->name . "-" . $item->size->size_id;  // Group by both size name and size_id
         });
+        $colorId = $productsAttPro[0]->color_id; // Nếu lấy từ bảng AttributeProduct
 
         return view('admin.pages.product.editAtrPro')
-            ->with(['groupedBySize' => $groupedBySize, 'product_id' => $id]);
+            ->with(['groupedByColor' => $groupedByColor, 'product_id' => $id, 
+            'colorId' => $colorId]);
     }
 
 
@@ -205,13 +208,22 @@ class ProductController extends Controller
         // Xử lý từng color_id và ảnh tương ứng
         foreach ($colorIds as $colorId) {
             // Lấy ảnh của color_id này
+            
             $colorImages = $request->file("images_{$colorId}");
 
             if ($colorImages) {
+                $oldImages = ProductImage::where('color_id', $colorId)->get(); // Truy vấn để lấy ảnh cũ theo color_id
+    // Xóa ảnh cũ nếu có
+    foreach ($oldImages as $oldImage) {
+        // Xóa ảnh cũ khỏi storage
+        Storage::disk('public')->delete('images/color_' . $colorId . '/' . $oldImage->url); // Giả định $oldImage->file_name là tên file ảnh cũ
+    }
                 // Lưu ảnh vào thư mục lưu trữ và thêm vào mảng images
                 $storedImages = [];
                 foreach ($colorImages as $image) {
-                    $storedImages[] = $image->store('public/images/color_' . $colorId);
+                     $newAnh = time() . "." . $image->getClientOriginalExtension(); // Lấy phần mở rộng tệp gốc
+                    $storedImages[] = $image->storeAs('/images/color_' . $colorId,$newAnh,'public');
+                    
                 }
                 // Gán ảnh vào mảng theo color_id
                 $images[$colorId] = $storedImages;
@@ -326,9 +338,9 @@ class ProductController extends Controller
         $colors = is_array($request->input('color_id')) ? $request->input('color_id') : explode(',', $request->input('color_id'));
         $sizes = is_array($request->input('size_id')) ? $request->input('size_id') : explode(',', $request->input('size_id'));
 
-        // Xóa các kết nối cũ giữa sản phẩm và màu sắc/kích thước
-        $product->colors()->detach();  // Xóa các màu sắc đã chọn cũ
-        $product->sizes()->detach();   // Xóa các kích thước đã chọn cũ
+        // // Xóa các kết nối cũ giữa sản phẩm và màu sắc/kích thước
+        // $product->colors()->detach();  // Xóa các màu sắc đã chọn cũ
+        // $product->sizes()->detach();   // Xóa các kích thước đã chọn cũ
 
         // Tạo dữ liệu mới cho bảng AttributeProduct (mối quan hệ sản phẩm - màu sắc - kích thước)
         $productColorSizeData = [];
@@ -343,7 +355,21 @@ class ProductController extends Controller
         }
 
         // Cập nhật dữ liệu màu sắc và kích thước cho sản phẩm
-        AttributeProduct::insert($productColorSizeData);
+        foreach ($productColorSizeData as $data) {
+            // Kiểm tra nếu bản ghi đã tồn tại trong bảng AttributeProduct
+            $existingAttribute = AttributeProduct::where('product_id', $data['product_id'])
+                                                 ->where('color_id', $data['color_id'])
+                                                 ->where('size_id', $data['size_id'])
+                                                 ->first();
+            if ($existingAttribute) {
+                // Cập nhật nếu bản ghi đã tồn tại
+                $existingAttribute->update($data);
+            } else {
+                // Chèn mới nếu chưa có
+                AttributeProduct::create($data);
+            }
+        }
+        // AttributeProduct::insert($productColorSizeData);
         return redirect()->route('admin.products.getDataAtrPro', ['id' => $product->product_id])
             ->with('success', 'Cập nhật sản phẩm thành công!');
     }

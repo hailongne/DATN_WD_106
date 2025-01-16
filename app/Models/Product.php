@@ -60,7 +60,7 @@ class Product extends Model
     }
     public function productImages()
     {
-        return $this->hasManyThrough(ProductImage::class, AttributeProduct::class, 'product_id', 'attribute_product_id');
+        return $this->hasMany(ProductImage::class, 'product_id'); // Adjust the relationship as needed
     }
     public function attributes()
     {

@@ -37,6 +37,7 @@ class HomeController extends Controller
         ->join('product_views',
          'products.product_id', '=', 'product_views.product_id')
         ->where('product_views.user_id', Auth::id())  // Lọc theo người dùng hiện tại
+        ->where('products.is_active','1')
         ->groupBy('products.product_id',
          'products.brand_id',
           'products.product_category_id',
@@ -57,7 +58,7 @@ class HomeController extends Controller
         'products.end_date',
         'products.is_sale')  // Nhóm theo sản phẩm
         ->orderByDesc('total_views')  // Sắp xếp theo tổng lượt xem giảm dần
-        ->take(4)  // Lấy 4 sản phẩm có lượt xem cao nhất
+        ->take(5)  // Lấy 4 sản phẩm có lượt xem cao nhất
         ->get();
         // Eager load cả 'attributeProducts' từ bảng attribute_products
         // $listProduct = Product::with('attributeProducts')

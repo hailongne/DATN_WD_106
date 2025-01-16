@@ -75,10 +75,9 @@
                     placeholder="Nhập điều kiện áp dụng" class="form-control" />
                 @error('min_order_value')
                 <span class="text-danger">{{$message}}</span>
-                @enderror
-            </div>
+            @enderror
             <div class="col-4">
-                <label for="max_order_value" class="custom-label">Giá trị đơn hàng tối đa <span
+                <label for="max_order_value" class="custom-label">Giá trị tối đa <span
                         class="text-danger">*</span></label>
                 <input type="number" id="max_order_value" value="{{old('max_order_value')}}" name="max_order_value"
                     placeholder="Nhập giá trị tối đa" class="form-control" />
@@ -167,28 +166,28 @@
 value = document.getElementById('value');
 discount = document.getElementById('discount');
 
-value.addEventListener('change', function() {
-    if (value.value == 1) {
-        document.getElementById('value1').style.display = "block";
-        discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
-        discount.setAttribute('name', 'discount_amount')
-        discount.setAttribute('value', '')
-    } else {
-        document.getElementById('value1').style.display = "block";
-        discount.setAttribute('placeholder', 'Nhập phần trăm giảm giá')
-        discount.setAttribute('name', 'discount_percentage')
-        discount.setAttribute('value', '')
-    }
-});
-private = document.getElementById('private');
-public = document.getElementById('public');
-customer = document.getElementById('customer-section');
-private.addEventListener('click', function() {
-    customer.style.display = "block";
-});
-public.addEventListener('click', function() {
-    customer.style.display = "none";
-});
+        value.addEventListener('change', function () {
+            if (value.value == 1) {
+                document.getElementById('value1').style.display = "block";
+                discount.setAttribute('placeholder', 'Nhập số tiền giảm giá')
+                discount.setAttribute('name', 'discount_amount')
+                discount.setAttribute('value', '')
+            } else {
+                document.getElementById('value1').style.display = "block";
+                discount.setAttribute('placeholder', 'Nhập phần trăm giảm giá')
+                discount.setAttribute('name', 'discount_percentage')
+                discount.setAttribute('value', '')
+            }
+        });
+        private = document.getElementById('private');
+        public = document.getElementById('public');
+        customer = document.getElementById('customer-section');
+        private.addEventListener('click', function () {
+            customer.style.display = "block";
+        });
+        public.addEventListener('click', function () {
+            customer.style.display = "none";
+        });
 
 
 //danh sách người dùng

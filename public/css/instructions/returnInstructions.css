@@ -1,0 +1,88 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.flex {
+    display: flex;
+    margin-top: 20px;
+}
+
+.w-1\/4 {
+    width: 25%;
+}
+
+.w-3\/4 {
+    width: 75%;
+}
+
+.p-4 {
+    padding: 16px;
+}
+
+.border {
+    border: 1px solid #000;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.mb-4 {
+    margin-bottom: 16px;
+}
+
+.mt-4 {
+    margin-top: 16px;
+}
+
+.text-black {
+    color: black;
+}
+
+.text-white {
+    color: white;
+}
+
+.text-blue-500 {
+    color: #3b82f6; /* Tailwind blue-500 */
+}
+
+.text-xl {
+    font-size: 1.25rem; /* 20px */
+}
+
+.text-lg {
+    font-size: 1.125rem; /* 18px */
+}
+
+.list-disc {
+    list-style-type: disc;
+}
+
+.pl-5 {
+    padding-left: 20px; /* Indentation for list */
+}
+
+.bg-blue-500 {
+    background-color: #3b82f6; /* Tailwind blue-500 */
+}
+
+.bg-gray-200 {
+    background-color: #e5e7eb; /* Tailwind gray-200 */
+}
+
+hr {
+    border: none;
+    border-top: 2px solid black;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+ul {
+    padding: 0;
+}

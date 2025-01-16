@@ -52,9 +52,25 @@
                     </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-center">
+                            @CSRF
+                            <label for="url_{{ $parts[1] }}" class="btn custom-upload-btn-atriPro">
+                                <i class="fa fa-upload"></i> Tải lên
+                            </label>
+                            <input type="file" name="url[]" accept="image/png, image/jpg, image/jpeg, image/gif"
+                                id="url_{{ $parts[1] }}" class="d-none url" multiple>
+
+                            <div id="imagePreviewContainer_{{ $parts[1] }}" class="mt-3 d-flex flex-wrap">
+                                <!-- Ảnh sẽ hiển thị ở đây -->
+                            </div>
+                            <span class="text-danger url-error" id="url-error-{{ $parts[1] }}"></span>
+                        </td>
 
             </table>
             @endforeach
+
             <div class="button-group">
                 <button type="submit" id="submitForm" class="btn btn-primary">Cập nhật</button>
                 <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">Hủy</a>
@@ -77,7 +93,7 @@ $(document).ready(function() {
             const files = event.target.files;
             const sizeId = event.target.id.split('_')[1];
             const previewContainer = document.getElementById('imagePreviewContainer_' +
-                sizeId);
+                colorId);
 
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
@@ -86,21 +102,27 @@ $(document).ready(function() {
                 reader.onload = function(e) {
                     const imgContainer = document.createElement('div');
                     imgContainer.classList.add('position-relative', 'm-2');
-
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.style.width = '100px';
                     img.style.height = '130px';
                     img.style.borderRadius = '5px';
-
+                    //Dấu X xóa ảnh
+                    const blockRemoveIcon = document.createElement('div');
                     const removeIcon = document.createElement('i');
                     removeIcon.classList.add('fa', 'fa-times-circle', 'position-absolute', 'text-danger');
                     removeIcon.style.top = '5px';
                     removeIcon.style.right = '5px';
                     removeIcon.style.cursor = 'pointer';
+                    removeIcon.id = 'svg_id_' + i;
+                    blockRemoveIcon.appendChild(removeIcon);
 
+                    // Thêm sự kiện xóa ảnh trực tiếp tại đây
+                    blockRemoveIcon.addEventListener('click', function() {
+                        imgContainer.remove(); // Xóa phần tử chứa ảnh
+                    });
                     imgContainer.appendChild(img);
-                    imgContainer.appendChild(removeIcon);
+                    imgContainer.appendChild(blockRemoveIcon);
                     previewContainer.appendChild(imgContainer);
                 };
 
@@ -109,7 +131,61 @@ $(document).ready(function() {
         });
     });
 
-    //check lỗi price
+    //check lối price
+
+    // Lấy tất cả các phần tử có class 'price' và 'in-stock'
+
+
+    // // Lặp qua tất cả các input có class 'price'
+    // Array.from(priceInputs).forEach((priceInput, index) => {
+    //     priceInput.addEventListener('change', function(event) {
+    //         const value = event.target.value;
+
+    //         // Kiểm tra giá trị input price
+    //         if (value.trim() === '') {
+    //             priceErrors[index].textContent = 'Giá không được để trống';
+    //             isFormValid = false;
+    //         } else if (isNaN(value) || value <= 0) {
+    //             priceErrors[index].textContent = 'Giá phải là số lớn hơn 0';
+    //             isFormValid = false;
+    //         } else {
+    //             priceErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ'
+    //             isFormValid = true;
+    //         }
+    //     });
+    // });
+
+    // Lặp qua tất cả các input có class 'in-stock'
+    // Array.from(inStockInputs).forEach((inStockInput, index) => {
+    //     inStockInput.addEventListener('change', function(event) {
+    //         const value = event.target.value;
+    //         // Kiểm tra giá trị input in_stock
+    //         if (value.trim() === '') {
+    //             inStockErrors[index].textContent = 'Số lượng không được để trống';
+    //             isFormValid = false;
+    //         } else if (value <= 5) { // Kiểm tra nếu giá trị là số 0
+    //             inStockErrors[index].textContent = 'Số lượng phải lớn hơn 5 vì 5 là ngưỡng tồn kho';
+    //             isFormValid = false; // Form không hợp lệ
+    //         } else if (isNaN(value)) {
+    //             inStockErrors[index].textContent =
+    //                 'Số lượng phải là số và lớn hơn hoặc bằng 1';
+    //             isFormValid = false;
+
+    //         } else if (!Number.isInteger(Number(value))) {
+    //             inStockErrors[index].textContent = 'Số lượng phải là số nguyên';
+    //             isFormValid = false;
+
+    //         } else if (value == 0) { // Kiểm tra nếu giá trị là số 0
+    //             inStockErrors[index].textContent = 'Số lượng phải lớn hơn 0';
+    //             isFormValid = false; // Form không hợp lệ
+    //         } else {
+    //             inStockErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
+    //             isFormValid = true;
+    //         }
+    //     });
+    // });
+
+    //lặp qua tất cả class url
 
     // Thêm sự kiện khi click vào nút submit
     $('#submitForm').click(function(event) {
@@ -123,38 +199,44 @@ $(document).ready(function() {
 
         //check price
         Array.from(priceInputs).forEach((priceInput, index) => {
-            const value = priceInput.value.trim();
-            if (value === '') {
-                priceErrors[index].textContent = 'Giá không được để trống';
-                isFormValid = false;
-            } else if (isNaN(value) || value <= 0) {
-                priceErrors[index].textContent = 'Giá phải là số lớn hơn 0';
-                isFormValid = false;
-            } else {
-                priceErrors[index].textContent = '';
-            }
-        });
-        //check in_stock
-        Array.from(inStockInputs).forEach((inStockInput, index) => {
-            const value = inStockInput.value.trim();
-            if (value === '') {
-                inStockErrors[index].textContent = 'Số lượng không được để trống';
-                isFormValid = false;
-            } else if (value <= 5) {
-                inStockErrors[index].textContent = 'Số lượng phải lớn hơn 5 vì 5 là ngưỡng tồn kho';
-                isFormValid = false;
-            } else if (isNaN(value)) {
-                inStockErrors[index].textContent = 'Số lượng phải là số';
-                isFormValid = false;
-            } else if (!Number.isInteger(Number(value))) {
-                inStockErrors[index].textContent = 'Số lượng phải là số nguyên';
-                isFormValid = false;
-            } else {
-                inStockErrors[index].textContent = '';
-            }
-        });
+        const value = priceInput.value.trim();
+        if (value === '') {
+            priceErrors[index].textContent = 'Giá không được để trống';
+            isFormValid = false;
+        } else if (isNaN(value) || value <= 0) {
+            priceErrors[index].textContent = 'Giá phải là số lớn hơn 0';
+            isFormValid = false;
+        } else {
+            priceErrors[index].textContent = '';
 
-        //check url
+        }
+    });
+//check in_stock
+ // Lặp qua tất cả các input có class 'in-stock'
+ Array.from(inStockInputs).forEach((inStockInput, index) => {
+        const value = inStockInput.value.trim();
+        if (value === '') {
+            inStockErrors[index].textContent = 'Số lượng không được để trống';
+            isFormValid = false;
+        } else if (value <= 5) { // Kiểm tra ngưỡng tồn kho
+            inStockErrors[index].textContent = 'Số lượng phải lớn hơn 5 vì 5 là ngưỡng tồn kho';
+            isFormValid = false;
+        } else if (isNaN(value)) {
+            inStockErrors[index].textContent = 'Số lượng phải là số';
+            isFormValid = false;
+        } else if (!Number.isInteger(Number(value))) {
+            inStockErrors[index].textContent = 'Số lượng phải là số nguyên';
+            isFormValid = false;
+        } else {
+            inStockErrors[index].textContent = ''; // Xóa lỗi nếu hợp lệ
+
+        }
+    });
+
+
+    //check url
+
+
         Array.from(urlInputs).forEach((urlInput, index) => {
             const files = urlInput.files;
             const errorElement = urlErrors[index];
@@ -205,11 +287,13 @@ $(document).ready(function() {
             const sizeId = $(this).data('size-id');
             const files = $(this).find('input[type="file"]')[0].files;
             const imgArray = Array.from(files);
-
+            console.log(colorId);  // Kiểm tra xem colorId có đúng không
+            console.log(files);    // Kiểm tra xem files có chứa các file được chọn không
             imagesData.push({
                 size_id: sizeId,
                 images: imgArray
             });
+
         });
 
         const attributesData = [];
@@ -235,7 +319,7 @@ $(document).ready(function() {
                 formData.append(`images_${img.size_id}[]`, image);
             });
         });
-
+        console.log(imagesData); // Kiểm tra dữ liệu ảnh gửi đi
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
         fetch("/admin/products/update-atrPro", {
                 method: "POST",

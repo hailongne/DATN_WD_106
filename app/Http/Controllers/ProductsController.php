@@ -161,6 +161,7 @@ public function productList($categoryId = null)
         // Truy vấn lấy tất cả đánh giá của sản phẩm
         $query = Reviews::where('product_id', $productId)
             ->with('user', 'likes', 'reports') // Lấy thông tin người dùng đã đánh giá
+            ->where('is_active', '1') //
             ->when($rating, function ($q) use ($rating) {
                 // Lọc theo số sao nếu có
                 $q->where('rating', $rating);
@@ -186,32 +187,16 @@ public function productList($categoryId = null)
         ->count();
 
         $hasReviewed = $purchaseCount > 0;
-        $productAttributes = $product->attributeProducts->map(function($attribute) {
-            $price = $attribute->price;
-    
-            // Kiểm tra nếu giá trị price không hợp lệ
-            if (!is_numeric($price)) {
-                $price = 0; // Đặt giá trị mặc định nếu không hợp lệ
-            }
-    
-            return [
-                'color_id' => $attribute->color_id,
-                'size_id' => $attribute->size_id,
-                'in_stock' => $attribute->in_stock,
-                'price' => $price
-            ];
-        });
-    
-        // Chuyển mảng PHP thành JSON
-        $productAttributesJson = json_encode($productAttributes);
+
         // Trả về view với các biến cần thiết, bao gồm số lượt xem
-        return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount','productAttributesJson'));
+        return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount'));
 
         }
 
-    public function addReview(Request $request)
+    public function addReview(ReviewRequest $request)
 
     {
+
         $bannedWords = BannedWord::pluck('word')->toArray();
         $comment = $request->input('comment');
 
@@ -228,7 +213,8 @@ public function productList($categoryId = null)
                                  ->first();
 
         if ($existingReview) {
-            return redirect()->back()->with('error', 'Bạn chỉ có thể đánh giá sản phẩm này một lần.');
+            return redirect()->back()
+            ->with(['existingReview'=>$existingReview])->with('error', 'Bạn chỉ có thể đánh giá sản phẩm này một lần.');
         }
 
         // Xử lý hình ảnh (nếu có)

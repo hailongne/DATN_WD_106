@@ -429,3 +429,19 @@ Route::get('/profile', function () {
 Route::get('/profile-edit', function () {
     return view('user.profiles.edit');
 });
+
+Route::get('/care-instruction', function () {
+    return view('user.instructions.careInstructions');
+});
+Route::get('/return-instruction', function () {
+    return view('user.instructions.returnInstructions');
+});
+Route::get('/buy-instruction', function () {
+    return view('user.instructions.buyInstruction');
+});
+Route::get('/customer-instruction', function () {
+    return view('user.instructions.custumerInstruction');
+});
+Route::get('/introduce-instruction', function () {
+    return view('user.instructions.introduce');
+});

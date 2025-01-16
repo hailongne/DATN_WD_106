@@ -1,6 +1,6 @@
 @extends('admin.index')
 @push('styles')
-<link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 @endpush
 @section('content')
 
@@ -13,6 +13,16 @@
             <a href="{{route('admin.coupons.create')}}" class="btn add-button">Thêm mới</a>
             @endif
         </div>
+        @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+        @endif
+        @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
         <div class="custom-filter-bar d-flex align-items-center">
             <form action="" method="get" class="d-flex align-items-center custom-filter-item">
                 <div class="custom-input-group">
@@ -41,37 +51,37 @@
             </a>
         </div>
 
-        <table class="product-table table table-bordered text-center align-middle mb-5">
-            <thead class="thead-dark">
-                <tr>
-                    <th></th>
-                    <th>Tên</th>
-                    <th>Loại</th>
-                    <th>Số lượng</th>
-                    <th>Giá trị tối thiểu</th>
-                    <th>Giá trị tối đa</th>
-                    <th>Ngày bắt đầu </th>
-                    <th>Ngày kết thúc</th>
-                    <th>Trạng thái</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
+            <table class="product-table table table-bordered text-center align-middle mb-5">
+                <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>Tên</th>
+                        <th>Giá trị giảm giá</th>
+                        <th>Số lượng</th>
+                        <th>Giá trị đơn hàng tối thiểu</th>
+                        <th>Giá trị tối đa</th>
+                        <th>Ngày bắt đầu </th>
+                        <th>Ngày kết thúc</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
 
                 @foreach ($coupons as $key => $coupon)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <td>{{$coupon->coupon_id}}</td>
                     <td>{{$coupon->code}}</td>
                     @if($coupon->discount_amount)
-                    <td>{{ number_format($coupon->discount_amount, 0, ',', '.') }} ₫</td>
+                    <td>{{ number_format($coupon->discount_amount, 0, ',', '.') }}</td>
                     @else
                     <td>{{$coupon->discount_percentage	}}%</td>
                     @endif
                     <td>{{$coupon->quantity}}</td>
-                    <td>{{ number_format($coupon->min_order_value, 0, ',', '.') }} ₫</td>
-                    <td>{{ number_format($coupon->max_order_value, 0, ',', '.') }} ₫</td>
-                    <td>{{ date('d/m/Y', strtotime($coupon->start_date)) }}</td>
-                    <td>{{ date('d/m/Y', strtotime($coupon->end_date)) }}</td>
+                    <td>{{$coupon->min_order_value}}</td>
+                    <td>{{$coupon->max_order_value}}</td>
+                    <td>{{$coupon->start_date}}</td>
+                    <td>{{$coupon->end_date}}</td>
                     <td>
                         <form action="{{ route('admin.coupons.toggle', $coupon->coupon_id) }}" method="POST"
                             style="display:inline;">
@@ -110,26 +120,25 @@
                 @endforeach
 
 
-            </tbody>
-        </table>
-        <!-- Phân trang -->
-        <nav>
-            <ul class="pagination justify-content-center">
-                {{ $coupons->links() }}
-            </ul>
-        </nav>
-    </div>
+                </tbody>
+            </table>
+            <!-- Phân trang -->
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {{ $coupons->links() }}
+                </ul>
+            </nav>
+        </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
-    <script>
-    </script>
-    @endpush
-</body>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        @push('scripts')
+            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+            <script></script>
+        @endpush
+    </body>
 @endsection
