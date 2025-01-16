@@ -207,10 +207,6 @@ p {
     outline-offset: -2px;
 }
 
-.container-contacts{
-    float: right;
-}
-
 /* Nút "Liên Hệ" */
 .icon-chat-contact {
     border: 3px solid #000;
@@ -322,16 +318,6 @@ p {
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease;
-}
-
-.contact-section .btn-primary {
-    background-color: #007bff;
-    color: white;
-    border-radius: 5px;
-}
-
-.contact-section .btn-primary:hover {
-    background-color: #0056b3;
 }
 
 .contact-section .btn-secondary {

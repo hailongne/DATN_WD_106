@@ -552,7 +552,9 @@
     </div>
 
 
-    <script>
+
+</div>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         if (window.location.hash === '#reviews') {
             const reviewsSection = document.querySelector('#reviews');
@@ -883,7 +885,5 @@ function selectSize(sizeId, element) {
         });
     });
     </script>
-</div>
-
 
 @endsection
