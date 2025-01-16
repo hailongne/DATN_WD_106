@@ -93,6 +93,7 @@
                             @endif
                             <td>{{ \Carbon\Carbon::parse($coupon->start_date)->format('d/m/Y') }}</td>
                             <td>{{ \Carbon\Carbon::parse($coupon->end_date)->format('d/m/Y') }}</td>
+                            
                             <td>
                                 <form action="{{ route('admin.coupons.toggle', $coupon->coupon_id) }}" method="POST"
                                     style="display:inline;">

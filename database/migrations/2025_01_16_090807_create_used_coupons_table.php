@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreign('coupon_id')->references('coupon_id')->on('coupons')->onDelete('cascade');
             $table->unique(['user_id', 'coupon_id']); // Đảm bảo mỗi người dùng chỉ được sử dụng mã 1 lần
         });
-    }
+    }   
 
     /**
      * Reverse the migrations.
