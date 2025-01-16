@@ -35,10 +35,9 @@
                             </li>
 
                             @foreach ($categories as $category)
-                            <li class="dropdown-item-menu">
-                                <a
-                                    href="{{ route('user.product.list', $category->category_id) }}">{{ $category->name }}</a>
-                            </li>
+                                <li class="dropdown-item-menu">
+                                    <a href="{{ route('user.product.list', $category->category_id) }}">{{ $category->name }}</a>
+                                </li>
                             @endforeach
                         </ul>
                     </div>

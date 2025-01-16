@@ -87,28 +87,25 @@ class ProductsController extends Controller
 
 
     // API để lấy danh sách sản phẩm
-    public function productList($categoryId = null)
-    {
-        // Nếu có categoryId thì lọc theo danh mục, nếu không thì lấy tất cả sản phẩm
-        if ($categoryId) {
-            $listProduct = Product::with('attributeProducts')
-                ->where('category_id', $categoryId)
-                ->where('is_active', true)
-                ->get();
-        } else {
-            $listProduct = Product::with('attributeProducts')
-                ->where('is_active', true)
-                ->get();
-        }
-
-
-        // Lấy top 10 sản phẩm bán chạy (sold_count > 100) và đang hoạt động
-        $bestSellers = Product::getBestSellers();
-        $hotProducts = Product::getHotProducts();
-        // Trả về view với dữ liệu
-        return view('user.product',
-        compact('listProduct', 'hotProducts', 'bestSellers',));
+public function productList($categoryId = null)
+{
+    if ($categoryId) {
+        $listProduct = Product::with('attributeProducts')
+            ->where('product_category_id', $categoryId)
+            ->where('is_active', true)
+            ->get();
+    } else {
+        $listProduct = Product::with('attributeProducts')
+            ->where('is_active', true)
+            ->get();
     }
+
+    $bestSellers = Product::getBestSellers();
+    $hotProducts = Product::getHotProducts();
+
+    return view('user.product', compact('listProduct', 'hotProducts', 'bestSellers'));
+}
+
 
 
     // API để lấy chi tiết một sản phẩm

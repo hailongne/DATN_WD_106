@@ -90,7 +90,7 @@ class ProductController extends Controller
 
     public function getData()
     {
-        $categories = Category::callTreeCategory();
+        $categories = Category::all();
         $brands = Brand::all();
         $sizes = Size::get();
         $colors = Color::get();
@@ -275,7 +275,7 @@ class ProductController extends Controller
     public function editProduct($id)
     {
         $product = Product::findOrFail($id);
-        $categories = Category::callTreeCategory();
+        $categories = Category::get();
 
         $brands = Brand::get();
         $sizes = Size::get();
