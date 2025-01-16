@@ -84,12 +84,12 @@
                                     tôi</a>
 
 
-                                <a href="{{route('user.product.listLove', ['id' => Auth::user()->user_id])}}"
+                                <!-- <a href="{{route('user.product.listLove', ['id' => Auth::user()->user_id])}}"
                                     class="dropdown-item">
                                     Sản phẩm yêu thích
-                                </a>
+                                </a> -->
                                 <a href="{{ route('user.coupons.list') }}" class="dropdown-item">
-                                    Mã giảm giá của bạn
+                                    Mã giảm giá của tôi
                                 </a>
                                 <a href="{{route('user.order.history')}}" class="dropdown-item">Đơn mua</a>
 

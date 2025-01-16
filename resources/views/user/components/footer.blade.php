@@ -18,24 +18,20 @@
                 <h5 style="font-size: 16px; font-weight: bold;">Hướng trợ khách hàng</h5>
                 <ul style="list-style: none; padding: 0;">
                     <li style="margin-bottom: 5px;">
-                        <a href="#" style="text-decoration: none; color: #0F5132; font-size: 14px;">Hướng dẫn bảo
+                        <a href="{{ url('/care-instruction') }}" style="text-decoration: none; color: #0F5132; font-size: 14px;">Hướng dẫn bảo
                             quản</a>
                     </li>
                     <li style="margin-bottom: 5px;">
-                        <a href="#" style="text-decoration: none; color: #0F5132; font-size: 14px;">Hướng dẫn đổi
+                        <a href="{{url('/return-instruction')}}" style="text-decoration: none; color: #0F5132; font-size: 14px;">Hướng dẫn đổi
                             hàng</a>
                     </li>
                     <li style="margin-bottom: 5px;">
-                        <a href="#" style="text-decoration: none; color: #0F5132; font-size: 14px;">Hướng dẫn mua
+                        <a href="{{url('/buy-instruction')}}" style="text-decoration: none; color: #0F5132; font-size: 14px;">Hướng dẫn mua
                             hàng</a>
                     </li>
                     <li style="margin-bottom: 5px;">
-                        <a href="#" style="text-decoration: none; color: #0F5132; font-size: 14px;">Chính sách đổi
-                            trả</a>
-                    </li>
-                    <li style="margin-bottom: 5px;">
-                        <a href="#" style="text-decoration: none; color: #0F5132; font-size: 14px;">Phương thức vận
-                            chuyển</a>
+                        <a href="{{url('/customer-instruction')}}" style="text-decoration: none; color: #0F5132; font-size: 14px;">
+                            Khách hàng thân thiết</a>
                     </li>
                 </ul>
             </div>

@@ -130,7 +130,7 @@
 
     <!-- accordion -->
     <div class="accordion" id="accordionPanelsStayOpenExample">
-        <div class="accordion-item">
+        <div id="reviews" class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
                     data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
@@ -555,7 +555,14 @@
 
 
     <script>
-
+    document.addEventListener('DOMContentLoaded', function () {
+        if (window.location.hash === '#reviews') {
+            const reviewsSection = document.querySelector('#reviews');
+            if (reviewsSection) {
+                reviewsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
     document.addEventListener('DOMContentLoaded', function() {
         var reviewsContainer = document.getElementById('reviewsContainer');
         reviewsContainer.scrollTop = reviewsContainer.scrollHeight;
@@ -582,8 +589,14 @@
             if (!size) {
                 message += 'Vui lòng chọn kích thước.\n';
             }
-            // Hiển thị thông báo lỗi
-            alert(message);
+
+            // Hiển thị thông báo lỗi bằng SweetAlert2
+            Swal.fire({
+                title: 'Thông báo',
+                text: message,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
             return;
         }
     });
@@ -594,14 +607,14 @@
             'in_stock' => $attribute->in_stock
         ];
     }));
-    
+
     function checkStockAvailability() {
     const color = document.getElementById('selected-color').value;
     const size = document.getElementById('selected-size').value;
 
     // Kiểm tra nếu chưa chọn màu sắc hoặc kích thước
     if (!color || !size) {
-        document.getElementById('product-stock').innerText = 'Vui lòng chọn màu sắc và kích thước';
+        document.getElementById('product-stock').innerText = '... sản phẩm';
         return;
     }
 
@@ -738,39 +751,66 @@ function selectSize(sizeId, element) {
 
         // Kiểm tra nếu chưa chọn màu sắc, kích thước hoặc số lượng
         if (!color || !size || !qty) {
-            alert("Vui lòng chọn đầy đủ màu sắc, kích thước và số lượng.");
+            Swal.fire({
+                title: 'Thông báo',
+                text: 'Vui lòng chọn đầy đủ màu sắc, kích thước và số lượng.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
             return; // Dừng lại nếu thiếu lựa chọn
         }
 
         // Gửi yêu cầu AJAX đến server
         const formData = new FormData();
-formData.append('product_id', document.querySelector('[name="product_id"]').value);
-formData.append('color_id', color);
-formData.append('size_id', size);
-formData.append('qty', qty);
-formData.append('_token', document.querySelector('[name="_token"]').value);
+        formData.append('product_id', document.querySelector('[name="product_id"]').value);
+        formData.append('color_id', color);
+        formData.append('size_id', size);
+        formData.append('qty', qty);
+        formData.append('_token', document.querySelector('[name="_token"]').value);
 
-fetch("{{ route('user.cart.add') }}", {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Kiểm tra nếu có dữ liệu thành công
-        if (data.success) {
-            alert('Sản phẩm đã được thêm vào giỏ hàng.');
-            location.reload();  // Làm mới trang nếu thêm vào giỏ thành công
-        } 
-        // Kiểm tra nếu có thông báo lỗi
-        else if (data.error) {
-            alert(data.error);  // Hiển thị thông báo lỗi từ server
-        } else {
-            alert('Có lỗi xảy ra, vui lòng thử lại.'); // Nếu không có key error hoặc success
-        }
-    })
-    .catch(error => {
-        alert('Lỗi kết nối, vui lòng thử lại.');
-    });
+        fetch("{{ route('user.cart.add') }}", {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Kiểm tra nếu có dữ liệu thành công
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thêm vào giỏ hàng thành công!',
+                        html: 'Sản phẩm của bạn đã được thêm vào giỏ hàng.<br>Bạn có thể tiếp tục mua sắm hoặc kiểm tra giỏ hàng.',
+                        showConfirmButton: true,
+                        confirmButtonText: 'Ok',
+                    }).then(() => {
+                        location.reload();  // Làm mới trang nếu thêm vào giỏ thành công
+                    });
+                }
+                // Kiểm tra nếu có thông báo lỗi
+                else if (data.error) {
+                    Swal.fire({
+                        title: 'Lỗi',
+                        text: data.error,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Lỗi',
+                        text: 'Có lỗi xảy ra, vui lòng thử lại.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            })
+            .catch(error => {
+                Swal.fire({
+                    title: 'Lỗi kết nối',
+                    text: 'Lỗi kết nối, vui lòng thử lại.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            });
 
     }
 
@@ -828,7 +868,12 @@ fetch("{{ route('user.cart.add') }}", {
     document.getElementById('reviewForm').addEventListener('submit', function(e) {
         if (!document.querySelector('input[name="rating"]:checked')) {
             e.preventDefault();
-            alert('Vui lòng chọn sao trước khi gửi');
+            Swal.fire({
+                title: 'Thông báo',
+                text: 'Vui lòng chọn sao trước khi gửi',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
         }
     });
     const stars = document.querySelectorAll('.stars input[type="radio"]');

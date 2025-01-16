@@ -29,7 +29,7 @@ p {
 /* Tổng quan cho alert */
 #alert {
     position: fixed;
-    top: 20px;
+    top: 80px;
     right: 20px;
     max-width: 300px;
     padding: 15px;
@@ -205,4 +205,97 @@ p {
     color: #ffffff ;
     outline: 2px solid rgba(0, 0, 0, 0.1);
     outline-offset: -2px;
+}
+/* Style cho phần form liên hệ */
+.contact-section {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    width: 100%;
+    max-width: 500px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000; /* Đảm bảo form không bị che bởi các phần tử khác */
+}
+
+/* Style cho các trường nhập liệu trong form */
+.contact-section .form-group {
+    margin-bottom: 15px;
+}
+
+.contact-section .form-control {
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    width: 100%;
+}
+
+/* Style cho các nút trong form */
+.contact-section button[type="submit"],
+.contact-section #closeContactForm {
+    border-radius: 5px;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+}
+
+.contact-section button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    margin-top: 15px;
+    width: 100%;
+    font-size: 16px;
+}
+
+/* Nút "Đóng" ở góc trên phải */
+.contact-section #closeContactForm {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #f44336; /* Màu đỏ */
+    color: #fff;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+/* Nút "Liên Hệ" */
+#contactBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 50%;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Hiệu ứng khi form hiện lên */
+.contact-section.show {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+#contactBtn:hover {
+    background-color: #0056b3;
+}
+
+/* Hiệu ứng cho nút đóng khi hover */
+.contact-section #closeContactForm:hover {
+    background-color: #d32f2f; /* Màu đỏ đậm */
 }

@@ -188,13 +188,14 @@ class ProductsController extends Controller
             $query->where('product_id', $productId);
         })
         ->count();
-    
+
         $hasReviewed = $purchaseCount > 0;
 $reviewUser= Reviews::where('product_id', $productId)
 ->where('user_id', Auth::id())->count();
         // Thêm thông báo vào session
         $reviewsExist = $reviewUser ? true : false; // Nếu có đánh giá, set là true
         session()->flash('alert', 'Bạn đang vào trang chi tiết sản phẩm');
+
 
 
         // Trả về view với các biến cần thiết, bao gồm số lượt xem
