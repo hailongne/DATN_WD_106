@@ -94,7 +94,7 @@
                 </div>
             </div>
             <div class="row gx-2 mb-3">
-                <div class="col-4" id="max" style="display: none">
+                <div class="col-12" id="max" style="display: none">
                     <label for="max_order_value" class="custom-label">Giảm giá tối đa <span
                             class="text-danger">*</span></label>
                     <input type="text" id="max_order_value" value="{{ number_format($coupon->max_order_value, 0, '.', '') }}"
@@ -127,18 +127,14 @@
                     <span class="text-danger">{{$message}}</span>
                 @enderror
             </div>
-            <div class="row gx-2 mb-3">
+            <div class="row gx-2 mb-3" style="display:none;">
                 <label>Chọn kiểu <span class="text-danger">*</span></label>
                 <div class="form-check">
-                    <input type="radio" name="is_public" id="public" value="0"
-                    @if(old('is_public', $coupon->is_public) == 0) checked @endif
-                    class="form-check-input" >
+                    <input type="radio" name="is_public" id="public" value="0" class="form-check-input" checked>
                     <label for="public" class="form-check-label">Public</label>
                 </div>
                 <div class="form-check">
-                    <input type="radio" name="is_public" id="private"
-                    @if(old('is_public', $coupon->is_public) == 1) checked @endif
-                     value="1" class="form-check-input">
+                    <input type="radio" name="is_public" id="private" value="1" class="form-check-input">
                     <label for="private" class="form-check-label">Private</label>
                 </div>
             </div>
@@ -149,7 +145,7 @@
         </div>
         <!-- table -->
 
-        <div class="customer-section-list" style="display:none" id="customer-section" style="display: {{ $coupon->is_public == 0 ? 'none' : 'block' }};">
+        <!-- <div class="customer-section-list" style="display:none" id="customer-section" style="display: {{ $coupon->is_public == 0 ? 'none' : 'block' }};">
             <div class="button-header mb-3">
                 <button>
                     Danh sách khách hàng <i class="fa fa-star"></i>
@@ -174,7 +170,7 @@
 
                 </tbody>
             </table>
-        </div>
+        </div> -->
 
         </div>
 

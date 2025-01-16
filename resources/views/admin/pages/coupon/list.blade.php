@@ -44,7 +44,6 @@
             <thead class="thead-dark">
                 <tr>
                     <th></th>
-                    <th>Voucher</th>
                     <th>Tên</th>
                     <th>Giá trị giảm giá</th>
                     <th>Số lượng</th>
@@ -61,11 +60,6 @@
                 @foreach ($coupons as $key => $coupon)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    @if($coupon->is_public==0)
-                    <td>Public</td>
-                    @else
-                    <td>Private</td>
-                    @endif
                     <td>{{ $coupon->code }}</td>
                     @if ($coupon->discount_amount)
                     <td>{{ number_format($coupon->discount_amount, 0, '.', ',') . ' VNĐ' }}</td>

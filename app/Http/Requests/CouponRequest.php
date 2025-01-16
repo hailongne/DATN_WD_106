@@ -29,11 +29,12 @@ class CouponRequest extends FormRequest
             'quantity' => 'required|integer|min:1|max:1000',
             'min_order_value' => 'required|numeric|min:1',
             'max_order_value' => [
+                'required',
                 'nullable',
+                'numeric',
                 'min:1',
                 'max:99999999',
                 function ($attribute, $value, $fail) {
-                    // Kiểm tra nếu discount_percentage có giá trị mà max_order_value không có
                     if ($this->input('discount_percentage') !== null && $value === null) {
                         $fail('Giá trị tối đa của đơn hàng là bắt buộc khi có phần trăm giảm giá.');
                     }
@@ -77,6 +78,7 @@ class CouponRequest extends FormRequest
             'end_date.date' => 'Ngày kết thúc phải có định dạng ngày hợp lệ.',
             'end_date.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
             'is_active.boolean' => 'Chỉ nhận giá trị true hoặc false.',
+            'max_order_value.max' => 'Giá trị đơn hàng quá lớn.',
         ];
     }
 
