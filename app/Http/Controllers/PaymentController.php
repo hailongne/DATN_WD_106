@@ -191,11 +191,6 @@ class PaymentController extends Controller
         } else {
             // Nếu không, tính giảm giá theo tỷ lệ phần trăm
             $discountAmount = $amount * $coupon->discount_percentage / 100;
-            $discountAmount = $amount * $coupons->discount_percentage / 100;
-
-            if ($discountAmount > $coupons->max_order_value) {
-                $discountAmount = $coupons->max_order_value;
-            }
         }
         if ($discountAmount > $amount) {
             $discountAmount = $amount;
