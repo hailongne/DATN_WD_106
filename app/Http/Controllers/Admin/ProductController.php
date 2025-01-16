@@ -90,7 +90,7 @@ class ProductController extends Controller
 
     public function getData()
     {
-        $categories = Category::all();
+        $categories = Category::callTreeCategory();
         $brands = Brand::all();
         $sizes = Size::get();
         $colors = Color::get();
@@ -172,6 +172,7 @@ class ProductController extends Controller
         return redirect()->route('admin.products.getDataAtrPro', ['id' => $product->product_id])->with('success', 'Thêm sản phẩm mới thành công!');
     }
 
+
     public function getDataAtrPro($id)
     {
 
@@ -183,16 +184,15 @@ class ProductController extends Controller
         ])
             ->where('product_id', $id)
             ->get();
-        $groupedBySize = $productsAttPro->groupBy(function ($item) {
-            return $item->size->name . "-" . $item->size->size_id;  // Group by both size name and size_id
+        $groupedByColor = $productsAttPro->groupBy(function ($item) {
+            return $item->color->name . "-" . $item->color->color_id;  // Group by both color name and color_id
         });
         $colorId = $productsAttPro[0]->color_id; // Nếu lấy từ bảng AttributeProduct
 
         return view('admin.pages.product.editAtrPro')
-            ->with(['groupedByColor' => $groupedByColor, 'product_id' => $id, 
+            ->with(['groupedByColor' => $groupedByColor, 'product_id' => $id,
             'colorId' => $colorId]);
     }
-
 
     public function updateAllAttributeProducts(Request $request)
     {
@@ -208,7 +208,7 @@ class ProductController extends Controller
         // Xử lý từng color_id và ảnh tương ứng
         foreach ($colorIds as $colorId) {
             // Lấy ảnh của color_id này
-            
+
             $colorImages = $request->file("images_{$colorId}");
 
             if ($colorImages) {
@@ -223,7 +223,7 @@ class ProductController extends Controller
                 foreach ($colorImages as $image) {
                      $newAnh = time() . "." . $image->getClientOriginalExtension(); // Lấy phần mở rộng tệp gốc
                     $storedImages[] = $image->storeAs('/images/color_' . $colorId,$newAnh,'public');
-                    
+
                 }
                 // Gán ảnh vào mảng theo color_id
                 $images[$colorId] = $storedImages;
@@ -287,7 +287,7 @@ class ProductController extends Controller
     public function editProduct($id)
     {
         $product = Product::findOrFail($id);
-        $categories = Category::get();
+        $categories = Category::callTreeCategory();
 
         $brands = Brand::get();
         $sizes = Size::get();
