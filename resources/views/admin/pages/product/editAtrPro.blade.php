@@ -96,7 +96,8 @@ $(document).ready(function() {
             const colorId = event.target.id.split('_')[1];
             const previewContainer = document.getElementById('imagePreviewContainer_' +
                 colorId);
-
+ // Xóa ảnh khi nhấn vào dấu "X"
+ previewContainer.innerHTML = '';
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 const reader = new FileReader();
@@ -104,21 +105,27 @@ $(document).ready(function() {
                 reader.onload = function(e) {
                     const imgContainer = document.createElement('div');
                     imgContainer.classList.add('position-relative', 'm-2');
-
                     const img = document.createElement('img');
                     img.src = e.target.result;
                     img.style.width = '100px';
                     img.style.height = '130px';
-                    img.style.borderRadius = '5px';
-
+                    img.style.borderRadius = '5px';                    
+                    //Dấu X xóa ảnh
+                    const blockRemoveIcon = document.createElement('div');
                     const removeIcon = document.createElement('i');
                     removeIcon.classList.add('fa', 'fa-times-circle', 'position-absolute', 'text-danger');
                     removeIcon.style.top = '5px';
                     removeIcon.style.right = '5px';
                     removeIcon.style.cursor = 'pointer';
+                    removeIcon.id = 'svg_id_' + i;
+                    blockRemoveIcon.appendChild(removeIcon);
 
+                    // Thêm sự kiện xóa ảnh trực tiếp tại đây
+                    blockRemoveIcon.addEventListener('click', function() {
+                        imgContainer.remove(); // Xóa phần tử chứa ảnh
+                    });           
                     imgContainer.appendChild(img);
-                    imgContainer.appendChild(removeIcon);
+                    imgContainer.appendChild(blockRemoveIcon);
                     previewContainer.appendChild(imgContainer);
                 };
 
