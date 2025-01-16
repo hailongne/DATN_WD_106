@@ -249,9 +249,7 @@ class OrderController extends Controller
                 ];
     
                 // Cập nhật số lượng tồn kho sau khi thanh toán
-                $attributeProduct->update([
-                    'in_stock' => $attributeProduct->in_stock - $item->qty,
-                ]);
+                
             }
 
 
