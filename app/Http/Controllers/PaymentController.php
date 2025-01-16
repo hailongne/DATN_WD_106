@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Coupon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\AttributeProduct;
 
 class PaymentController extends Controller
 {
@@ -104,6 +105,7 @@ class PaymentController extends Controller
             'total' => $total,
             'shippingFee' => $shippingFee
         ];
+        
         Mail::to($user->email)->send(new OrderConfirm($emailData));
 
         // Chuyển hướng đến trang thông báo thanh toán thành công
@@ -151,8 +153,13 @@ class PaymentController extends Controller
             ->whereDate('end_date', '>=', now()) 
             ->first();
 
-      if(isset($coupon)) {
-            // nếu hết mã giảm giá
+        if (!$coupon) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn.',
+            ]);
+        }
+        // nếu hết mã giảm giá
         if ($coupon->quantity <= 0) {
             return response()->json([
                 'success' => false,
@@ -175,64 +182,11 @@ class PaymentController extends Controller
             $discountAmount = $coupon->discount_amount;
         } else {
             // Nếu không, tính giảm giá theo tỷ lệ phần trăm
-    $discountAmount = $amount * $coupon->discount_percentage / 100;
-
-    if ($discountAmount > $coupon->max_order_value) {
-        $discountAmount = $coupon->max_order_value;
-    }
-            
+            $discountAmount = $amount * $coupon->discount_percentage / 100;
         }
         if ($discountAmount > $amount) {
             $discountAmount = $amount;
         }
-      }elseif(isset($coupons)){
-    if ($coupons->quantity <= 0) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Mã giảm giá này đã được sử dụng hết.',
-        ]);
-    }
-    if ($amount < $coupons->min_order_value) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Mã giảm giá chỉ áp dụng cho đơn hàng có giá trị từ ' . 
-    number_format($coupons->min_order_value, 0, ',', '.') . ' VND trở lên.',
-        ]);
-    }
-    $couponUser = $coupons->couponUsers->where('email', $userEmail)->first();
-        // Kiểm tra quyền sử dụng mã giảm giá cho người dùng
-        if (!isset( $couponUser)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Mã giảm giá này không dành cho bạn.',
-            ]);
-        }
-     // Tính giá trị giảm giá
-     if ( isset($coupons->discount_amount) && $coupons->discount_amount > 0) {
-        // Nếu có giá trị giảm giá cố định
-            $discountAmount = $coupons->discount_amount;
-        } else {
-            // Nếu không, tính giảm giá theo tỷ lệ phần trăm
-                   // Nếu không, tính giảm giá theo tỷ lệ phần trăm
-    $discountAmount = $amount * $coupons->discount_percentage / 100;
-
-    if ($discountAmount > $coupons->max_order_value) {
-        $discountAmount = $coupons->max_order_value;
-    }
-        }
-        if ($discountAmount > $amount) {
-            $discountAmount = $amount;
-        }
-
-
-
-      }else{
-        return response()->json([
-            'success' => false,
-            'message' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn.',
-        ]);
-      }
-      
         session(['discount_code' => $code]);
         // $coupon->decrement('quantity');
         // Cập nhật số lượng mã giảm giá nếu có
@@ -241,8 +195,9 @@ class PaymentController extends Controller
         // }
 
         // Tính tổng mới sau khi áp dụng mã giảm giá
-        $newTotal = $amount - $discountAmount;
-       
+        $shippingFee = 40000;
+        $newTotal = $amount - $discountAmount +  $shippingFee;
+
         return response()->json([
             'success' => true,
             'message' => 'Mã giảm giá đã được áp dụng thành công!',
@@ -264,6 +219,25 @@ class PaymentController extends Controller
 
             // Duyệt qua từng sản phẩm trong giỏ hàng và kiểm tra sự trùng lặp với sản phẩm trong session
             foreach ($shoppingCart->cartItems as $cartItem) {
+                $attributeProduct = AttributeProduct::where('product_id', $cartItem->product_id)
+                    ->where('size_id', $cartItem->size_id)
+                    ->where('color_id', $cartItem->color_id)
+                    ->first();
+
+                if ($attributeProduct) {
+                    // Giảm số lượng tồn kho theo số lượng sản phẩm trong giỏ hàng
+                    $attributeProduct->update([
+                        'in_stock' => $attributeProduct->in_stock - $cartItem->qty,
+                    ]);
+
+                    // Đảm bảo số lượng tồn kho không âm
+                    if ($attributeProduct->in_stock < 0) {
+                        $attributeProduct->in_stock = 0;
+                    }
+
+                    // Lưu thay đổi vào cơ sở dữ liệu
+                    $attributeProduct->save();
+                }
                 // Tìm kiếm sản phẩm trong session có trùng `product_id`, `size_id`, `color_id` với sản phẩm trong giỏ hàng
                 $matchingProduct = $productDetails->first(function ($product) use ($cartItem) {
                     return $product['product_id'] == $cartItem->product_id
@@ -277,6 +251,7 @@ class PaymentController extends Controller
                     $cartItem->delete();
                     // Xóa sản phẩm trùng khớp trong giỏ hàng
                 }
+                
             }
         }
         $discountCode = session('discount_code');
@@ -286,6 +261,7 @@ class PaymentController extends Controller
                 $coupon->decrement('quantity');  // Giảm số lượng mã giảm giá
             }
         }
+        
         // Lấy thông tin tên người dùng từ session
         $userName = session('userName');
         $successMessage = session('success');
