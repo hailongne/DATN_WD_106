@@ -202,62 +202,85 @@ public function productList($categoryId = null)
                 'price' => $price
             ];
         });
-
+        $reviewCount = Reviews::where('product_id', $productId)
+        ->where('user_id', auth()->id()) // Lấy đánh giá của người dùng hiện tại
+        ->count();
+    
         // Chuyển mảng PHP thành JSON
         $productAttributesJson = json_encode($productAttributes);
         // Trả về view với các biến cần thiết, bao gồm số lượt xem
-        return view('user.detailProduct', compact('product', 'relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount','productAttributesJson'));
+        return view('user.detailProduct', 
+        compact(
+            'product',
+             'relatedProducts',
+              'reviews',
+               'reviewAll',
+                'rating',
+                 'productId',
+                  'hasPurchased',
+                   'hasReviewed',
+                    'viewCount',
+                    'productAttributesJson',
+                    'purchaseCount',
+                    'reviewCount'));
 
         }
 
-    public function addReview(Request $request)
-
-    {
-        $bannedWords = BannedWord::pluck('word')->toArray();
-        $comment = $request->input('comment');
-
-        // Kiểm tra các từ bị cấm trong bình luận
-        foreach ($bannedWords as $bannedWord) {
-            if (stripos($comment, $bannedWord) !== false) {
-                $comment = str_ireplace($bannedWord, str_repeat('*', strlen($bannedWord)), $comment);
+        public function addReview(Request $request)
+        {
+            $bannedWords = BannedWord::pluck('word')->toArray();
+            $comment = $request->input('comment');
+        
+            // Kiểm tra các từ bị cấm trong bình luận
+            foreach ($bannedWords as $bannedWord) {
+                if (stripos($comment, $bannedWord) !== false) {
+                    $comment = str_ireplace($bannedWord, str_repeat('*', strlen($bannedWord)), $comment);
+                }
             }
+        
+            // Kiểm tra số lượng đơn hàng chứa sản phẩm này
+            $userOrders = Order::where('user_id', auth()->id())
+                ->whereHas('orderItems', function ($query) use ($request) {
+                    $query->where('product_id', $request->input('product_id'));
+                })
+                ->count();
+        
+            // Kiểm tra số lượng đánh giá hiện tại của người dùng cho sản phẩm này
+            $existingReviews = Reviews::where('product_id', $request->input('product_id'))
+                ->where('user_id', auth()->id())
+                ->count();
+        
+            // Kiểm tra nếu người dùng đã hết lượt đánh giá
+            if ($existingReviews >= $userOrders) {
+                return redirect()->back()->with('error', 'Bạn chỉ có thể đánh giá sản phẩm này theo số lần đã mua.');
+            }
+        
+            // Kiểm tra xem người dùng có chọn sao hay không
+            if (!$request->has('rating') || !in_array($request->input('rating'), [1, 2, 3, 4, 5])) {
+                return redirect()->back()->with('error', 'Vui lòng chọn số sao.');
+            }
+        
+            // Xử lý hình ảnh (nếu có)
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $newImage = time() . "." . $image->getClientOriginalExtension();
+                $anh = $image->storeAs('/storage/imagePro/image_review', $newImage, 'public');
+            } else {
+                $anh = '';
+            }
+        
+            // Thêm mới bình luận và đánh giá
+            $review = Reviews::create([
+                'product_id' => $request->input('product_id'), // Lưu product_id của review
+                'user_id' => auth()->id(),
+                'image' => $anh ?? null,
+                'rating' => $request->input('rating'),
+                'comment' => $comment ?: null,
+            ]);
+        
+            return redirect()->back()->with('success', 'Cảm ơn bạn đã đánh giá!');
         }
-
-        // Kiểm tra xem người dùng đã đánh giá sản phẩm này chưa
-        $existingReview = Reviews::where('product_id', $request->input('product_id'))
-                                 ->where('user_id', auth()->id())
-                                 ->first();
-
-        if ($existingReview) {
-            return redirect()->back()->with('error', 'Bạn chỉ có thể đánh giá sản phẩm này một lần.');
-        }
-
-        // Xử lý hình ảnh (nếu có)
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $newImage = time() . "." . $image->getClientOriginalExtension();
-            $anh = $image->storeAs('/storage/imagePro/image_review', $newImage, 'public');
-        } else {
-            $anh = '';
-        }
-
-        // Kiểm tra xem người dùng có chọn sao hay không
-        $rating = $request->input('rating');
-        if (empty($rating)) {
-            return redirect()->back()->with('error', 'Vui lòng chọn sao :))');
-        }
-
-        // Thêm mới bình luận và đánh giá
-        $review = Reviews::create([
-            'product_id' => $request->input('product_id'), // Lưu product_id của review
-            'user_id' => auth()->id(),
-            'image' => $anh ?? null,
-            'rating' => $rating ,
-            'comment' => $comment ?: null,
-        ]);
-
-        return redirect()->back()->with('success', 'Cảm ơn bạn đã đánh giá!');
-    }
+        
 
     public function like($reviewId)
     {

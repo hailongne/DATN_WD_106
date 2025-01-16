@@ -300,20 +300,21 @@
                     <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="review-form">
+                            <p>Đánh giá của bạn:</p>
                             <div class="form-start-detail-select">
                                 <label class="text-muted mr-3">Chất lượng sản phẩm</label>
                                 <div class="stars">
                                     <input type="radio" id="star5" name="rating" value="5">
                                     <label for="star5" data-text="Tuyệt vời">★</label>
 
-                                    <input type="radio" id="star4" name="rating" value="4">
-                                    <label for="star4" data-text="Hài lòng">★</label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star4" data-text="Hài lòng">★</label>
 
-                                    <input type="radio" id="star3" name="rating" value="3">
-                                    <label for="star3" data-text="Bình thường">★</label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star3" data-text="Bình thường">★</label>
 
-                                    <input type="radio" id="star2" name="rating" value="2">
-                                    <label for="star2" data-text="Không hài lòng">★</label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star2" data-text="Không hài lòng">★</label>
 
                                     <input type="radio" id="star1" name="rating" value="1">
                                     <label for="star1" data-text="Tệ">★</label>
@@ -333,6 +334,7 @@
                             <button class="btn btn-primary" type="submit">Đánh giá</button>
                         </div>
                     </form>
+
                     @elseif(!$hasReviewed)
                     <p class="text-center">Bạn đã đánh giá sản phẩm này rồi.</p>
                     @else
