@@ -6,6 +6,11 @@
         <div class="button-header">
             <button>Danh Sách Bình luận <i class="fa fa-star"></i></button>
         </div>
+        @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
         <!-- Modal Add -->
         <div class="modal fade" id="productCreateModal" tabindex="-1" aria-labelledby="productCreateModalLabel"
             aria-hidden="true">
@@ -56,8 +61,8 @@
                                 style="display:inline;">
                                 @csrf
                                 <button type="submit"
-                                    class="custom-btn-active-admin {{ $review->is_active ? 'btn-danger' : 'btn-success' }} status-btn-active">
-                                    <p>{{ $review->is_active ? 'Tắt hoạt động' : 'Kích hoạt' }}</p>
+                                    class="custom-btn-active-admin {{ $review->is_active ? 'btn-success' : 'btn-danger' }} status-btn-active">
+                                    <p>{{ $review->is_active ? 'Hoạt động' : 'Không hoạt động' }}</p>
                                 </button>
                             </form>
                         </td>
@@ -68,12 +73,15 @@
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                             </a> -->
-                                <a href="{{ route('admin.reviews.reply', $review->review_id) }}"
+                                         
+                               @if($review->replies->isEmpty())  
+                               <a href="{{ route('admin.reviews.reply', $review->review_id) }}"
                                     data-id="{{ $review->review_id }}" class="text-info">
                                     <button class="action-btn reply" title="Trả lời tin nhắn">
                                         <i class="fas fa-reply"></i>
                                     </button>
                                 </a>
+                               @endif
                                 @if (Auth::user()->role !== 3)
                                     <form action="{{ route('admin.reviews.delete', $review->review_id) }}" method="POST"
                                         onsubmit="return confirm('Bạn có chắc chắn muốn xóa thương hiệu này?');"

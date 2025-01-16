@@ -190,7 +190,7 @@ class ProductsController extends Controller
         ->count();
 
         $hasReviewed = $purchaseCount > 0;
-$reviewUser= Reviews::where('product_id', $productId)
+$reviewUser= Reviews::withTrashed()->where('product_id', $productId)
 ->where('user_id', Auth::id())->count();
         // Thêm thông báo vào session
         $reviewsExist = $reviewUser ? true : false; // Nếu có đánh giá, set là true
@@ -206,7 +206,7 @@ $reviewUser= Reviews::where('product_id', $productId)
     public function addReview(ReviewRequest $request)
 
     {
-        \Log::info('Request Data:', $request->all());
+      
         $bannedWords = BannedWord::pluck('word')->toArray();
         $comment = $request->input('comment');
 
