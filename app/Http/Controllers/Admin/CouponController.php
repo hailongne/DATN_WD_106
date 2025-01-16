@@ -102,7 +102,7 @@ public function addCoupon(CouponRequest $request)
         $couponUser = CouponUser::create([
             'coupon_id' => $coupon->coupon_id,  
             'user_id' => $user->user_id,
-            'has_used' => true,         
+            'has_used' => false,         
         ]);
 
         // Thêm vào mảng couponUsers

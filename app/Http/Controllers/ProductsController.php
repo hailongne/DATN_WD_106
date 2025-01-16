@@ -161,6 +161,7 @@ public function productList($categoryId = null)
         // Truy vấn lấy tất cả đánh giá của sản phẩm
         $query = Reviews::where('product_id', $productId)
             ->with('user', 'likes', 'reports') // Lấy thông tin người dùng đã đánh giá
+            ->where('is_active', 1) // Chỉ lấy các đánh giá được kích hoạt
             ->when($rating, function ($q) use ($rating) {
                 // Lọc theo số sao nếu có
                 $q->where('rating', $rating);
@@ -188,12 +189,12 @@ public function productList($categoryId = null)
         $hasReviewed = $purchaseCount > 0;
         $productAttributes = $product->attributeProducts->map(function($attribute) {
             $price = $attribute->price;
-    
+
             // Kiểm tra nếu giá trị price không hợp lệ
             if (!is_numeric($price)) {
                 $price = 0; // Đặt giá trị mặc định nếu không hợp lệ
             }
-    
+
             return [
                 'color_id' => $attribute->color_id,
                 'size_id' => $attribute->size_id,
@@ -201,7 +202,7 @@ public function productList($categoryId = null)
                 'price' => $price
             ];
         });
-    
+
         // Chuyển mảng PHP thành JSON
         $productAttributesJson = json_encode($productAttributes);
         // Trả về view với các biến cần thiết, bao gồm số lượt xem

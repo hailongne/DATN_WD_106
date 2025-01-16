@@ -29,18 +29,6 @@
 </style>
 
 @section('content')
-@if (session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
-
-@if (session('error'))
-<div class="alert alert-danger">
-    {{ session('error') }}
-</div>
-@endif
-
 <div class="container">
     <div class="button-header mb-3">
         <button>Quản lý danh sách người dùng <i class="fa fa-star"></i></button>
@@ -60,9 +48,10 @@
     <table class="product-table table table-bordered text-center align-middle">
         <thead class="thead-dark">
             <tr>
+                <th></th>
+                <th class="text-start">Tên người dùng</th>
                 <th>ID</th>
-                <th>Tên</th>
-                <th>Email</th>
+                <th class="text-start">Email</th>
                 <th>Vai trò</th>
                 <th>Chỉnh sửa quyền</th>
             </tr>
@@ -70,9 +59,10 @@
         <tbody>
             @forelse($users as $user)
             <tr>
+                <td>{{ $loop->index+1 }}</td>
+                <td class="text-start">{{ $user->name }}</td>
                 <td>{{ $user->user_id }}</td>
-                <td>{{ $user->name }}</td>
-                <td>{{ $user->email }}</td>
+                <td class="text-start">{{ $user->email }}</td>
                 <td>
                     @switch($user->role)
                     @case(1)
@@ -94,7 +84,7 @@
                         <form method="POST" action="{{ route('admin.users.update-role', $user->user_id) }}" style="display: inline;">
                             @csrf
                             <select name="role" class="form-select w-50 d-inline-block" onchange="this.form.submit()">
-                                <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>Admin</option>
+                                <!-- <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>Admin</option> -->
                                 <option value="2" {{ $user->role == 2 ? 'selected' : '' }}>User</option>
                                 <option value="3" {{ $user->role == 3 ? 'selected' : '' }}>Manager</option>
                             </select>
@@ -124,9 +114,9 @@
     setTimeout(function() {
         const alerts = document.querySelectorAll('.alert');
         alerts.forEach(alert => {
-            alert.classList.add('fade'); 
-            setTimeout(() => alert.remove(), 500); 
+            alert.classList.add('fade');
+            setTimeout(() => alert.remove(), 500);
         });
-    }, 3000); 
+    }, 3000);
 </script>
 @endsection

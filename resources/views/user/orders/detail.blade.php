@@ -118,7 +118,7 @@
                                 <td>{{ $item->quantity }}</td>
                                 <td>{{ $item->product ? number_format($item->price * $item->quantity, 0, ',', '.') . ' đ' : 'Không có thông tin' }}</td>
                                 <td>
-                                    @if($item->product)
+                                    @if($order->status === 'completed' && $item->product)
                                     <a href="{{ route('user.product.detail', ['id' => $item->product->product_id]) }}#reviews" class="btn btn-primary btn-sm">
                                         Đánh giá
                                     </a>

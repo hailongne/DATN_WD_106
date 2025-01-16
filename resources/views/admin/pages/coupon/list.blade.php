@@ -13,16 +13,6 @@
             <a href="{{route('admin.coupons.create')}}" class="btn add-button">Thêm mới</a>
             @endif
         </div>
-        @if (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-        @endif
-        @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-        @endif
         <div class="custom-filter-bar d-flex align-items-center">
             <form action="" method="get" class="d-flex align-items-center custom-filter-item">
                 <div class="custom-input-group">

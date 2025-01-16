@@ -88,6 +88,16 @@
         <!-- Include file header -->
     </header>
     <main>
+        @if (session('error'))
+        <div class="alert-danger alert-dismissible fade show custom-alert" id="error-alert">
+            <strong>Lỗi!!!!!</strong> <br/> {{ session('error') }}
+        </div>
+        @endif
+        @if (session('success'))
+        <div class="alert-success alert-dismissible fade show custom-alert" id="success-alert">
+            <strong>Thành công!!!!</strong> <br/> {{ session('success') }}
+        </div>
+        @endif
         @yield('content')
     </main>
     @stack('scripts')

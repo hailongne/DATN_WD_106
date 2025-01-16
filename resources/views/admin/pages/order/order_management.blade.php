@@ -54,13 +54,32 @@ select.form-control option[value="cancelled"] {
     <div class="container mt-4">
         <form method="GET" action="{{ route('admin.orders') }}" class="mb-4">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <input type="date" name="start_date" class="form-control" placeholder="Ngày bắt đầu"
                         value="{{ request('start_date') }}">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <input type="date" name="end_date" class="form-control" placeholder="Ngày kết thúc"
                         value="{{ request('end_date') }}">
+                </div>
+                <div class="col-md-2">
+                    <select name="status" class="form-control">
+                        <option value="">Trạng thái đơn hàng</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
+                        <option value="processing" {{ request('status') == 'processing' ? 'selected' : '' }}>Đã xác nhận</option>
+                        <option value="shipped" {{ request('status') == 'shipped' ? 'selected' : '' }}>Đang giao hàng</option>
+                        <option value="delivered" {{ request('status') == 'delivered' ? 'selected' : '' }}>Đã giao hàng</option>
+                        <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Hoàn thành</option>
+                        <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select name="payment_status" class="form-control">
+                        <option value="">Trạng thái thanh toán</option>
+                        <option value="pending" {{ request('payment_status') == 'pending' ? 'selected' : '' }}>Chờ xử lý</option>
+                        <option value="paid" {{ request('payment_status') == 'paid' ? 'selected' : '' }}>Đã thanh toán</option>
+                        <option value="failed" {{ request('payment_status') == 'failed' ? 'selected' : '' }}>Thất bại</option>
+                    </select>
                 </div>
                 <div class="col-md-3">
                     <select name="status" class="form-control">
@@ -138,8 +157,8 @@ select.form-control option[value="cancelled"] {
                         @endswitch
                     </td>
                     <td>{{ $order->user->name ?? 'N/A' }}</td>
-                    <td>{{ number_format($order->total, 2) }} VND</td>
-                    <td>{{ $order->created_at->format('Y-m-d') }}</td>
+                    <td>{{ number_format($order->total, 0) }} VND</td>
+                    <td>{{ $order->created_at->format('d-m-Y') }}</td>
                     <td>
                         <a href="{{ route('admin.orderDetail', $order->order_id) }}"
                             class="fas fa-eye text-success"></a>

@@ -32,25 +32,16 @@ class OrderController extends Controller
         $status = $request->input('status');        // Trạng thái đơn hàng
         $paymentStatus = $request->input('payment_status');
         $query = Order::with('user');
-    
-        // Lọc theo ngày bắt đầu và ngày kết thúc
+
         if ($startDate) {
             $query->whereDate('created_at', '>=', Carbon::parse($startDate));
         }
         if ($endDate) {
             $query->whereDate('created_at', '<=', Carbon::parse($endDate));
         }
-    
-        // Lọc theo trạng thái
-        if ($status) {
-            $query->where('status', $status);
-        }
-        if ($paymentStatus) {
-            $query->where('payment_status', $paymentStatus);
-        }
-        // Sắp xếp và lấy dữ liệu
+
         $orders = $query->orderBy('order_id', 'desc')->get();
-    
+
         return view('admin.pages.order.order_management', compact('orders'));
     }
 
@@ -67,21 +58,21 @@ class OrderController extends Controller
     {
         // Kiểm tra nếu đơn hàng tồn tại
         $order = Order::find($request->order_id);
-    
+
         if ($order) {
             $previousStatus = $order->status; // Lưu trạng thái cũ trước khi cập nhật
             // Cập nhật trạng thái đơn hàng
             $order->status = $request->status;
             $order->save();
-    
+
             foreach ($order->orderItems as $orderItem) {
                 $product = $orderItem->product;
-    
+
                 if ($product && $product->attributeProducts) {
                     $attributeProduct = $product->attributeProducts
                         ->where('size_id', $orderItem->size_id)
                         ->first();
-    
+
                     if ($attributeProduct) {
                         // Cộng lại số lượng vào in_stock
                         $attributeProduct->in_stock += $orderItem->quantity;
@@ -89,7 +80,7 @@ class OrderController extends Controller
                     }
                 }
             }
-    
+
             // Ghi lại lịch sử thay đổi trạng thái
             OrderStatusHistory::create([
                 'order_id' => $order->order_id,
@@ -97,17 +88,17 @@ class OrderController extends Controller
                 'new_status' => $request->status,
                 'updated_by' => auth()->id(),
             ]);
-    
+
             // Gửi email thông báo cập nhật trạng thái
             Mail::to($order->user->email)->send(new OrderStatusUpdated($order, $previousStatus, $request->status));
-    
+
             // Trả về phản hồi JSON thành công
             return response()->json(['success' => true, 'message' => 'Cập nhật trạng thái thành công và đã gửi email!']);
         }
-    
+
         // Nếu không tìm thấy đơn hàng
         return response()->json(['success' => false, 'message' => 'Không tìm thấy đơn hàng!']);
     }
-    
-    
+
+
 }

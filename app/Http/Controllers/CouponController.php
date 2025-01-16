@@ -14,18 +14,21 @@ class CouponController extends Controller
         if (!$user) {
             return redirect()->route('login')->with('error', 'Bạn cần đăng nhập để xem mã giảm giá!');
         }
-    
+
         // Lấy các coupon thuộc về người dùng và chưa được sử dụng
         $coupons = Coupon::where('is_active', true)
             ->where('is_public', true) // Chỉ lấy coupon công khai
             ->whereDoesntHave('couponUsers', function ($query) use ($user) {
                 $query->where('user_id', $user->user_id)
-                      ->where('has_used', true); // Lọc các coupon đã sử dụng
+                    ->where('has_used', true); // Lọc các coupon đã sử dụng
             })
             ->latest()
             ->paginate(5);
-    
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5b728aadc4baae5765811afb74392a0c02b06e27
         return view('user.coupons', compact('coupons', 'user'));
     }
-    
+
 }

@@ -106,7 +106,6 @@
                             <div class="timeline-step-description-details-classname">
                                 <p><strong>{{ $statusLabels[strtolower($history->new_status)] ?? $history->new_status }}</strong>
                                 </p>
-                                <p>{{ $history->description ?? 'Thông tin chưa có' }}</p>
                                 <p>Cập nhật bởi: <strong>{{ $history->updatedBy->name ?? 'Không xác định' }}</strong>
                                 </p>
                             </div>
@@ -159,7 +158,7 @@
                         <td colspan="6" class="text-end">Phí Ship</td>
                         <td class="text-end">40,000đ</td>
                     </tr>
-                    
+
                     <tr>
                         <td colspan="6" class="text-end">Giảm giá</td>
                         <td class="text-end">

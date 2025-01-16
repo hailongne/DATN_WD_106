@@ -20,17 +20,6 @@
 
     <body>
         <div class="container mt-2">
-        @if (session('error'))
-    <div class="alert alert-danger">
-        {{ session('error') }}
-    </div>
-@endif
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
             <div class="button-header">
                 <button>
                     Danh sách sản phẩm <i class="fa fa-star"></i>
@@ -118,7 +107,7 @@
                 </thead>
                 <tbody>
                     @foreach ($products as $index => $product)
-               
+
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         <td>
@@ -135,7 +124,7 @@
                                 <a href="{{ route('admin.inventories.detail', $product->product_id) }}">
                                     <button class="action-btn eye"><i class="fas fa-eye"></i></button>
                                 </a>
-                              
+
                             </div>
                         </td>
                     </tr>
@@ -160,6 +149,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     @endpush
 @endsection

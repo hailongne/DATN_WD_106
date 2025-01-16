@@ -44,6 +44,28 @@
     margin-left: 10px;
     font-size: 16px;
 }
+
+/* Phản hồi của người bán */
+.admin-response {
+    background-color: #e8f4f8;
+    padding: 10px;
+    border-left: 4px solid #4CAF50;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.admin-info {
+    font-size: 14px;
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.admin-response p {
+    font-size: 14px;
+    color: #333;
+    margin: 5px 0;
+}
+
 </style>
 
 <div class="container">
@@ -69,15 +91,29 @@
                 <span>Nội dung: </span>
                 <p>{{ $review->comment }}</p>
             </div>
-            <!-- <img src="{{ $review->product->main_image_url }}" alt="Ảnh sản phẩm"> -->
+            @if (!empty($review->image))
+                <img src="{{ asset('storage/' . $review->image) }}" class="Ảnh sản phẩm" style="width: 50px; height: 50px; object-fit: cover;">
+            @else
+            @endif
+            @if($review->replies->isNotEmpty())
+            @foreach($review->replies as $reply)
+            <div class="admin-response">
+                <div class="admin-info mr-2">
+                    <p><strong>Phản hồi của admin</strong></p>
+                </div>
+                <p>{{ $reply->content }}</p>
+            </div>
+            @endforeach
+            @endif
         </div>
         <!-- Phần nhập trả lời -->
-        <div class="form-group">
-            <input type="text" class="form-control" id="slug" name="content" placeholder="Nhập câu trả lời" />
-        </div>
-
-        <div class="button-group">
-            <button type="submit" class="btn btn-primary">Gửi</button>
+        <div>
+            <div class="form-group">
+                <input type="text" class="form-control" id="slug" name="content" placeholder="Nhập câu trả lời" />
+            </div>
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">Gửi</button>
+            </div>
         </div>
     </form>
 </div>
