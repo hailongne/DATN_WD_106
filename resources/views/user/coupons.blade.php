@@ -80,10 +80,10 @@
                     </a>
                 </p>
                 <p class="coupon-subtitle">Còn: {{ $coupon->quantity }} voucher</p>
-                <p class="coupon-subtitle"> Áp dụng cho đơn hàng từ
-                    <strong>{{ number_format($coupon->min_order_value, 0, ',', '.') }} ₫</strong> đến
-                    <strong>{{ number_format($coupon->max_order_value, 0, ',', '.') }} ₫</strong>
+                <p class="coupon-subtitle"> Áp dụng cho đơn hàng tối thiểu
+                    <strong>{{ number_format($coupon->min_order_value, 0, ',', '.') }} ₫</strong>
                 </p>
+
             </div>
             <div class="coupon-action mt-2">
                 <div class="coupon-copy-code">

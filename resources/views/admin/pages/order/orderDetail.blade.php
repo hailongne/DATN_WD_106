@@ -47,40 +47,43 @@
         <hr />
         <div class="card-order-history">
             <div class="timeline mb-3">
-                @foreach ($order->statusHistories as $history)
-                <div class="step completed">
-                    <div class="icon">
-                        @switch(strtolower($history->new_status))
-                        @case('pending')
-                        <i class="fas fa-clock"></i>
-                        @break
-                        @case('processing')
-                        <i class="fas fa-spinner"></i>
-                        @break
-                        @case('shipped')
-                        <i class="fas fa-truck"></i>
-                        @break
-                        @case('delivered')
-                        <i class="fas fa-box-open"></i>
-                        @break
-                        @case('cancelled')
-                        <i class="fas fa-times-circle"></i>
-                        @break
-                        @case('completed')
-                        <i class="fas fa-check-circle"></i>
-                        @break
-                        @default
-                        <i class="fas fa-question-circle"></i>
-                        @endswitch
-                    </div>
-                    <div class="text">
-                        <p>{{ $statusLabels[strtolower($history->new_status)] ?? $history->new_status }}</p>
-                        <span>{{ $history->created_at->format('H:i d-m-Y') }}</span>
-                        <br />
-                        <span>Cập nhật bởi: <strong>{{ $history->updatedBy->name ?? 'Không xác định' }}</strong></span>
-                    </div>
+            @foreach ($order->statusHistories as $history)
+            <div class="step completed">
+                <div class="icon">
+                    @switch(strtolower($history->new_status))
+                    @case('pending')
+                    <i class="fas fa-clock"></i>
+                    @break
+                    @case('processing')
+                    <i class="fas fa-spinner"></i>
+                    @break
+                    @case('shipped')
+                    <i class="fas fa-truck"></i>
+                    @break
+                    @case('delivered')
+                    <i class="fas fa-box-open"></i>
+                    @break
+                    @case('cancelled')
+                    <i class="fas fa-times-circle"></i>
+                    @break
+                    @case('completed')
+                    <i class="fas fa-check-circle"></i>
+                    @break
+                    @default
+                    <i class="fas fa-question-circle"></i>
+                    @endswitch
                 </div>
-                @endforeach
+                <div class="text">
+                    <p>{{ $statusLabels[strtolower($history->new_status)] ?? $history->new_status }}</p>
+                    <span>{{ $history->created_at->format('H:i d-m-Y') }}</span>
+                    @if (strtolower($history->new_status) !== 'pending') <!-- Kiểm tra trạng thái -->
+                    <br />
+                    <span>Cập nhật bởi: <strong>{{ $history->updatedBy->name ?? 'Không xác định' }}</strong></span>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+
             </div>
             <hr />
             <div class="order-tracking-container-special-long-classname">
@@ -99,11 +102,13 @@
                     <p><span class="custom-title-profile">Trạng thái thanh toán:</span>
                         {{ $statusTranslations[$order->payment_status] ?? 'Không xác định' }}</p>
                     <p><span class="custom-title-profile">Ngày mua hàng:</span>
-                        {{ $statusTranslations[$order->payment_status] ?? 'Không xác định' }}</p>
+                    {{ $order->order_date->format('d-m-Y') }}</p>
+                    <p><span class="custom-title-profile">Thời gian mua hàng:</span>
+                        {{ $order->order_date->format('H:i:s') }}</p>
                     <p><span class="custom-title-profile">Ngày cập nhật đơn hàng:
                         </span>{{ $order->updated_at->format('d-m-Y') }} </p>
                     <p><span class="custom-title-profile">Thời gian cập nhật:</span>
-                        {{ $order->updated_at->format('H:i:s') }}</p>
+                        {{ $order->updated_at->format('H:i:s') }} </p>
                 </div>
                 <div class="order-status-timeline-section-extremely-long-classname">
                     @if ($order->statusHistories->isNotEmpty())
@@ -180,7 +185,7 @@
                     <tr>
                         <td colspan="6" class="text-end">Thành tiền</td>
                         <td class="text-end text-danger"><strong>
-                        {{ number_format($order->total, 0, ',', '.') }} đ</strong>đ
+                        {{ number_format($order->total, 0, ',', '.') }} đ</strong>
                         </td>
                     </tr>
                 </tfoot>

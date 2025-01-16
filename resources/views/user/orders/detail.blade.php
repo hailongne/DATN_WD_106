@@ -33,7 +33,7 @@
     $defaultPendingStatus = (object) [
         'new_status' => 'pending',
         'created_at' => $order->created_at,
-        'updatedBy' => null,
+        'updatedBy' => $order->recipient_name,
     ];
     if (!$order->statusHistories->contains(fn($history) => strtolower($history->new_status) === 'pending')) {
         $order->statusHistories->prepend($defaultPendingStatus);

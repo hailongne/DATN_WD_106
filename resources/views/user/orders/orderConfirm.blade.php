@@ -173,7 +173,6 @@
                     amount: subtotal,
                     _token: '{{ csrf_token() }}'
                 },
-
                 success: function (response) {
                     console.log(response); // Kiểm tra dữ liệu trả về từ server
 
@@ -189,6 +188,7 @@
                         $('#discountAmount').text('-' + formatTotalAmount(response.discount)); // Hiển thị số tiền giảm giá
                         $('#total').text(formatTotalAmount(response.newTotal)); // Cập nhật tổng tiền sau giảm giá
                         updateTotalAmount(response.newTotal);
+                        console.log(newTotal)
                     } else {
                         // Hiển thị thông báo lỗi
                         Swal.fire({

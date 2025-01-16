@@ -30,7 +30,7 @@ class ProductController extends Controller
     {
         $categories = Category::select('category_id', 'name')->distinct()->get();
         $brands = Brand::select('brand_id', 'name')->distinct()->get();
-    
+
         $products = Product::with('category:category_id,name', 'brand:brand_id,name')
         ->when($request->input('nhap'), function ($query) use ($request) {
             $query->where(function ($q) use ($request) {
@@ -50,7 +50,7 @@ class ProductController extends Controller
             })
             ->latest()
             ->paginate(10);
-    
+
         return view('admin.pages.product.list', compact('products', 'categories', 'brands'));
     }
     public function toggle($id)
@@ -64,7 +64,7 @@ class ProductController extends Controller
             // Xóa sản phẩm khỏi tất cả các giỏ hàng
             CartItem::where('product_id', $id)->delete();
         }
-    
+
         return redirect()->back()->with('success', 'Trạng thái sản phẩm đã được thay đổi!');
     }
     public function toggleHot($id)
@@ -125,7 +125,7 @@ class ProductController extends Controller
             if ($anh->isValid()) {
                 // Tạo tên mới cho ảnh để tránh trùng lặp
                 $newAnh = time() . "." . $anh->getClientOriginalExtension();
-        
+
                 // Lưu ảnh vào thư mục 'imagePro/images' trong storage/app/public
                 $image = $anh->storeAs('imagePro', $newAnh, 'public');
             }
@@ -133,7 +133,7 @@ class ProductController extends Controller
             // Sử dụng ảnh mặc định nếu không có ảnh tải lên
             $image = 'imagePro/images/default.jpg'; // Đảm bảo file này tồn tại trong storage/app/public
         }
-        
+
 
         // Create a new product using the request data
         $product = Product::create([
@@ -153,7 +153,7 @@ class ProductController extends Controller
 
         $colors = is_array($request->input('color_id')) ? $request->input('color_id') : explode(',', $request->input('color_id'));
         $sizes = is_array($request->input('size_id')) ? $request->input('size_id') : explode(',', $request->input('size_id'));
-        
+
         // Prepare the data for the AttributeProduct table (product-color-size combinations)
         $productColorSizeData = [];
         foreach ($colors as $colorId) {
@@ -327,8 +327,8 @@ class ProductController extends Controller
         $sizes = is_array($request->input('size_id')) ? $request->input('size_id') : explode(',', $request->input('size_id'));
 
         // Xóa các kết nối cũ giữa sản phẩm và màu sắc/kích thước
-        $product->colors()->detach();  // Xóa các màu sắc đã chọn cũ
-        $product->sizes()->detach();   // Xóa các kích thước đã chọn cũ
+        // $product->colors()->detach();  // Xóa các màu sắc đã chọn cũ
+        // $product->sizes()->detach();   // Xóa các kích thước đã chọn cũ
 
         // Tạo dữ liệu mới cho bảng AttributeProduct (mối quan hệ sản phẩm - màu sắc - kích thước)
         $productColorSizeData = [];
