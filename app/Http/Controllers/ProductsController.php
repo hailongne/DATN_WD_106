@@ -199,7 +199,7 @@ $reviewUser= Reviews::withTrashed()->where('product_id', $productId)
 
 
         // Trả về view với các biến cần thiết, bao gồm số lượt xem
-        return view('user.detailProduct', compact('product', 'reviewsExist','relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount'));
+        return view('user.detailProduct', compact('purchaseCount','reviewUser','product', 'reviewsExist','relatedProducts', 'reviews', 'reviewAll', 'rating', 'productId', 'hasPurchased', 'hasReviewed', 'viewCount'));
 
         }
 
@@ -218,14 +218,14 @@ $reviewUser= Reviews::withTrashed()->where('product_id', $productId)
         }
 
         // Kiểm tra xem người dùng đã đánh giá sản phẩm này chưa
-        $existingReview = Reviews::where('product_id', $request->input('product_id'))
-                                 ->where('user_id', auth()->id())
-                                 ->first();
+        // $existingReview = Reviews::where('product_id', $request->input('product_id'))
+        //                          ->where('user_id', auth()->id())
+        //                          ->first();
 
-        if ($existingReview) {
-            return redirect()->back()
-            ->with(['existingReview'=>$existingReview])->with('error', 'Bạn chỉ có thể đánh giá sản phẩm này một lần.');
-        }
+        // if ($existingReview) {
+        //     return redirect()->back()
+        //     ->with(['existingReview'=>$existingReview])->with('error', 'Bạn chỉ có thể đánh giá sản phẩm này một lần.');
+        // }
 
         // Xử lý hình ảnh (nếu có)
         if ($request->hasFile('image')) {

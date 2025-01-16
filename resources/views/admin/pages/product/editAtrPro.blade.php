@@ -73,7 +73,6 @@
                                         <div class="image-container">
                                             <!-- Sử dụng đúng đường dẫn ảnh -->
                                             <img src="{{ Storage::url( $image->url) }}" alt="image" class="img-thumbnail" style="max-width: 100px; margin-right: 10px;">
-                                            <button type="button" class="remove-image" data-image-id="{{ $image->product_image_id  }}">Xóa</button>
                                         </div>
                                     @endif
                                 @endforeach

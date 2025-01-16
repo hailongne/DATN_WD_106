@@ -269,7 +269,7 @@
                     </div>
                     @endif
 
-                    @if($hasPurchased && $hasReviewed && !$reviewsExist)
+                    @if( $reviewUser < $purchaseCount)
                     <!-- Form đánh giá -->
               
                  <form action="{{ route('user.product.addReview') }}" method="POST" enctype="multipart/form-data">
@@ -294,24 +294,33 @@
                                     <input type="radio" id="star1" name="rating" value="1">
                                     <label for="star1" data-text="Tệ">★</label>
                                 </div>
+                                @error('rating')
+                <span class="text-danger">{{$message}}</span>
+                @enderror
                             </div>
                             <input type="hidden" name="product_id" value="{{ $product->product_id }}">
                             <div class="comment-section">
                                 <textarea name="comment" class="customReviewTest" id="reviewText"
                                     placeholder="Bình luận... (Tùy chọn)"></textarea>
+                                    @error('comment')
+                <span class="text-danger">{{$message}}</span>
+                @enderror
                             </div>
                         </div>
                         <div class="comment-upload-section">
                             <label class="upload-button">
                                 <i class="fa-solid fa-upload"></i>
                                 <input type="file" name="image" />
+                                @error('image')
+                <span class="text-danger">{{$message}}</span>
+                @enderror
                             </label>
                             <button class="btn btn-primary" type="submit">Bình luận</button>
                         </div>
                     </form>
               
 
-                    @elseif(!$hasReviewed)
+                    @elseif(!$reviewUser)
                     <p class="text-center">Bạn đã đánh giá sản phẩm này rồi.</p>
                     @else
                     <p class="text-center">Hãy mua hàng và cho chúng tôi đánh giá để cải thiện dịch vụ nha!!!</p>

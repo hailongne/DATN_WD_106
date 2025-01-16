@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\OrderConfirm;
 use App\Models\OrderStatusHistory;
+use App\Models\UsedCoupon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use App\Models\Payment;
@@ -134,6 +135,7 @@ class PaymentController extends Controller
         $amount = $request->input('amount');
         $discountAmount = 0;
         $userEmail = auth()->user()->email; 
+        $userId = auth()->id();       
         // Tìm mã giảm giá  và kiểm tra tất cả các điều kiện
         $coupon = Coupon::where('code', $code)
             ->where('is_active', '1')
@@ -152,6 +154,17 @@ class PaymentController extends Controller
             ->first();
 
       if(isset($coupon)) {
+
+        $hasUsed = UsedCoupon::where('user_id', $userId)
+        ->where('coupon_id', $coupon->coupon_id)
+        ->exists();
+
+    if ($hasUsed) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Bạn đã sử dụng mã giảm giá này rồi.',
+        ]);
+    }
             // nếu hết mã giảm giá
         if ($coupon->quantity <= 0) {
             return response()->json([
@@ -185,7 +198,25 @@ class PaymentController extends Controller
         if ($discountAmount > $amount) {
             $discountAmount = $amount;
         }
+        UsedCoupon::insert([
+            'user_id' => $userId,
+            'coupon_id' => $coupon->coupon_id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
       }elseif(isset($coupons)){
+
+        $hasUsed = UsedCoupon::where('user_id', $userId)
+        ->where('coupon_id', $coupons->coupon_id)
+        ->exists();
+
+    if ($hasUsed) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Bạn đã sử dụng mã giảm giá này rồi.',
+        ]);
+    }
+
     if ($coupons->quantity <= 0) {
         return response()->json([
             'success' => false,
@@ -224,7 +255,12 @@ class PaymentController extends Controller
             $discountAmount = $amount;
         }
 
-
+        UsedCoupon::insert([
+            'user_id' => $userId,
+            'coupon_id' => $coupons->coupon_id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
       }else{
         return response()->json([
@@ -232,6 +268,10 @@ class PaymentController extends Controller
             'message' => 'Mã giảm giá không hợp lệ hoặc đã hết hạn.',
         ]);
       }
+      
+      
+      // Kiểm tra xem người dùng đã sử dụng mã giảm giá này chưa
+     
       
         session(['discount_code' => $code]);
         // $coupon->decrement('quantity');
@@ -242,7 +282,10 @@ class PaymentController extends Controller
 
         // Tính tổng mới sau khi áp dụng mã giảm giá
         $newTotal = $amount - $discountAmount;
+
        
+
+
         return response()->json([
             'success' => true,
             'message' => 'Mã giảm giá đã được áp dụng thành công!',
