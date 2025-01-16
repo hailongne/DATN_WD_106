@@ -318,7 +318,6 @@ class ProductController extends Controller
                 $image = $anh->move(public_path('storage/imagePro/'), $newAnh);
             }
         }
-
         // Cập nhật thông tin sản phẩm
         $product->update([
             'brand_id' => $request->input('brand_id'),

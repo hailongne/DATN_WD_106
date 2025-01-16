@@ -320,7 +320,7 @@
                     </form>
               
 
-                    @elseif(!$reviewUser)
+                    @elseif($reviewUser)
                     <p class="text-center">Bạn đã đánh giá sản phẩm này rồi.</p>
                     @else
                     <p class="text-center">Hãy mua hàng và cho chúng tôi đánh giá để cải thiện dịch vụ nha!!!</p>

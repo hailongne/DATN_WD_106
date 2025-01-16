@@ -27,8 +27,6 @@ class ProductRequest extends FormRequest
             'brand_id' => 'required|integer|exists:brands,brand_id', // Kiểm tra brand_id phải tồn tại trong bảng brands
             'product_category_id' => 'required|integer|exists:categories,category_id', // Kiểm tra category_id phải tồn tại trong bảng categories
        'name' => 'required|string|max:255|unique:products,name,' . $productId . ',product_id', // Kiểm tra trùng lặp ngoại trừ sản phẩm hiện tại
-
-
        'main_image_url' => $this->isMethod('put') ? 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' : 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Chỉ bắt buộc khi tạo mới sản phẩm
             'sku' => 'required|string|max:255|unique:products,sku,' . $productId . ',product_id', // Mã sản phẩm là bắt buộc, không được trùng lặp
             'description' => 'required|string', // Mô tả sản phẩm là bắt buộc

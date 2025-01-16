@@ -81,7 +81,7 @@
                 @error('min_order_value')
                     <span class="text-danger">{{$message}}</span>
                 @enderror
-                <div class="col-4" id="max" style="display: none">
+                <div class="col-4" id="max">
                     <label for="max_order_value" class="custom-label">Giá trị tối đa <span
                             class="text-danger">*</span></label>
                     <input type="text" id="max_order_value" value="{{ number_format($coupon->max_order_value, 0, '.', '') }}"

@@ -37,7 +37,7 @@
                 <input name="shipping_address" id="shipping_address" class="form-control" required
                     placeholder="Địa chỉ nhận hàng" value="{{ old('shipping_address', $user->address ?? '') }}"></input>
             </div>
-            <!-- <input type="hidden" name="discount_code" id="hiddenDiscountCode" value=""> -->
+            <input type="text" name="discount_code" id="hiddenDiscountCode" placeholder="nhập mã" value="">
 
             <!-- Nút xác nhận -->
             <div class="text-center mt-4 d-flex ">
@@ -136,6 +136,24 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+    //gán valư thanh toán cod
+document.querySelector('.custom-btn-order-cod').addEventListener('click', function (event) {
+    // Lấy giá trị mã giảm giá từ input
+    const discountCode = document.getElementById('discountCode').value;
+
+    // Gán giá trị vào input hidden
+    document.getElementById('hiddenDiscountCode').value = discountCode;
+});
+ //gán valư thanh toán vnp
+
+ document.querySelector('.custom-btn-order-vnpay').addEventListener('click', function (event) {
+    // Lấy giá trị mã giảm giá từ input
+    const discountCode = document.getElementById('discountCode').value;
+
+    // Gán giá trị vào input hidden
+    document.getElementById('hiddenDiscountCode').value = discountCode;
+});
+
     $(document).ready(function () {
         // Hàm để cập nhật giá trị tổng tiền vào input hidden và nút COD
         function updateTotalAmount(newTotal) {
@@ -165,7 +183,7 @@
             $('#applyDiscount').click(function () {
             const discountCode = $('#discountCode').val(); // Lấy mã giảm giá người dùng nhập
             const subtotal = {{ $totalWithoutShipping }}; // Tổng tiền ban đầu từ phía server
-
+console.log(discountCode);
             $.ajax({
                 url: '{{ route("user.order.applyDiscount") }}', // URL xử lý áp mã
                 type: 'POST',

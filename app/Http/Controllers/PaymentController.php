@@ -191,6 +191,9 @@ class PaymentController extends Controller
         } else {
             // Nếu không, tính giảm giá theo tỷ lệ phần trăm
             $discountAmount = $amount * $coupon->discount_percentage / 100;
+              if ($discountAmount > $coupon->max_order_value) {
+        $discountAmount = $coupon->max_order_value;
+    }
         }
         if ($discountAmount > $amount) {
             $discountAmount = $amount;
@@ -201,7 +204,8 @@ class PaymentController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-      }elseif(isset($coupons)){
+      }
+      elseif(isset($coupons)){
 
         $hasUsed = UsedCoupon::where('user_id', $userId)
         ->where('coupon_id', $coupons->coupon_id)
