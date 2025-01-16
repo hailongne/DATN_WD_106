@@ -24,10 +24,6 @@ class CouponController extends Controller
             })
             ->latest()
             ->paginate(5);
-<<<<<<< HEAD
-=======
-
->>>>>>> 5b728aadc4baae5765811afb74392a0c02b06e27
         return view('user.coupons', compact('coupons', 'user'));
     }
 
